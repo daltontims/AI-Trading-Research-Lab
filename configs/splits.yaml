@@ -1,0 +1,18 @@
+# Fixed research data partitions (see docs/RESEARCH_PROTOCOL.md §2).
+# Boundaries are half-open: development = [start, validation_start),
+# validation = [validation_start, vault_start), vault = [vault_start, now).
+# CHANGING THESE REQUIRES A DECISIONS.md ENTRY. Never move the vault boundary
+# later in time to "unlock" data that has already been treated as unseen.
+markets:
+  crypto:       # 1-minute data from 2019 (SOL from 2020-08)
+    validation_start: "2024-01-01"
+    vault_start:      "2025-07-01"
+  fx:           # 1-minute data from 2018
+    validation_start: "2023-07-01"
+    vault_start:      "2025-01-01"
+  equity:       # daily data, ETFs from 1993 onward
+    validation_start: "2018-01-01"
+    vault_start:      "2022-07-01"
+  macro:        # regime inputs follow the market they are paired with;
+    validation_start: "2018-01-01"   # this default only applies when used alone
+    vault_start:      "2022-07-01"
