@@ -1,0 +1,44 @@
+[project]
+name = "ai-trading-research-lab"
+version = "0.0.1"
+description = "Autonomous trading research laboratory (simulation only)"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "polars>=1.0",
+    "pandas>=2.2",
+    "numpy>=2.0",
+    "numba>=0.60",
+    "pyarrow>=16",
+    "duckdb>=1.0",
+    "scipy>=1.13",
+    "statsmodels>=0.14",
+    "scikit-learn>=1.5",
+    "pydantic>=2.7",
+    "pyyaml>=6.0",
+    "typer>=0.12",
+    "httpx>=0.27",
+    "exchange-calendars>=4.5",
+]
+
+[project.optional-dependencies]
+dashboard = ["streamlit>=1.36", "plotly>=5.22"]
+search = ["optuna>=3.6"]
+crypto = ["ccxt>=4.3"]
+equities = ["yfinance>=0.2.40"]
+sim = ["nautilus_trader>=1.200"]
+dev = ["pytest>=8", "hypothesis>=6.100", "ruff>=0.5"]
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/lab"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
