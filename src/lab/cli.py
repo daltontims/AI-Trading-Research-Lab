@@ -102,5 +102,46 @@ def quality(output: Path = ROOT / "reports" / "data_quality.md"):
     typer.echo(f"Report: {output}")
 
 
+@app.command()
+def backtest(strategy: str, symbols: list[str], timeframe: str = "1h", split: str = "development",
+             profile: str | None = typer.Option(None, help="cost profile from configs/costs.yaml"),
+             param: list[str] = typer.Option([], help="strategy parameter, e.g. --param n=20"),
+             sizing: str = "risk", risk_per_trade: float = 0.01, cash: float = 5000.0,
+             max_bars_held: int = 0, funding: bool = False,
+             stress: bool = typer.Option(False, help="also run at 1.5x, 2x and 3x costs"),
+             hypothesis: str = typer.Option("H-ADHOC-CLI", help="registry hypothesis id")):
+    """Backtest an example strategy and record it in the registry (development split by default)."""
+    import ast
+
+    from lab.engine.backtest import ExecutionConfig, RiskConfig
+    from lab.registry.db import Registry
+    from lab.research import run_experiment
+    from lab.strategies.examples import EXAMPLES
+
+    if strategy not in EXAMPLES:
+        raise typer.BadParameter(f"choose from {list(EXAMPLES)}")
+    params = {}
+    for kv in param:
+        k, v = kv.split("=", 1)
+        try:
+            params[k] = ast.literal_eval(v)
+        except (ValueError, SyntaxError):
+            params[k] = v
+    strat = EXAMPLES[strategy](**params)
+    reg = Registry()
+    if hypothesis == "H-ADHOC-CLI":
+        reg.register_hypothesis(id=hypothesis, family="adhoc", title="Ad-hoc CLI backtests",
+                                question="Exploratory runs from the command line (counted as trials).",
+                                source="manual", asset_classes=["any"], instruments=["any"], timeframe="any",
+                                spec={"note": "ad hoc"})
+    res, eid = run_experiment(strat, symbols, timeframe, hypothesis_id=hypothesis, split=split, registry=reg,
+                              risk=RiskConfig(initial_cash=cash, sizing=sizing, risk_per_trade=risk_per_trade,
+                                              max_bars_held=max_bars_held),
+                              execution=ExecutionConfig(cost_profile=profile), funding=funding,
+                              cost_multipliers=(1.0, 1.5, 2.0, 3.0) if stress else (1.0,))
+    typer.echo(res.summary())
+    typer.echo(f"recorded as {eid}")
+
+
 if __name__ == "__main__":
     app()

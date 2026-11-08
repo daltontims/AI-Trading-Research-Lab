@@ -1,1 +1,1 @@
-"""Vectorized backtester with enforced next-bar execution and portfolio accounting."""
+"""Backtesting engine: data alignment, compiled simulator, metrics, high-level API."""

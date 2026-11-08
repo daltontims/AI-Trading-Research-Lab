@@ -23,10 +23,10 @@ class Instrument:
     currency: str = "USD"
     tick_size: float | None = None
     multiplier: float = 1.0
-    fee_bps: float = 0.0
-    fee_per_unit: float = 0.0
     spread_bps: float | None = None
     spread_markup_bps: float = 0.0
+    lot_size: float = 0.0  # 0 = fractional quantities allowed
+    min_notional: float = 0.0
     tradable: bool = True
     yahoo_symbol: str | None = None
     price_kind: str = "price"  # price | yield

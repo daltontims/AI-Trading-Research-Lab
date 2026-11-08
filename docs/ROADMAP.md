@@ -20,11 +20,19 @@ Checkboxes are updated as work completes. See ARCHITECTURE.md §D for context.
 - [x] Data-quality checks + `reports/data_quality.md`
 - [x] Fixed data splits per market with locked vault (`configs/splits.yaml`)
 
-## Phase 2 — Engine & costs
-- [ ] Vectorized backtester (next-bar execution enforced)
-- [ ] Cost models per asset class
-- [ ] Metrics suite (protocol §3)
-- [ ] Known-answer tests and look-ahead detection tests
+## Phase 2 — Engine & costs ✅
+- [x] Compiled bar-by-bar portfolio engine: long/short, stops, targets, trailing stops, time exits,
+      multiple positions, priority, sizing (risk / % equity / fixed), cash & exposure limits,
+      daily-loss and max-drawdown limits (docs/ENGINE.md)
+- [x] Next-bar execution enforced; pessimistic intrabar rules; gaps and missing bars handled
+- [x] Cost profiles per market: fees, spread, slippage, funding, borrow, dividends, liquidity caps
+- [x] Metrics suite incl. benchmark, monthly and regime breakdowns
+- [x] Look-ahead detectors (signal causality + engine causality), run automatically on experiments
+- [x] Research registry integration: every run recorded incl. failures; vault lock; JSONL export
+- [x] 84 tests: known-answer accounting, look-ahead, calibration, registry
+- [x] Sample backtests on BTC, ETH, SPY + cost stress + account sizes + random calibration
+      (reports/phase2_engine_validation.md)
+- [ ] Cash interest, FX conversion, futures roll — when needed
 
 ## Phase 3 — Validation toolkit
 - [ ] Walk-forward and purged/embargoed CV

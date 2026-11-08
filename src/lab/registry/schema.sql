@@ -28,17 +28,29 @@ CREATE TABLE IF NOT EXISTS hypotheses (
 );
 
 CREATE TABLE IF NOT EXISTS experiments (
-    id              TEXT PRIMARY KEY,          -- e.g. E-000456
+    id              TEXT PRIMARY KEY,          -- e.g. E-20261108-0001
     hypothesis_id   TEXT NOT NULL REFERENCES hypotheses(id),
-    stage           TEXT NOT NULL,             -- event_study | screen | walk_forward | validation | robustness | vault | event_driven | paper
-    data_split      TEXT NOT NULL,             -- development | validation | vault | live_paper
-    git_commit      TEXT NOT NULL,
-    data_fingerprint TEXT NOT NULL,            -- hash of the data snapshot used
-    config          TEXT NOT NULL,             -- JSON: full experiment config incl. cost model
+    strategy_id     TEXT NOT NULL,             -- strategy class name
+    strategy_version TEXT NOT NULL,            -- declared version + hash of the strategy source code
+    stage           TEXT NOT NULL,             -- diagnostic | event_study | screen | walk_forward | validation | robustness | vault | event_driven | paper
+    market          TEXT NOT NULL,             -- crypto | equity | fx | futures | mixed
+    instruments     TEXT NOT NULL,             -- JSON list
+    timeframe       TEXT NOT NULL,
+    data_split      TEXT NOT NULL,             -- development | validation | vault | custom
+    data_start      TEXT,
+    data_end        TEXT,
+    git_commit      TEXT NOT NULL,             -- code version ("+dirty" if uncommitted changes)
+    data_fingerprint TEXT NOT NULL,            -- combined hash of all datasets used
+    data_versions   TEXT,                      -- JSON: dataset -> fingerprint
+    config          TEXT NOT NULL,             -- JSON: risk + execution settings
+    cost_models     TEXT,                      -- JSON: resolved per-instrument cost models
     seed            INTEGER,
+    validation_status TEXT,                    -- hypothesis status at the time of the run
     started_at      TEXT NOT NULL DEFAULT (datetime('now')),
     finished_at     TEXT,
-    outcome         TEXT,                      -- pass | fail | error | diagnostic
+    outcome         TEXT,                      -- pass | fail | error | diagnostic | complete
+    error           TEXT,
+    warnings        TEXT,                      -- JSON list (fidelity, sample size, ...)
     notes           TEXT
 );
 
@@ -56,7 +68,10 @@ CREATE TABLE IF NOT EXISTS trials (
     sharpe          REAL,
     sortino         REAL,
     cost_share      REAL,                      -- costs / gross profit
+    cost_multiplier REAL NOT NULL DEFAULT 1.0, -- >1 for cost stress tests
     metrics         TEXT,                      -- JSON: full metric set
+    monthly         TEXT,                      -- JSON: monthly returns
+    regimes         TEXT,                      -- JSON: performance by regime
     created_at      TEXT NOT NULL DEFAULT (datetime('now'))
 );
 
@@ -92,4 +107,5 @@ CREATE TABLE IF NOT EXISTS vault_access (
 CREATE INDEX IF NOT EXISTS idx_hyp_status ON hypotheses(status);
 CREATE INDEX IF NOT EXISTS idx_hyp_family ON hypotheses(family);
 CREATE INDEX IF NOT EXISTS idx_exp_hyp ON experiments(hypothesis_id);
+CREATE INDEX IF NOT EXISTS idx_exp_strategy ON experiments(strategy_id);
 CREATE INDEX IF NOT EXISTS idx_trial_exp ON trials(experiment_id);

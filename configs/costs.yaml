@@ -1,0 +1,70 @@
+# Execution-cost profiles (Phase 2). Values are per side, conservative retail
+# assumptions. Re-verify against a real broker before any paper trading.
+#
+#   fee_bps              commission + exchange fee, bps of notional (taker / market orders)
+#   maker_fee_bps        fee for resting limit orders (profit targets); default = fee_bps
+#   sell_fee_bps         extra fee on sells only (US SEC Section 31 fee)
+#   fee_per_unit         fixed fee per share/contract per side
+#   min_fee              minimum fee per order (account currency)
+#   slippage_bps         adverse price move between decision and fill, on top of the spread
+#   slippage_range_frac  extra slippage as a fraction of the fill bar's (high-low)/price range
+#   half_spread_bps      used only when the data has no bid/ask (trade-price bars);
+#                        the instrument's own spread_bps overrides this
+#   allow_short          shorting permitted in this venue
+#   borrow_rate_annual   cost of borrowing to short, annualised, charged per bar held
+#   financing_rate_annual  charged on all positions (e.g. FX swap approximation)
+#   funding              apply perpetual-futures funding payments from the data lake
+#   max_participation    max order size as a fraction of the signal bar's volume
+#
+# Stress tests multiply fee/slippage/spread/borrow terms by a cost multiplier.
+
+profiles:
+  crypto_spot:              # global exchange, lowest retail tier (e.g. 0.10% taker)
+    fee_bps: 10.0
+    maker_fee_bps: 10.0
+    slippage_bps: 1.0
+    slippage_range_frac: 0.05
+    allow_short: false
+    max_participation: 0.01
+  crypto_perp:              # USD-margined perpetual futures, lowest retail tier
+    fee_bps: 5.0
+    maker_fee_bps: 2.0
+    slippage_bps: 1.0
+    slippage_range_frac: 0.05
+    allow_short: true
+    funding: true
+    max_participation: 0.01
+  crypto_spot_us_retail:    # US-accessible exchanges' lowest tiers are far more expensive
+    fee_bps: 40.0
+    maker_fee_bps: 25.0
+    slippage_bps: 2.0
+    slippage_range_frac: 0.05
+    allow_short: false
+    max_participation: 0.01
+  equity_us:                # commission-free US broker; shorting via margin account
+    fee_bps: 0.0
+    sell_fee_bps: 0.278     # approx. SEC Section 31 fee; rate is reset periodically
+    slippage_bps: 1.0
+    slippage_range_frac: 0.02
+    allow_short: true
+    borrow_rate_annual: 0.005   # easy-to-borrow ETFs; hard-to-borrow names cost far more
+    max_participation: 0.01
+  fx_retail:                # spread comes from bid/ask data plus the instrument's markup
+    fee_bps: 0.0
+    slippage_bps: 0.2
+    slippage_range_frac: 0.02
+    allow_short: true
+    financing_rate_annual: 0.0  # TODO: model swap/rollover when FX data is available
+    max_participation: 1.0      # FX tick volume is not traded volume; not used as a cap
+  futures_us:               # CME micro contracts via a retail futures broker
+    fee_per_unit: 1.25      # commission + exchange + NFA per contract per side (approx.)
+    slippage_bps: 0.5
+    slippage_range_frac: 0.02
+    allow_short: true
+    max_participation: 0.01
+
+default_profile:
+  crypto: crypto_spot
+  equity: equity_us
+  fx: fx_retail
+  futures: futures_us

@@ -6,7 +6,6 @@ import zipfile
 from datetime import datetime, timezone
 
 import numpy as np
-import polars as pl
 
 from lab.data.ingest import binance, dukascopy, yahoo
 

@@ -47,3 +47,32 @@ crypto and ETF research go first.
 Bars are stamped at their start, in UTC. Yahoo daily bars map to the trading date; ICE-style
 evening session-start stamps (dollar index) are moved to the next day. Yield series are
 flagged `price_kind: yield` and checked with absolute changes (zero rates are valid).
+
+## D-009 — Engine design: compiled bar loop instead of an external framework (2026-11-08)
+Strategies produce vectorised signal arrays; a Numba-compiled loop handles fills, costs and
+portfolio accounting. This gives ~1 s per 2.6M-bar backtest (needed for thousands of variations)
+and full control over execution assumptions. NautilusTrader remains planned for tick-level
+validation and paper trading (Phase 7–8). Pessimistic conventions: next-bar-open fills, stop wins
+when stop and target share a bar, targets never fill better than their price, trailing stops use
+completed bars only.
+
+## D-010 — Crypto cost baseline is a global exchange's lowest tier (2026-11-08)
+Default `crypto_spot` = 10 bps taker, `crypto_perp` = 5 bps taker + real funding. US-accessible
+exchanges' lowest tiers cost far more (≈40 bps taker; profile `crypto_spot_us_retail`), and US
+residents generally cannot use offshore perpetual futures. Any crypto candidate must therefore also
+be evaluated under `crypto_spot_us_retail` and ×2–×3 cost stress before it is taken seriously.
+**Owner input needed later:** which venues/jurisdiction apply, so the default can be set accordingly.
+
+## D-011 — No leverage by default; futures require explicit opt-in (2026-11-08)
+Gross exposure ≤ 1× equity and longs paid in cash. A micro E-mini contract (~$25k notional) is
+therefore untradeable with $5k unless `max_gross_exposure` is raised, which is recorded in the
+experiment config.
+
+## D-012 — Registry reset before the official Phase 2 run (2026-11-08)
+A first draft of the Phase 2 validation run (engine demos only, no research hypotheses) was
+discarded and re-run after changing the SPY demo to the classic no-stop version and adding the
+zero-cost calibration. From this point the registry is append-only: no records are deleted.
+
+## D-013 — Dukascopy candle format verified; download still blocked (2026-11-08)
+Three real daily candle files decoded correctly (EURUSD ≈1.104 on 2024-01-02). Dukascopy briefly
+allowed requests again but returned HTTP 429 after three files. Forex stays pending (see D-007).
