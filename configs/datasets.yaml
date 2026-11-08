@@ -1,0 +1,13 @@
+# The standard research universe downloaded by `lab ingest all`.
+# Everything here is free and needs no account.
+binance:
+  start: "2019-01"            # 1-minute spot bars
+  spot_klines: [BTCUSDT, ETHUSDT, SOLUSDT]
+  funding_start: "2020-01"    # USD-M perpetual funding rates
+  funding: [BTCUSDT, ETHUSDT, SOLUSDT]
+dukascopy:
+  start: "2018-01"            # 1-minute bid/ask bars (daily candle files)
+  pairs: [EURUSD, GBPUSD, USDJPY]
+yahoo:
+  equity: [SPY, QQQ, IWM, DIA, TLT, GLD, XLK, XLF, XLE, XLV, XLY, XLP, XLI, XLU]
+  macro: ["^VIX", "^VIX3M", "^TNX", "^IRX", "DX-Y.NYB"]

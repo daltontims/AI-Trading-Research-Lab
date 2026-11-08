@@ -1,0 +1,50 @@
+# Instrument registry. Costs here are conservative *retail* assumptions, used by
+# cost models in Phase 2. Re-verify against a real broker before paper trading.
+#
+# Fields:
+#   asset_class   crypto | fx | equity | futures | options | macro
+#   calendar      24/7 | fx | XNYS (exchange_calendars code) | CMES ...
+#   tick_size     minimum price increment
+#   multiplier    $ value per 1.0 price move per unit (contracts) — 1 for spot/shares
+#   fee_bps       commission/exchange fee per side, basis points of notional
+#   fee_per_unit  fixed commission per side per share/contract (account currency)
+#   spread_bps    assumed typical half-spread when quotes are unavailable (bps)
+#   tradable      false = used only as a signal/regime input
+
+defaults:
+  currency: USD
+  tradable: true
+
+instruments:
+  # --- Crypto (Binance spot data; costs modelled as a typical retail exchange) ---
+  BTCUSDT: {asset_class: crypto, source: binance, calendar: "24/7", tick_size: 0.01, multiplier: 1, fee_bps: 10.0, spread_bps: 0.5}
+  ETHUSDT: {asset_class: crypto, source: binance, calendar: "24/7", tick_size: 0.01, multiplier: 1, fee_bps: 10.0, spread_bps: 1.0}
+  SOLUSDT: {asset_class: crypto, source: binance, calendar: "24/7", tick_size: 0.01, multiplier: 1, fee_bps: 10.0, spread_bps: 2.0}
+
+  # --- Forex (Dukascopy quotes; spread comes from data, plus a retail markup) ---
+  EURUSD: {asset_class: fx, source: dukascopy, calendar: fx, tick_size: 0.00001, multiplier: 1, fee_bps: 0.0, spread_markup_bps: 0.3}
+  GBPUSD: {asset_class: fx, source: dukascopy, calendar: fx, tick_size: 0.00001, multiplier: 1, fee_bps: 0.0, spread_markup_bps: 0.4}
+  USDJPY: {asset_class: fx, source: dukascopy, calendar: fx, tick_size: 0.001, multiplier: 1, fee_bps: 0.0, spread_markup_bps: 0.4, currency: JPY}
+
+  # --- US ETFs (Yahoo daily) ---
+  SPY: {asset_class: equity, source: yahoo, calendar: XNYS, tick_size: 0.01, multiplier: 1, fee_per_unit: 0.0, spread_bps: 0.3}
+  QQQ: {asset_class: equity, source: yahoo, calendar: XNYS, tick_size: 0.01, multiplier: 1, fee_per_unit: 0.0, spread_bps: 0.5}
+  IWM: {asset_class: equity, source: yahoo, calendar: XNYS, tick_size: 0.01, multiplier: 1, fee_per_unit: 0.0, spread_bps: 0.5}
+  DIA: {asset_class: equity, source: yahoo, calendar: XNYS, tick_size: 0.01, multiplier: 1, fee_per_unit: 0.0, spread_bps: 1.0}
+  TLT: {asset_class: equity, source: yahoo, calendar: XNYS, tick_size: 0.01, multiplier: 1, fee_per_unit: 0.0, spread_bps: 1.0}
+  GLD: {asset_class: equity, source: yahoo, calendar: XNYS, tick_size: 0.01, multiplier: 1, fee_per_unit: 0.0, spread_bps: 1.0}
+  XLK: {asset_class: equity, source: yahoo, calendar: XNYS, tick_size: 0.01, multiplier: 1, fee_per_unit: 0.0, spread_bps: 1.0}
+  XLF: {asset_class: equity, source: yahoo, calendar: XNYS, tick_size: 0.01, multiplier: 1, fee_per_unit: 0.0, spread_bps: 2.0}
+  XLE: {asset_class: equity, source: yahoo, calendar: XNYS, tick_size: 0.01, multiplier: 1, fee_per_unit: 0.0, spread_bps: 2.0}
+  XLV: {asset_class: equity, source: yahoo, calendar: XNYS, tick_size: 0.01, multiplier: 1, fee_per_unit: 0.0, spread_bps: 2.0}
+  XLY: {asset_class: equity, source: yahoo, calendar: XNYS, tick_size: 0.01, multiplier: 1, fee_per_unit: 0.0, spread_bps: 2.0}
+  XLP: {asset_class: equity, source: yahoo, calendar: XNYS, tick_size: 0.01, multiplier: 1, fee_per_unit: 0.0, spread_bps: 2.0}
+  XLI: {asset_class: equity, source: yahoo, calendar: XNYS, tick_size: 0.01, multiplier: 1, fee_per_unit: 0.0, spread_bps: 2.0}
+  XLU: {asset_class: equity, source: yahoo, calendar: XNYS, tick_size: 0.01, multiplier: 1, fee_per_unit: 0.0, spread_bps: 2.0}
+
+  # --- Macro / regime inputs (Yahoo indices; not tradable) ---
+  IDX_VIX:   {asset_class: macro, source: yahoo, yahoo_symbol: "^VIX",   calendar: XNYS, tradable: false}
+  IDX_VIX3M: {asset_class: macro, source: yahoo, yahoo_symbol: "^VIX3M", calendar: XNYS, tradable: false}
+  IDX_TNX:   {asset_class: macro, source: yahoo, yahoo_symbol: "^TNX",   calendar: XNYS, tradable: false}  # 10y yield x10
+  IDX_IRX:   {asset_class: macro, source: yahoo, yahoo_symbol: "^IRX",   calendar: XNYS, tradable: false}  # 13w T-bill yield
+  DXY:       {asset_class: macro, source: yahoo, yahoo_symbol: "DX-Y.NYB", calendar: XNYS, tradable: false}

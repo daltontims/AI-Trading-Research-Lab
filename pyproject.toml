@@ -29,6 +29,9 @@ equities = ["yfinance>=0.2.40"]
 sim = ["nautilus_trader>=1.200"]
 dev = ["pytest>=8", "hypothesis>=6.100", "ruff>=0.5"]
 
+[project.scripts]
+lab = "lab.cli:app"
+
 [build-system]
 requires = ["hatchling"]
 build-backend = "hatchling.build"
