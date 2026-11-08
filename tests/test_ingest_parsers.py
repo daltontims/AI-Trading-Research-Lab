@@ -83,3 +83,16 @@ def test_yahoo_parse_chart():
     assert df.height == 2  # null row dropped
     assert df["ts"][0] == datetime(2024, 1, 2, tzinfo=timezone.utc)
     assert df["dividend"].to_list() == [0.5, 0.0] and df["split"].to_list() == [1.0, 1.0]
+
+
+def test_yahoo_evening_session_start_maps_to_next_day():
+    # DX-Y.NYB-style stamp: Sunday 2024-01-07 18:00 New York = session for Monday 2024-01-08.
+    res = {"meta": {"gmtoffset": -18000}, "timestamp": [1704668400],
+           "indicators": {"quote": [{"open": [1], "high": [1], "low": [1], "close": [1], "volume": [0]}]}}
+    assert yahoo.parse_chart(res)["ts"][0] == datetime(2024, 1, 8, tzinfo=timezone.utc)
+
+
+def test_yahoo_lake_names_follow_registry():
+    assert yahoo.lake_name("^VIX") == "IDX_VIX"
+    assert yahoo.lake_name("DX-Y.NYB") == "DXY"
+    assert yahoo.lake_name("SPY") == "SPY"

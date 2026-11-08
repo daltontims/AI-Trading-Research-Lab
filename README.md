@@ -8,7 +8,7 @@ data purchases happen without the owner's explicit permission.
 
 ## Status
 
-**Phase 0 — Foundation: complete.** Architecture proposed; next is Phase 1 (data layer).
+**Phase 1 — Data layer: complete** (forex download pending). Crypto 1-minute data (2019+), crypto funding rates, 14 ETFs and 5 macro series downloaded and quality-checked. Next: Phase 2 (backtesting engine and cost models).
 
 | Document | What it covers |
 |---|---|
@@ -16,6 +16,8 @@ data purchases happen without the owner's explicit permission.
 | [docs/RESEARCH_PROTOCOL.md](docs/RESEARCH_PROTOCOL.md) | Statistical rules every strategy must pass |
 | [docs/ROADMAP.md](docs/ROADMAP.md) | Development phases and progress |
 | [docs/DECISIONS.md](docs/DECISIONS.md) | Decision log |
+| [docs/DATA.md](docs/DATA.md) | Data sources, lake layout, caveats |
+| [reports/data_quality.md](reports/data_quality.md) | Latest automated data-quality report |
 | [CLAUDE.md](CLAUDE.md) | Handoff notes for resuming work |
 
 ## Leaderboard

@@ -10,6 +10,7 @@
 #   fee_per_unit  fixed commission per side per share/contract (account currency)
 #   spread_bps    assumed typical half-spread when quotes are unavailable (bps)
 #   tradable      false = used only as a signal/regime input
+#   price_kind    price (default) | yield — yields may be zero/negative; checked with differences
 
 defaults:
   currency: USD
@@ -45,6 +46,6 @@ instruments:
   # --- Macro / regime inputs (Yahoo indices; not tradable) ---
   IDX_VIX:   {asset_class: macro, source: yahoo, yahoo_symbol: "^VIX",   calendar: XNYS, tradable: false}
   IDX_VIX3M: {asset_class: macro, source: yahoo, yahoo_symbol: "^VIX3M", calendar: XNYS, tradable: false}
-  IDX_TNX:   {asset_class: macro, source: yahoo, yahoo_symbol: "^TNX",   calendar: XNYS, tradable: false}  # 10y yield x10
-  IDX_IRX:   {asset_class: macro, source: yahoo, yahoo_symbol: "^IRX",   calendar: XNYS, tradable: false}  # 13w T-bill yield
-  DXY:       {asset_class: macro, source: yahoo, yahoo_symbol: "DX-Y.NYB", calendar: XNYS, tradable: false}
+  IDX_TNX:   {asset_class: macro, source: yahoo, yahoo_symbol: "^TNX",   calendar: XNYS, tradable: false, price_kind: yield}  # 10y yield x10
+  IDX_IRX:   {asset_class: macro, source: yahoo, yahoo_symbol: "^IRX",   calendar: XNYS, tradable: false, price_kind: yield}  # 13w T-bill yield
+  DXY:       {asset_class: macro, source: yahoo, yahoo_symbol: "DX-Y.NYB", calendar: ICE, tradable: false}  # trades ~23h on ICE; NYSE session check skipped

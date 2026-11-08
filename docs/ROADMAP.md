@@ -8,15 +8,17 @@ Checkboxes are updated as work completes. See ARCHITECTURE.md §D for context.
 - [x] Repository skeleton, pyproject, registry schema
 - [x] Handoff notes (CLAUDE.md) and decision log
 
-## Phase 1 — Data layer
-- [ ] Unified schemas: bars, trades, quotes (Parquet, UTC timestamps)
-- [ ] Instrument registry (`configs/instruments.yaml`)
-- [ ] Ingestor: Binance public archive (BTCUSDT, ETHUSDT 1m bars, trades, funding)
-- [ ] Ingestor: Dukascopy ticks (EURUSD, USDJPY, GBPUSD)
-- [ ] Ingestor: daily ETFs (SPY, QQQ, IWM, sector ETFs, TLT, GLD)
-- [ ] Ingestor: FRED macro series, VIX
-- [ ] Data-quality checks (gaps, outliers, duplicates, stale prices) + report
-- [ ] Fixed data splits per market (`configs/splits.yaml`)
+## Phase 1 — Data layer ✅ (forex download pending)
+- [x] Unified schemas: bars, quote bars, ticks, funding (Parquet, UTC bar-start timestamps)
+- [x] Instrument registry (`configs/instruments.yaml`)
+- [x] Ingestor: Binance public archive (BTC/ETH/SOL 1m bars 2019+, funding 2020+) — downloaded
+- [ ] Binance trade-level data (aggTrades) for scalping — Phase 7
+- [x] Ingestor: Dukascopy (1m bid/ask candles + tick mode), tested offline
+- [ ] **Download Dukascopy EURUSD/GBPUSD/USDJPY** — blocked: Dukascopy returns HTTP 429 to this cloud network (see DECISIONS D-007)
+- [x] Ingestor: Yahoo daily ETFs (14 symbols) — downloaded
+- [x] Macro: VIX, VIX3M, 10y & 13w yields, dollar index via Yahoo (FRED unreachable here)
+- [x] Data-quality checks + `reports/data_quality.md`
+- [x] Fixed data splits per market with locked vault (`configs/splits.yaml`)
 
 ## Phase 2 — Engine & costs
 - [ ] Vectorized backtester (next-bar execution enforced)

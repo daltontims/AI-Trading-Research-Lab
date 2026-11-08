@@ -119,11 +119,17 @@ def check_frame(df: pl.DataFrame, key: lake.DatasetKey, report: DatasetReport) -
     if key.dataset == "funding":
         return _check_funding(df, report)
 
+    from lab import instruments
+    inst = instruments.find(key.symbol)
+    is_yield = inst is not None and inst.price_kind == "yield"
+
     df = _with_mid(df)
     o, h, l, c = _price_cols(df)
 
     nonpos = df.filter(pl.min_horizontal(o, h, l, c) <= 0).height
-    if nonpos:
+    if nonpos and is_yield:
+        report.add("INFO", "prices", f"{nonpos:,} bars with zero/negative yields (valid for interest rates)")
+    elif nonpos:
         report.add("FAIL", "prices", f"{nonpos:,} bars with zero/negative prices")
 
     bad_ohlc = df.filter((pl.col(h) < pl.max_horizontal(o, c) - 1e-9) | (pl.col(l) > pl.min_horizontal(o, c) + 1e-9)
@@ -133,7 +139,9 @@ def check_frame(df: pl.DataFrame, key: lake.DatasetKey, report: DatasetReport) -
         report.add(lvl, "ohlc", f"{bad_ohlc:,} bars where high/low do not contain open/close ({bad_ohlc / n:.4%})")
 
     # Extreme returns: robust z-score using the median absolute deviation.
-    r = df.select(pl.col(c).log().diff().alias("r")).drop_nulls()["r"].to_numpy()
+    # Yields are compared in absolute changes; prices in log returns.
+    ret = pl.col(c).diff() if is_yield else pl.col(c).log().diff()
+    r = df.select(ret.alias("r")).drop_nulls()["r"].to_numpy()
     r = r[np.isfinite(r)]  # zero prices are reported separately above
     if len(r) > 100:
         # Floor the robust scale with a fraction of the standard deviation: minute data with
@@ -146,7 +154,8 @@ def check_frame(df: pl.DataFrame, key: lake.DatasetKey, report: DatasetReport) -
             if k:
                 top = df["ts"][1:].to_numpy()[np.argsort(-z)[: min(k, 5)]]
                 when = ", ".join(str(t)[:16] for t in top)
-                report.add("WARN", "outliers", f"{k:,} returns beyond {thresh} robust σ (largest at: {when})")
+                report.add("WARN", "outliers",
+                           f"{k:,} moves beyond {thresh} robust σ — verify they are real events (largest at: {when})")
 
     # Stale prices: longest run of identical closes.
     runs = df.select((pl.col(c) != pl.col(c).shift()).cum_sum().alias("g")).group_by("g").len()
@@ -215,12 +224,13 @@ def _check_coverage(df: pl.DataFrame, key: lake.DatasetKey, report: DatasetRepor
             total = int(gaps["bars"].sum())
             top = ", ".join(f"{r['start']:%Y-%m-%d %H:%M} ({r['bars']}m)" for r in gaps.head(5).iter_rows(named=True))
             report.add("WARN", "gaps", f"{gaps.height} gaps ≥ {min_gap} min, {total:,} minutes total; longest: {top}")
-    elif key.dataset.endswith("1d") and key.asset_class in ("equity", "macro"):
+    elif key.dataset.endswith("1d") and key.asset_class in ("equity", "macro") and (
+            inst_calendar(key.symbol) == "XNYS"):
         import exchange_calendars as xcals
         cal = xcals.get_calendar("XNYS")
         lo = max(start.date(), cal.first_session.date())
         sessions = cal.sessions_in_range(str(lo), str(end.date()))
-        expected = set(sessions.date)
+        expected = {d.date() for d in sessions}
         have = set(ts.dt.date().to_list())
         missing = sorted(d for d in expected - have)
         extra = sorted(d for d in have - expected if d >= lo)
@@ -230,8 +240,14 @@ def _check_coverage(df: pl.DataFrame, key: lake.DatasetKey, report: DatasetRepor
         if extra:
             report.add("WARN", "sessions", f"{len(extra)} bars on non-trading days (first: {', '.join(map(str, extra[:5]))})")
         if key.asset_class == "equity":
-            report.add("WARN", "survivorship",
+            report.add("INFO", "survivorship",
                        "free daily data omits delisted symbols; do not use for stock-selection studies")
+
+
+def inst_calendar(symbol: str) -> str:
+    from lab import instruments
+    inst = instruments.find(symbol)
+    return inst.calendar if inst else "XNYS"
 
 
 def check(key: lake.DatasetKey) -> DatasetReport:

@@ -86,3 +86,12 @@ def test_instrument_registry_loads():
     assert instruments.get("IDX_VIX").tradable is False
     with pytest.raises(KeyError):
         instruments.get("NOPE")
+
+
+def test_quality_allows_zero_yields():
+    key = lake.DatasetKey("macro", "yahoo", "IDX_IRX", "bars_1d")
+    df = schemas.conform(_bars(datetime(2015, 1, 5), 50, step=timedelta(days=1), price=0.05), "bars")
+    df = df.with_columns(pl.when(pl.int_range(pl.len()) < 5).then(0.0).otherwise(pl.col(c)).alias(c)
+                         for c in ["open", "high", "low", "close"])
+    rep = quality.check_frame(df, key, quality.DatasetReport(key=str(key)))
+    assert all(f.level != "FAIL" for f in rep.findings), rep.findings

@@ -29,6 +29,7 @@ class Instrument:
     spread_markup_bps: float = 0.0
     tradable: bool = True
     yahoo_symbol: str | None = None
+    price_kind: str = "price"  # price | yield
     extra: dict = field(default_factory=dict)
 
 
@@ -43,6 +44,14 @@ def registry(path: Path = CONFIG) -> dict[str, Instrument]:
         out[sym] = Instrument(symbol=sym, **{k: v for k, v in merged.items() if k in known},
                               extra={k: v for k, v in merged.items() if k not in known})
     return out
+
+
+def find(symbol: str) -> Instrument | None:
+    """Look up by registry name or by Yahoo symbol; None if unknown."""
+    reg = registry()
+    if symbol in reg:
+        return reg[symbol]
+    return next((i for i in reg.values() if i.yahoo_symbol == symbol), None)
 
 
 def get(symbol: str) -> Instrument:

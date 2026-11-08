@@ -21,7 +21,7 @@ present, so interrupted runs resume where they stopped.
 | Asset class | Source | Dataset(s) | History | Notes |
 |---|---|---|---|---|
 | Crypto | Binance public archive | `bars_1m` (spot), `funding` (USD-M perps) | 2019+ (SOL 2020-08+) | Checksums verified. Trade-price bars, no bid/ask. |
-| Forex | Dukascopy | `quote_bars_1m` (bid/ask), optional `quote_ticks` | 2018+ | Strict rate limits: downloads are throttled to 1 request/s. |
+| Forex | Dukascopy | `quote_bars_1m` (bid/ask), optional `quote_ticks` | 2018+ | **Not yet downloaded**: Dukascopy returns HTTP 429 to this cloud network (DECISIONS D-007). Throttled to 1 request/s. |
 | US ETFs | Yahoo Finance | `bars_1d` | 1993+ (varies) | Survivorship-biased; unofficial API. |
 | Macro | Yahoo Finance | `bars_1d` for ^VIX, ^VIX3M, ^TNX, ^IRX, DXY | 1990+ | Used as regime inputs, not traded. |
 

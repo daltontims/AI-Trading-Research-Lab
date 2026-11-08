@@ -42,6 +42,7 @@ packages = ["src/lab"]
 [tool.pytest.ini_options]
 testpaths = ["tests"]
 pythonpath = ["src"]
+filterwarnings = ["ignore::DeprecationWarning:exchange_calendars.*", "ignore:Series.values:Warning"]
 
 [tool.ruff]
 line-length = 100

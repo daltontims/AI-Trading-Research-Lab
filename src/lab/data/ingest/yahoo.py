@@ -43,9 +43,13 @@ def parse_chart(res: dict) -> pl.DataFrame:
         "volume": q["volume"],
         "adj_close": adj if adj is not None else q["close"],
     }, schema_overrides={c: pl.Float64 for c in ["open", "high", "low", "close", "volume", "adj_close"]})
-    # Convert exchange-local timestamp to the trading date, stamped 00:00 UTC.
+    # Convert the exchange-local timestamp to the trading date, stamped 00:00 UTC.
+    # Some instruments (e.g. ICE futures like DX-Y.NYB) are stamped at the session start the
+    # previous evening (~18:00 local); shifting by 8h maps evening stamps to the next day while
+    # leaving 00:00 and 09:30 stamps on the same day.
     df = df.with_columns(
-        ts=pl.from_epoch(pl.col("epoch") + gmtoffset, time_unit="s").dt.date().cast(pl.Datetime("us")).dt.replace_time_zone("UTC")
+        ts=pl.from_epoch(pl.col("epoch") + gmtoffset + 8 * 3600, time_unit="s")
+        .dt.date().cast(pl.Datetime("us")).dt.replace_time_zone("UTC")
     )
     ev = res.get("events", {})
     divs = pl.DataFrame(
@@ -63,9 +67,16 @@ def parse_chart(res: dict) -> pl.DataFrame:
     return schemas.conform(df, "bars")
 
 
+def lake_name(symbol: str) -> str:
+    """Registry name for a Yahoo symbol (e.g. ^VIX -> IDX_VIX, DX-Y.NYB -> DXY)."""
+    from lab import instruments
+    inst = instruments.find(symbol)
+    return inst.symbol if inst else symbol.replace("^", "IDX_")
+
+
 def ingest(symbol: str, asset_class: str = "equity", log=print) -> lake.DatasetKey:
     """Full refresh (daily history is small)."""
-    key = lake.DatasetKey(asset_class, "yahoo", symbol.replace("^", "IDX_"), "bars_1d")
+    key = lake.DatasetKey(asset_class, "yahoo", lake_name(symbol), "bars_1d")
     df = fetch_daily(symbol)
     lake.write_chunk(key, "all", df)
     log(f"  {key}: {df.height:,} bars {df['ts'].min():%Y-%m-%d} -> {df['ts'].max():%Y-%m-%d}")

@@ -20,5 +20,13 @@
 - Python 3.12+, managed with `uv` (`uv sync`, `uv run pytest`).
 - Cloud containers are ephemeral: commit docs, code, and registry exports.
 
+## Data quick start
+- Environment `ai-trading-research-lab` (cloud) allows the data hosts; see docs/DATA.md.
+- `uv sync --extra dev && uv run lab ingest all && uv run lab quality && uv run pytest`
+- Downloads are resumable; ~370 MB for crypto + ETFs.
+
 ## Current state
-- Phase 0 complete (2026-11-08). Next: Phase 1 data layer (see ROADMAP).
+- Phase 0 complete (2026-11-08).
+- Phase 1 complete except forex download: Dukascopy returns HTTP 429 to this cloud
+  network (DECISIONS D-007). Retry `uv run lab ingest all --only dukascopy` later.
+- Next: Phase 2 engine & cost models (start with crypto 1m and ETF daily data).
