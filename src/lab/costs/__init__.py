@@ -40,6 +40,7 @@ class CostModel:
     spread_markup_bps: float = 0.0   # added to data spreads (retail broker markup)
     slippage_bps: float = 0.0
     slippage_range_frac: float = 0.0
+    stop_overshoot_frac: float = 0.2  # stop fills beyond the stop by this × bar excursion past it
     allow_short: bool = False
     borrow_rate_annual: float = 0.0
     financing_rate_annual: float = 0.0
@@ -56,6 +57,8 @@ class CostModel:
             min_fee=self.min_fee * m, half_spread_bps=self.half_spread_bps * m,
             spread_markup_bps=self.spread_markup_bps * m, slippage_bps=self.slippage_bps * m,
             slippage_range_frac=self.slippage_range_frac * m,
+            # Execution-model term, not a fee: never reduced below its base value.
+            stop_overshoot_frac=self.stop_overshoot_frac * max(m, 1.0),
             borrow_rate_annual=self.borrow_rate_annual * m,
             financing_rate_annual=self.financing_rate_annual * m,
             cost_multiplier=self.cost_multiplier * m,

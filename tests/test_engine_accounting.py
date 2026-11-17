@@ -50,6 +50,24 @@ def test_stop_loss_exact_and_gap():
     assert t2["exit_price"] == pytest.approx(90) and t2["exit_reason"] == "stop"
 
 
+def test_stop_overshoot_inside_bar_but_not_on_gaps():
+    # Stop 95, bar low 94: with 25% overshoot the fill is 95 - 0.25 * (95 - 94) = 94.75.
+    df = bars(o=[100, 100, 99, 90], h=[100, 101, 99, 90], l=[100, 99, 94, 90], c=[100, 100, 96, 90])
+    t = run({S: {"entry_long": {0: True}, "stop_dist": {0: 5.0}}}, {S: df},
+            {"stop_overshoot_frac": 0.25}).trades.row(0, named=True)
+    assert t["exit_price"] == pytest.approx(94.75) and t["exit_ref"] == pytest.approx(95)
+    # Shorts: stop 105, bar high 107 -> 105 + 0.25 * 2 = 105.5
+    df2 = bars(o=[100, 100, 101, 100], h=[100, 101, 107, 100], l=[100, 99, 100, 100], c=[100, 100, 104, 100])
+    t2 = run({S: {"entry_short": {0: True}, "stop_dist": {0: 5.0}}}, {S: df2},
+             {"stop_overshoot_frac": 0.25}).trades.row(0, named=True)
+    assert t2["exit_price"] == pytest.approx(105.5)
+    # A gap through the stop already fills at the open; no extra overshoot.
+    df3 = bars(o=[100, 100, 90, 90], h=[100, 101, 92, 90], l=[100, 99, 88, 90], c=[100, 100, 91, 90])
+    t3 = run({S: {"entry_long": {0: True}, "stop_dist": {0: 5.0}}}, {S: df3},
+             {"stop_overshoot_frac": 0.25}).trades.row(0, named=True)
+    assert t3["exit_price"] == pytest.approx(90)
+
+
 def test_profit_target_and_pessimistic_same_bar_rule():
     df = bars(o=[100, 100, 104], h=[100, 101, 111], l=[100, 99, 103], c=[100, 100, 109])
     r = run({S: {"entry_long": {0: True}, "stop_dist": {0: 5.0}, "target_dist": {0: 10.0}}}, {S: df})

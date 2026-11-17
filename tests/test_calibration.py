@@ -4,23 +4,19 @@ On a driftless random walk, random entries have zero expected gross profit. Afte
 realistic costs they must lose on average, and only a minority of seeds may profit.
 """
 
+from datetime import timedelta
+
 import numpy as np
 import pytest
 
-from engine_helpers import bars, market
+from engine_helpers import market
+from lab.validation.synthetic import path_bars
 from lab.engine.backtest import ExecutionConfig, RiskConfig, run_backtest
 from lab.strategies.examples import RandomEntry
 
 
 def _walk(seed, n=20_000):
-    rng = np.random.default_rng(seed)
-    r = rng.normal(0, 0.002, n)
-    r -= r.mean()  # exactly driftless
-    c = 100 * np.exp(np.cumsum(r))
-    o = np.concatenate([[100], c[:-1]])
-    h = np.maximum(o, c) * (1 + rng.uniform(0, 0.001, n))
-    l = np.minimum(o, c) * (1 - rng.uniform(0, 0.001, n))
-    return bars(o, h, l, c, v=np.full(n, 1e6))
+    return path_bars(seed, n, vol=0.002, step=timedelta(minutes=1))
 
 
 @pytest.fixture(scope="module")

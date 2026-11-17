@@ -76,3 +76,30 @@ zero-cost calibration. From this point the registry is append-only: no records a
 ## D-013 — Dukascopy candle format verified; download still blocked (2026-11-08)
 Three real daily candle files decoded correctly (EURUSD ≈1.104 on 2024-01-02). Dukascopy briefly
 allowed requests again but returned HTTP 429 after three files. Forex stays pending (see D-007).
+
+## D-014 — Phase 3 validation pipeline (2026-11-17)
+`lab.validation.evaluate` implements the protocol: development screen (trades, profit, 2× costs),
+statistical gates (Deflated Sharpe vs. all trials in the hypothesis family, PBO, Hansen SPA,
+walk-forward, parameter plateau, yearly consistency), then a single validation look. Thresholds
+are in `configs/protocol.yaml`. Outcomes: REJECTED / SCREENED / CANDIDATE. The vault is not used.
+
+## D-015 — Stop-order overshoot added to the execution model (2026-11-17)
+Stops crossed inside a bar now fill beyond the stop by 20% of the bar's excursion past it
+(`stop_overshoot_frac`). This is treated as execution realism, not a fee: cost multipliers below 1
+(including zero-cost tests) do not remove it; stress multipliers above 1 increase it. Phase 2 results
+that involved intrabar stops were slightly optimistic and have been re-run.
+
+## D-016 — Flawed synthetic data generator found and replaced (2026-11-17)
+The first Phase 3 calibration showed breakout strategies "profiting" on pure random walks
+(46 of 60 false candidates). Cause: synthetic bars had large open-to-close moves but tiny
+independent wicks, so stops were crossed only by jumps and filled at the stop level — prices the
+path skipped. Diagnosis: with signals only the bias vanished; with path-consistent bars it shrank
+with finer paths (t = 3.1 at 30 steps/bar, 0.2 at 200). Fixes: path-based generator
+(`lab.validation.synthetic`), stop overshoot (D-015), regression test. The invalid calibration
+hypotheses (`H-CAL-*`) remain in the registry for the record; the valid run uses `H-CAL2-*`.
+Lesson: every synthetic dataset must be physically consistent, and the engine must be calibrated
+on null data for every exit type it supports.
+
+## D-017 — One validation look per hypothesis (2026-11-17)
+The pipeline refuses a second validation run for the same hypothesis. A modified idea must be
+registered as a new hypothesis (linked via parent_id), and its trials add to the family count.

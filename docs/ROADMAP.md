@@ -34,12 +34,16 @@ Checkboxes are updated as work completes. See ARCHITECTURE.md §D for context.
       (reports/phase2_engine_validation.md)
 - [ ] Cash interest, FX conversion, futures roll — when needed
 
-## Phase 3 — Validation toolkit
-- [ ] Walk-forward and purged/embargoed CV
-- [ ] Deflated Sharpe, PBO (CSCV), SPA/Reality Check, BH-FDR
-- [ ] Bootstrap / Monte Carlo
-- [ ] Robustness suite (param stability, 2× costs, regimes, cross-market)
-- [ ] Calibration run on random strategies
+## Phase 3 — Validation toolkit ✅
+- [x] Walk-forward (rolling/anchored, embargo) and purged/embargoed k-fold
+- [x] Deflated & Probabilistic Sharpe, PBO (CSCV), White Reality Check, Hansen SPA, BH-FDR,
+      Newey–West t-stat, minimum track record
+- [x] Stationary bootstrap (Sharpe, drawdown), trade-order Monte Carlo
+- [x] Robustness: 2× costs, parameter plateau, yearly consistency, extra delay, cross-market
+- [x] Promotion pipeline with gates (configs/protocol.yaml), registry records, strategy cards,
+      one validation look per hypothesis (docs/VALIDATION.md)
+- [x] Calibration on null and planted-edge data (reports/phase3_calibration.md)
+- [x] Found and fixed a stop-fill optimism + flawed synthetic generator (D-015, D-016)
 
 ## Phase 4 — Registry & first research
 - [ ] SQLite registry + CLI + git export of hypothesis cards

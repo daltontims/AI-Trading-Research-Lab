@@ -9,7 +9,7 @@ bias, and — importantly — what the engine does **not** model.
 uv run lab backtest sma_cross SPY --timeframe 1d --sizing pct_equity --param stop_atr=0
 uv run lab backtest donchian_breakout BTCUSDT --timeframe 1h --profile crypto_perp --funding --stress
 uv run python scripts/phase2_validation.py     # full engine validation report
-uv run pytest                                  # 84 tests incl. accounting, look-ahead, calibration
+uv run pytest                                  # tests incl. accounting, look-ahead, calibration
 ```
 
 In code, research runs go through `lab.research.run_experiment`, which records every run
@@ -48,6 +48,7 @@ Inside each bar, for every instrument that has a bar:
 | Signal on bar *t* | Fills at the open of the next bar on which the instrument trades. Never at bar *t*'s close. |
 | Missing bars | Skipped. Orders wait for the next real bar; positions are valued at the last close. |
 | Gap through a stop | Filled at the (worse) open price. |
+| Stop crossed inside a bar | Filled beyond the stop by `stop_overshoot_frac` (default 20%) of the bar's excursion past the stop. Prices move in jumps; an exact fill at the stop level is optimistic and was shown to create fake profits (DECISIONS D-015/D-016). |
 | Stop and target both inside one bar | **Stop assumed first** (pessimistic). |
 | Profit target | Resting limit: price must trade *through* the target by the half-spread; filled at the target, never better, even on a favourable gap. |
 | Trailing stop | Level based on the best price of *completed* bars only; the current bar's high cannot raise the stop that same bar. |
@@ -125,6 +126,9 @@ costs, and average ≈0 without costs (no engine bias).
 
 ## Limitations (read before trusting any result)
 
+- **Stop fills in very jumpy markets.** The 20% overshoot removes the stop-fill bias on realistic price
+  paths, but where prices move in a few large jumps per bar a small optimism can remain. Tick data is
+  the real fix for short-term strategies.
 - **Bar-level simulation.** The order of events inside a bar is unknown; the engine uses pessimistic
   rules, but intrabar paths, queue position, partial fills and latency are not modelled.
   **Scalping strategies cannot be validated on 1-minute bars**; results carry a fidelity warning and

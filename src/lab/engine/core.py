@@ -11,6 +11,8 @@ Timeline inside each bar t, for every instrument with a bar at t:
              subject to buying power, position and exposure limits
   INTRABAR 4. stop / trailing stop / profit target checked against high & low
              - gap through the stop at the open  -> filled at the open (worse)
+             - stop crossed inside the bar -> filled beyond the stop by stop_overshoot × the bar's
+               excursion past it (prices jump; an exact fill at the stop is optimistic)
              - stop and target both inside the bar -> STOP assumed first (pessimistic)
              - target needs price to trade through it by the half-spread; filled
                at the target, never better (no favourable gap fills)
@@ -74,7 +76,7 @@ def simulate(
     open_, high, low, close, volume, valid, half_spread, funding, dividend,
     entry_long, entry_short, exit_long, exit_short, stop_dist, target_dist, trail_dist, priority,
     mult, lot, min_notional, fee_frac, maker_fee_frac, sell_fee_frac, fee_unit, min_fee,
-    slip_frac, slip_range, allow_short, borrow_rate, financing_rate, max_part,
+    slip_frac, slip_range, stop_overshoot, allow_short, borrow_rate, financing_rate, max_part,
     initial_cash, sizing_mode, risk_per_trade, position_pct, fixed_notional,
     max_position_pct, max_gross_exposure, max_open_positions, max_daily_loss, max_drawdown,
     max_bars_held, delay, max_trades,
@@ -260,6 +262,7 @@ def simulate(
             exit_ref = np.nan
             exit_reason = -1
             is_limit = False
+            overshoot = 0.0
             if s == s:
                 if (side > 0 and o <= s) or (side < 0 and o >= s):
                     exit_ref = o  # gapped through the stop: filled at the (worse) open
@@ -267,6 +270,9 @@ def simulate(
                 elif (side > 0 and lo <= s) or (side < 0 and h >= s):
                     exit_ref = s  # stop wins even if the target was also touched
                     exit_reason = reason
+                    # Prices move in jumps: a stop crossed inside a bar fills beyond its level by a
+                    # fraction of the bar's excursion past the stop (pessimistic).
+                    overshoot = stop_overshoot[i] * ((s - lo) if side > 0 else (h - s))
             if exit_reason < 0 and tg == tg:
                 if (side > 0 and h >= tg * (1.0 + hs)) or (side < 0 and lo <= tg * (1.0 - hs)):
                     exit_ref = tg
@@ -276,7 +282,7 @@ def simulate(
                 if is_limit:
                     px = exit_ref
                 else:
-                    px = exit_ref * (1.0 - side * (hs + slip_frac[i] + slip_range[i] * last_range[i]))
+                    px = (exit_ref - side * overshoot) * (1.0 - side * (hs + slip_frac[i] + slip_range[i] * last_range[i]))
                 q = abs(pos[i])
                 n_trades, xfee = _close(t, i, px, exit_ref, exit_reason, is_limit, pos, entry_px, entry_ref,
                                         entry_idx, entry_fee, carry, init_risk, bars_held, mult, fee_frac,

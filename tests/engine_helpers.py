@@ -15,6 +15,7 @@ T0 = datetime(2024, 1, 1, tzinfo=timezone.utc)
 
 ZERO_COSTS = dict(fee_bps=0.0, maker_fee_bps=0.0, sell_fee_bps=0.0, fee_per_unit=0.0, min_fee=0.0,
                   half_spread_bps=0.0, spread_markup_bps=0.0, slippage_bps=0.0, slippage_range_frac=0.0,
+                  stop_overshoot_frac=0.0,
                   borrow_rate_annual=0.0, financing_rate_annual=0.0, max_participation=1.0, allow_short=True,
                   lot_size=0.0, min_notional=0.0, funding=False)
 

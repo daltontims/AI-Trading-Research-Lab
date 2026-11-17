@@ -108,4 +108,27 @@ class RandomEntry(Strategy):
         return out
 
 
-EXAMPLES = {c.name: c for c in (SmaCross, DonchianBreakout, BollingerReversion, RandomEntry)}
+class TimeSeriesMomentum(Strategy):
+    """Momentum: long after a positive k-bar return, short after a negative one; flip on reversal."""
+
+    name = "ts_momentum"
+    version = "1"
+    style = "momentum"
+    default_params = {"lookback": 24, "threshold": 0.0, "atr_n": 14, "stop_atr": 0.0, "allow_short": True}
+
+    def signals(self, df: pl.DataFrame, symbol: str) -> dict:
+        p = self.params
+        c = df["close"].to_numpy()
+        mom = ind.returns(c, p["lookback"])
+        with np.errstate(invalid="ignore"):
+            up = mom > p["threshold"]
+            down = mom < -p["threshold"]
+        out = {"entry_long": up, "exit_long": ~up}
+        if p["allow_short"]:
+            out |= {"entry_short": down, "exit_short": ~down}
+        if p["stop_atr"] > 0:
+            out["stop_dist"] = p["stop_atr"] * ind.atr(df["high"], df["low"], c, p["atr_n"])
+        return out
+
+
+EXAMPLES = {c.name: c for c in (SmaCross, DonchianBreakout, BollingerReversion, RandomEntry, TimeSeriesMomentum)}

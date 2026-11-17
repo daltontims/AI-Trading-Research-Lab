@@ -11,7 +11,7 @@
   including failures. Keep "candidates" separate from "validated".
 
 ## Where things are
-- Architecture: docs/ARCHITECTURE.md · Protocol: docs/RESEARCH_PROTOCOL.md · Engine: docs/ENGINE.md
+- Architecture: docs/ARCHITECTURE.md · Protocol: docs/RESEARCH_PROTOCOL.md · Engine: docs/ENGINE.md · Validation: docs/VALIDATION.md
 - Progress: docs/ROADMAP.md · Decisions: docs/DECISIONS.md
 - Registry schema: src/lab/registry/schema.sql
 - Market data lives in `data/` (gitignored) and must be re-downloadable via ingestors.
@@ -32,8 +32,15 @@
 - Phase 2 complete (2026-11-08): engine, costs, metrics, look-ahead detectors, registry
   integration, 84 tests. See docs/ENGINE.md (incl. limitations) and
   reports/phase2_engine_validation.md.
-- Next: Phase 3 validation toolkit (walk-forward, purged CV, Deflated Sharpe, PBO, SPA,
-  bootstrap, robustness suite). Do not start autonomous discovery before Phase 3.
+- Phase 3 complete (2026-11-17): validation toolkit + promotion pipeline (docs/VALIDATION.md,
+  reports/phase3_calibration.md). Evaluate ideas with `lab.validation.evaluate.evaluate` or
+  `lab evaluate`; it records everything and writes reports/strategies/<hypothesis>.md.
+- Next: Phase 4 — first research batch (~20 hand-designed hypotheses across crypto and ETFs).
+
+## Validation conventions (do not break)
+- Validation split: one look per hypothesis (enforced). Changed rules = new hypothesis.
+- Deflated Sharpe counts ALL trials in the hypothesis family: keep families meaningful.
+- Synthetic test data must come from `lab.validation.synthetic.path_bars` (path-consistent bars).
 
 ## Engine conventions (do not break)
 - Research runs go through `lab.research.run_experiment` (records everything, checks look-ahead).

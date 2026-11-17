@@ -143,5 +143,44 @@ def backtest(strategy: str, symbols: list[str], timeframe: str = "1h", split: st
     typer.echo(f"recorded as {eid}")
 
 
+@app.command()
+def evaluate(strategy: str, symbols: list[str], timeframe: str = "1h",
+             space: str = typer.Option("{}", help='parameter grid as JSON, e.g. \'{"n": [20, 55]}\''),
+             fixed: str = typer.Option("{}", help="fixed parameters as JSON"),
+             title: str = typer.Option(..., help="short hypothesis title"),
+             question: str = typer.Option(..., help="the research question, in plain words"),
+             rationale: str = "", family: str | None = None, profile: str | None = None,
+             funding: bool = False, sizing: str = "risk", risk_per_trade: float = 0.01,
+             max_bars_held: int = 0, open_validation: bool = True):
+    """Pre-register a hypothesis and run it through the full promotion pipeline."""
+    import json
+    import math
+
+    from lab import instruments
+    from lab.engine.backtest import ExecutionConfig, RiskConfig
+    from lab.registry.db import Registry
+    from lab.strategies.examples import EXAMPLES
+    from lab.validation.evaluate import evaluate as run_eval
+
+    if strategy not in EXAMPLES:
+        raise typer.BadParameter(f"choose from {list(EXAMPLES)}")
+    sp, fx = json.loads(space), json.loads(fixed)
+    reg = Registry()
+    hid = reg.register_hypothesis(
+        family=family or f"{strategy}:{'-'.join(symbols)}:{timeframe}", title=title, question=question,
+        rationale=rationale, source="manual", asset_classes=sorted({instruments.get(s).asset_class for s in symbols}),
+        instruments=symbols, timeframe=timeframe, style=EXAMPLES[strategy].style,
+        spec={"strategy": strategy, "fixed": fx, "profile": profile, "funding": funding},
+        param_space=sp, trial_budget=max(1, math.prod(len(v) for v in sp.values())))
+    ev = run_eval(EXAMPLES[strategy], sp, symbols, timeframe, hypothesis_id=hid, registry=reg, fixed_params=fx,
+                  execution=ExecutionConfig(cost_profile=profile), funding=funding,
+                  risk=RiskConfig(sizing=sizing, risk_per_trade=risk_per_trade, max_bars_held=max_bars_held),
+                  open_validation=open_validation)
+    typer.echo(f"{hid}: {ev.verdict} (confidence {ev.confidence}); best {ev.best_params}")
+    for r in ev.reasons:
+        typer.echo(f"  - {r}")
+    typer.echo(f"report: {ev.report_path}")
+
+
 if __name__ == "__main__":
     app()

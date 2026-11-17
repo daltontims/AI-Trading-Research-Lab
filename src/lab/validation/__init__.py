@@ -1,1 +1,1 @@
-"""Walk-forward, purged CV, Deflated Sharpe, PBO, SPA, bootstrap, robustness."""
+"""Statistical validation: tests (stats), splitting (cv), and the promotion pipeline (evaluate)."""

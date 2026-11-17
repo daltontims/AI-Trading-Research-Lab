@@ -161,7 +161,7 @@ def run_backtest(strategy: Strategy, data: MarketData, risk: RiskConfig | None =
         sig.stop_dist, sig.target_dist, sig.trail_dist, sig.priority,
         arr("multiplier"), arr("lot_size"), arr("min_notional"), arr("fee_bps", 1e-4),
         arr("maker_fee_bps", 1e-4), arr("sell_fee_bps", 1e-4), arr("fee_per_unit"), arr("min_fee"),
-        arr("slippage_bps", 1e-4), arr("slippage_range_frac"), arr("allow_short", dtype=np.bool_),
+        arr("slippage_bps", 1e-4), arr("slippage_range_frac"), arr("stop_overshoot_frac"), arr("allow_short", dtype=np.bool_),
         arr("borrow_rate_annual"), arr("financing_rate_annual"), arr("max_participation"),
         float(risk.initial_cash), sizing_mode, float(risk.risk_per_trade), float(risk.position_pct),
         float(risk.fixed_notional), float(risk.max_position_pct), float(risk.max_gross_exposure),
