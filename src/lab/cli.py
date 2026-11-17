@@ -224,7 +224,11 @@ def paper_run(submit: bool = typer.Option(False, help="actually submit orders (d
     for p in out["plans"]:
         act = f"{p['order_side']} {p['order_qty']}" if p["order_side"] else "no order"
         typer.echo(f"{p['hypothesis']} {p['symbol']} (signal date {p['signal_date']}): {p['reason']} -> {act}")
-    typer.echo(f"{'SUBMITTED' if submit else 'PLAN ONLY (use --submit)'}: {len(out['orders'])} order(s)")
+    if submit:
+        typer.echo(f"SUBMITTED: {len(out['orders'])} order(s)")
+    else:
+        planned = sum(1 for p in out["plans"] if p["order_side"])
+        typer.echo(f"PLAN ONLY (use --submit): {planned} order(s) planned, none sent")
     if not sim:
         runner.snapshot(b)
 

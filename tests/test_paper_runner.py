@@ -64,6 +64,7 @@ def test_plans_buy_when_strategy_wants_long_and_is_idempotent(validated, tmp_pat
         assert p["order_side"] == "buy" and p["order_qty"] == int(5000 // df["close"][-1])
         runner.run(b, submit=True, cfg=CFG, bars={"SPY": df}, journal=tmp_path / "j.jsonl")
         assert len(b.submitted) == 1  # same day re-run: no duplicate order
+        assert Registry().hypothesis("H4-17")["status"] == "PAPER"  # protocol: VALIDATED -> PAPER
         b.fill_open({"SPY": float(df["close"][-1])})
         again = runner.plan_orders(b, CFG, {"SPY": df})[0]
         assert again.order_side is None  # already holding: hold, do not resize
@@ -122,3 +123,8 @@ def test_deployment_config_is_paper_and_validated_only():
     cfg = runner.deployment()
     assert cfg["mode"] == "paper"
     assert [d["hypothesis"] for d in cfg["strategies"]] == ["H4-17"]
+
+
+def test_plan_only_run_does_not_change_status(validated, tmp_path):
+    runner.run(SimBroker(cash=5000.0), submit=False, cfg=CFG, bars={"SPY": _spy()}, journal=tmp_path / "j.jsonl")
+    assert Registry().hypothesis("H4-17")["status"] == "VALIDATED"

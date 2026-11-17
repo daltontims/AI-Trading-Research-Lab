@@ -130,3 +130,12 @@ Rules and parameters are frozen from the development search (no changes):
 Gates (configs/protocol.yaml `vault`): net profit > 0, profit factor > 1, PSR ≥ 0.80, trades ≥ 25% of
 the development minimum (≥ 7.5 for swing). 2× cost stress reported, not gated. Outcome is final.
 A development re-run of H4-17 with cash interest is recorded as a diagnostic (no new validation look).
+
+## D-022 — Paper trading started; daily run scheduled (2026-11-17)
+First paper order submitted 2026-11-17 01:29 New York time: H4-17 buy 6 SPY market-on-open (signal
+date 2026-11-16: RSI(2) 9.95 < 10, close 739.95 above its 200-day average 732.16). H4-17 moved
+VALIDATED → PAPER automatically on its first submitted order. The daily cycle runs as a weekday
+scheduled task at 08:40 New York time in the `ai-trading-research-lab` cloud environment: it checks
+out the paper-trading branch, runs `lab paper run --submit`, and commits the journal and registry
+back to that branch. The 3-month paper evaluation (PAPER → PAPER_PASSED) is due after 2027-02-17.
+

@@ -37,6 +37,20 @@ Each trading day before the US open (≈08:40 New York time; Alpaca accepts open
    deterministic client order ids, so re-running the same day cannot duplicate orders.
 5. Appends everything to `research/paper/journal.jsonl` (committed to git).
 
+## Schedule
+
+A weekday scheduled task (Claude app → scheduled tasks, "Paper trading daily run") starts a fresh cloud
+session at **08:40 New York time** in the `ai-trading-research-lab` environment. It checks out the
+paper-trading branch, runs `uv run lab paper run --submit`, commits `research/paper/journal.jsonl` and
+`research/registry/` back to that branch, and reports fills, orders and the account. Market holidays
+are harmless: the order is keyed to the last completed session, so it is queued for the next open and
+the next day's run finds it already submitted.
+
+The first submitted order also moves the hypothesis from VALIDATED to PAPER in the registry.
+
+To stop trading: set `kill_switch: true` in `configs/deployment.yaml` and commit it (the next run
+cancels open orders and places none), or disable the scheduled task.
+
 ## Safety rules
 
 | Rule | Where |
@@ -50,9 +64,9 @@ Each trading day before the US open (≈08:40 New York time; Alpaca accepts open
 
 ## Deployed strategies
 
-| Hypothesis | Strategy | Market | Allocation |
-|---|---|---|---|
-| H4-17 | 2-day RSI pullback (entry RSI < 10 above 200-day average, exit RSI > 70) | SPY | 100% of $5,000 |
+| Hypothesis | Strategy | Market | Allocation | Paper since |
+|---|---|---|---|---|
+| H4-17 | 2-day RSI pullback (entry RSI < 10 above 200-day average, exit RSI > 70) | SPY | 100% of $5,000 | 2026-11-17 |
 
 ## Evaluating paper results (protocol stage PAPER → PAPER_PASSED)
 

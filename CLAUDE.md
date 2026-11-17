@@ -39,10 +39,11 @@
   2 candidates H4-17 (SPY RSI2) and H4-02 (BTC 50d trend), 19 rejected. reports/phase4_summary.md.
 - Vault tests done (D-021): H4-17 VALIDATED (first validated strategy), H4-02 REJECTED. Vault is now
   used for both; never re-run them.
-- Paper trading (owner approved 2026-11-17): code done (docs/PAPER_TRADING.md, lab/paper/).
-  Alpaca paper secret key saved as network secret; owner adds ALPACA_KEY_ID env var in environment
-  settings. Then: `uv run lab paper status`, first `lab paper run --submit`, then a weekday
-  scheduled task before the US open. NEVER add live trading without explicit permission.
+- Paper trading LIVE ON PAPER since 2026-11-17 (D-022): first order H4-17 buy 6 SPY at the open;
+  H4-17 status PAPER. Weekday scheduled task "Paper trading daily run" (08:40 New York) runs
+  `lab paper run --submit` from branch claude/stoic-newton-2p27ri and commits the journal there.
+  If that branch is merged/renamed, update the scheduled task's prompt. 3-month evaluation after
+  2027-02-17. NEVER add live trading without explicit permission.
 - Next after paper setup: Phase 5 discovery engine + Phase 6 dashboard.
 
 ## Validation conventions (do not break)

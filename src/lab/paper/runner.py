@@ -175,10 +175,26 @@ def run(broker, submit: bool = False, cfg: dict | None = None, bars: dict | None
         if p.order_side and submit:
             o = broker.submit(p.symbol, p.order_qty, p.order_side, p.client_order_id, "opg")
             orders.append(asdict(o))
+    if submit and orders:
+        _mark_paper({p.hypothesis for p in plans if p.order_side})
     entry = {"ts": now, "event": "run", "submitted": submit, "account": asdict(acct),
              "plans": [asdict(p) for p in plans], "orders": orders}
     _journal(journal, entry)
     return entry
+
+
+def _mark_paper(hypotheses: set[str]) -> None:
+    """Protocol: a VALIDATED hypothesis becomes PAPER once its first paper order is submitted."""
+    from lab.registry.db import Registry
+    reg = Registry()
+    changed = False
+    for h in sorted(hypotheses):
+        if reg.hypothesis(h)["status"] == "VALIDATED":
+            reg.set_status(h, "PAPER", "first paper-trading order submitted (Alpaca paper account)")
+            changed = True
+    if changed:
+        reg.export()
+    reg.close()
 
 
 def reconcile(broker, journal: Path = JOURNAL) -> list[dict]:

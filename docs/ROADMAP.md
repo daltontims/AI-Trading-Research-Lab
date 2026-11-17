@@ -68,4 +68,8 @@ Checkboxes are updated as work completes. See ARCHITECTURE.md §D for context.
 - [ ] NautilusTrader integration; tick-level scalping tests with latency
 
 ## Phase 8 — Paper trading (requires permission)
+- [x] Owner permission (2026-11-17); Alpaca paper account connected; `lab paper` runner and safety rules
+- [x] First order submitted 2026-11-17 (H4-17 SPY); H4-17 status → PAPER
+- [x] Weekday scheduled run at 08:40 New York time (D-022)
+- [ ] 3-month evaluation vs. backtest expectation (after 2027-02-17) → PAPER_PASSED or REJECTED
 ## Phase 9 — Expansion (options, paid data where justified, portfolios)
