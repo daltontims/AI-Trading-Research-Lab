@@ -1,0 +1,74 @@
+{
+  "id": "H4-09",
+  "title": "BTC daily volatility breakout (intraday)",
+  "verdict": "REJECTED",
+  "confidence": "none",
+  "best_params": {
+    "k": 0.7
+  },
+  "reasons": [
+    "net_profit_after_costs: -0.497 (needs > 0)",
+    "profit_factor: 0.918 (needs \u2265 1.000)",
+    "profitable_at_2x_costs: -0.947 (needs \u2265 0)",
+    "deflated_sharpe: 0.077 (needs \u2265 0.950)",
+    "spa: 1.000 (needs \u2264 0.050)",
+    "walk_forward_oos_sharpe: -0.664 (needs \u2265 0.000)",
+    "walk_forward_positive_windows: 0.000 (needs \u2265 0.500)",
+    "parameter_plateau: n/a (needs \u2265 0.500)",
+    "years_positive: 0.200 (needs \u2265 0.500)",
+    "profitable_without_best_year: -0.693 (needs \u2265 0)"
+  ],
+  "grid_size": 3,
+  "family_trials": 4,
+  "experiments": [
+    "E-20261117-0733"
+  ],
+  "spa_p": 1.0,
+  "dsr": 0.07725979145185347,
+  "dev": {
+    "trades": 743,
+    "win_rate": 0.44952893674293404,
+    "profit_factor": 0.9181173126706247,
+    "expectancy": -3.345429222045986,
+    "expectancy_r": null,
+    "total_return": -0.49713078239603314,
+    "cagr": -0.12846900779351622,
+    "sharpe": -0.1766452947479733,
+    "sortino": -0.274819876565024,
+    "calmar": -0.19332082662318448,
+    "max_drawdown": -0.664537856771761,
+    "exposure": 0.19024334513880956,
+    "avg_holding_hours": 11.209959623149395,
+    "cost_share_of_gross": 1.3461996787957127,
+    "benchmark_total_return": 10.412186873751807,
+    "benchmark_sharpe": 1.0640726746249785,
+    "benchmark_max_drawdown": -0.7719848663243956,
+    "years": 4.999315537303217
+  },
+  "val": null,
+  "walk_forward": {
+    "train_days": 547,
+    "test_days": 182,
+    "segments": 7,
+    "fraction_positive": 0.0,
+    "oos_sharpe": -0.6638124398241403,
+    "oos_return": -0.7194192336760085,
+    "efficiency": -659.1347180795187
+  },
+  "pbo": null,
+  "extra": {},
+  "warnings": [
+    "No bid/ask data: spreads are assumed constants from configs, not observed."
+  ],
+  "report": "reports/strategies/H4-09.md",
+  "seconds": 0.8,
+  "trade_monte_carlo": {
+    "final_p05": 661.3505791804888,
+    "final_p50": 2504.1582593001813,
+    "final_p95": 8890.934315625667,
+    "prob_loss": 0.7975,
+    "max_dd_p50": -0.7123924867896791,
+    "max_dd_p95": -0.9003946621859679,
+    "prob_ruin_50pct": 0.674
+  }
+}

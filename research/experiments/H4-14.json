@@ -1,0 +1,65 @@
+{
+  "id": "H4-14",
+  "title": "SPY trend filter (long/flat)",
+  "verdict": "REJECTED",
+  "confidence": "none",
+  "best_params": {
+    "n": 250
+  },
+  "reasons": [
+    "pbo: 0.236 (needs \u2264 0.200)"
+  ],
+  "grid_size": 5,
+  "family_trials": 6,
+  "experiments": [
+    "E-20261117-0738"
+  ],
+  "spa_p": 0.0,
+  "dsr": 0.9932726451739081,
+  "dev": {
+    "trades": 73,
+    "win_rate": 0.273972602739726,
+    "profit_factor": 3.66333878825013,
+    "expectancy": 346.91670828675024,
+    "expectancy_r": null,
+    "total_return": 5.064983940986554,
+    "cagr": 0.07502178529563652,
+    "sharpe": 0.6837171904199633,
+    "sortino": 0.9609865121927855,
+    "calmar": 0.3412881846353376,
+    "max_drawdown": -0.21981946247508222,
+    "exposure": 0.7149912378524773,
+    "avg_holding_hours": 2131.068493150685,
+    "cost_share_of_gross": 0.041886846931806616,
+    "benchmark_total_return": 6.3999302170485795,
+    "benchmark_sharpe": 0.5914574962002354,
+    "benchmark_max_drawdown": -0.4702499189765019,
+    "years": 24.917180013689254
+  },
+  "val": null,
+  "walk_forward": {
+    "train_days": 377,
+    "test_days": 125,
+    "segments": 47,
+    "fraction_positive": 0.574468085106383,
+    "oos_sharpe": 0.6037260078506675,
+    "oos_return": 3.1525956840905565,
+    "efficiency": 0.6918269247203346
+  },
+  "pbo": 0.23566433566433567,
+  "extra": {},
+  "warnings": [
+    "Daily bars: entries/exits assume market-on-open fills; intraday path of stops is approximated from daily high/low (stop assumed to win when stop and target share a bar)."
+  ],
+  "report": "reports/strategies/H4-14.md",
+  "seconds": 4.8,
+  "trade_monte_carlo": {
+    "final_p05": 6895.636641453628,
+    "final_p50": 27949.897002003032,
+    "final_p95": 172784.80709048253,
+    "prob_loss": 0.018,
+    "max_dd_p50": -0.1744013453801439,
+    "max_dd_p95": -0.30482521622620323,
+    "prob_ruin_50pct": 0.0005
+  }
+}

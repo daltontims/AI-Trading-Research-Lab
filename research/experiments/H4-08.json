@@ -1,0 +1,71 @@
+{
+  "id": "H4-08",
+  "title": "BTC weekend drift (long)",
+  "verdict": "REJECTED",
+  "confidence": "none",
+  "best_params": {
+    "side": "long"
+  },
+  "reasons": [
+    "net_profit_after_costs: -0.417 (needs > 0)",
+    "profit_factor: 0.844 (needs \u2265 1.000)",
+    "profitable_at_2x_costs: -0.749 (needs \u2265 0)",
+    "deflated_sharpe: 0.124 (needs \u2265 0.950)",
+    "spa: 1.000 (needs \u2264 0.050)",
+    "years_positive: 0.400 (needs \u2265 0.500)",
+    "profitable_without_best_year: -0.487 (needs \u2265 0)"
+  ],
+  "grid_size": 1,
+  "family_trials": 2,
+  "experiments": [
+    "E-20261117-0732"
+  ],
+  "spa_p": 1.0,
+  "dsr": 0.12395036806634008,
+  "dev": {
+    "trades": 261,
+    "win_rate": 0.4521072796934866,
+    "profit_factor": 0.8442285814894097,
+    "expectancy": -7.997197654041941,
+    "expectancy_r": null,
+    "total_return": -0.41745371754099136,
+    "cagr": -0.10244791266593667,
+    "sharpe": -0.28557558846367526,
+    "sortino": -0.40499128821001223,
+    "calmar": -0.1621802570554643,
+    "max_drawdown": -0.6316916406841083,
+    "exposure": 0.28600479835484977,
+    "avg_holding_hours": 47.99616858237548,
+    "cost_share_of_gross": 2.936758223762537,
+    "benchmark_total_return": 10.400770120891103,
+    "benchmark_sharpe": 1.0637793562024151,
+    "benchmark_max_drawdown": -0.7719848663243954,
+    "years": 4.999315537303217
+  },
+  "val": null,
+  "walk_forward": {
+    "train_days": 547,
+    "test_days": 182,
+    "segments": 7,
+    "fraction_positive": 0.5714285714285714,
+    "oos_sharpe": 0.05434941071612466,
+    "oos_return": -0.048026940248094396,
+    "efficiency": NaN
+  },
+  "pbo": null,
+  "extra": {},
+  "warnings": [
+    "No bid/ask data: spreads are assumed constants from configs, not observed."
+  ],
+  "report": "reports/strategies/H4-08.md",
+  "seconds": 0.5,
+  "trade_monte_carlo": {
+    "final_p05": 1154.6621926597898,
+    "final_p50": 2990.0024774385747,
+    "final_p95": 7501.538564524644,
+    "prob_loss": 0.8235,
+    "max_dd_p50": -0.5826649183284094,
+    "max_dd_p95": -0.8143999240977996,
+    "prob_ruin_50pct": 0.52
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "id": "H4-21",
+  "title": "SPY low-volatility regime",
+  "verdict": "REJECTED",
+  "confidence": "none",
+  "best_params": {
+    "median_n": 252,
+    "vol_n": 10
+  },
+  "reasons": [
+    "deflated_sharpe: 0.756 (needs \u2265 0.950)",
+    "parameter_plateau: 0.463 (needs \u2265 0.500)"
+  ],
+  "grid_size": 3,
+  "family_trials": 4,
+  "experiments": [
+    "E-20261117-0746"
+  ],
+  "spa_p": 0.044,
+  "dsr": 0.7560577257792859,
+  "dev": {
+    "trades": 238,
+    "win_rate": 0.4579831932773109,
+    "profit_factor": 1.3592030591294424,
+    "expectancy": 21.468031001924874,
+    "expectancy_r": null,
+    "total_return": 1.0218782756916225,
+    "cagr": 0.028657628393553347,
+    "sharpe": 0.3502693795260076,
+    "sortino": 0.4908258428513698,
+    "calmar": 0.07625110231047216,
+    "max_drawdown": -0.37583231619220236,
+    "exposure": 0.4859009080771069,
+    "avg_holding_hours": 447.42857142857144,
+    "cost_share_of_gross": 0.30572992747455013,
+    "benchmark_total_return": 6.3999302170485795,
+    "benchmark_sharpe": 0.5914574962002354,
+    "benchmark_max_drawdown": -0.4702499189765019,
+    "years": 24.917180013689254
+  },
+  "val": null,
+  "walk_forward": {
+    "train_days": 377,
+    "test_days": 125,
+    "segments": 47,
+    "fraction_positive": 0.7021276595744681,
+    "oos_sharpe": 0.413162227979925,
+    "oos_return": 1.3132080240676083,
+    "efficiency": 0.8758017124117466
+  },
+  "pbo": null,
+  "extra": {},
+  "warnings": [
+    "Daily bars: entries/exits assume market-on-open fills; intraday path of stops is approximated from daily high/low (stop assumed to win when stop and target share a bar)."
+  ],
+  "report": "reports/strategies/H4-21.md",
+  "seconds": 4.0,
+  "trade_monte_carlo": {
+    "final_p05": 4680.404507587702,
+    "final_p50": 10019.420527330021,
+    "final_p95": 23125.153004059437,
+    "prob_loss": 0.066,
+    "max_dd_p50": -0.24124560365341785,
+    "max_dd_p95": -0.406765138923693,
+    "prob_ruin_50pct": 0.002
+  }
+}

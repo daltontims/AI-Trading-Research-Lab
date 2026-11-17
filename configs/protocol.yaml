@@ -1,0 +1,26 @@
+# Promotion gates (docs/RESEARCH_PROTOCOL.md). Changing a threshold requires a DECISIONS.md entry.
+min_trades:
+  intraday: 100        # holding < 1 day on average
+  swing: 30
+screen:                # development data, after costs -> SCREENED
+  min_profit_factor: 1.0
+  cost_stress_multiplier: 2.0   # must still be profitable at this cost multiple
+statistical:           # development data -> required for CANDIDATE
+  dsr_min: 0.95                 # Deflated Sharpe probability, deflated by all trials in the family
+  pbo_max: 0.20                 # probability of backtest overfitting (only when >= 4 configurations)
+  spa_p_max: 0.05               # Hansen SPA across the configurations tried
+  wf_min_fraction_positive: 0.5 # walk-forward: share of out-of-sample windows that made money
+  wf_min_oos_sharpe: 0.0        # stitched out-of-sample Sharpe (annualised) must exceed this
+  neighbour_sharpe_ratio_min: 0.5   # median neighbour Sharpe / best Sharpe (plateau, not spike)
+  neighbour_positive_min: 0.66
+  year_positive_min: 0.5        # share of calendar years with positive return
+  ex_best_year_positive: true   # still profitable with the best year removed
+validation:            # one look at the validation split -> CANDIDATE
+  min_profit_factor: 1.0
+  min_psr: 0.80                 # probability the validation Sharpe is above zero
+  min_trades_fraction: 0.25     # of the development minimum
+vault:                 # one final look per hypothesis -> VALIDATED or REJECTED (final)
+  min_profit_factor: 1.0
+  min_psr: 0.80                 # probability the vault Sharpe is above zero
+  min_trades_fraction: 0.25     # of the development minimum
+  stress_multiplier: 2.0        # reported, not gated

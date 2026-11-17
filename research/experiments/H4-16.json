@@ -1,0 +1,67 @@
+{
+  "id": "H4-16",
+  "title": "Dual momentum SPY/TLT/GLD",
+  "verdict": "REJECTED",
+  "confidence": "none",
+  "best_params": {
+    "lookback": 126
+  },
+  "reasons": [
+    "deflated_sharpe: 0.926 (needs \u2265 0.950)",
+    "walk_forward_positive_windows: 0.383 (needs \u2265 0.500)",
+    "years_positive: 0.360 (needs \u2265 0.500)"
+  ],
+  "grid_size": 3,
+  "family_trials": 4,
+  "experiments": [
+    "E-20261117-0740"
+  ],
+  "spa_p": 0.008,
+  "dsr": 0.9264857089404949,
+  "dev": {
+    "trades": 43,
+    "win_rate": 0.5813953488372093,
+    "profit_factor": 3.114133731750461,
+    "expectancy": 260.230270135912,
+    "expectancy_r": null,
+    "total_return": 2.237980323168842,
+    "cagr": 0.04828364568200327,
+    "sharpe": 0.5023588212642675,
+    "sortino": 0.7188722223004024,
+    "calmar": 0.20095623985835764,
+    "max_drawdown": -0.240269452274961,
+    "exposure": 0.427274175561574,
+    "avg_holding_hours": 2171.1627906976746,
+    "cost_share_of_gross": 0.0325809822669869,
+    "benchmark_total_return": 3.149361396304492,
+    "benchmark_sharpe": 0.6817657142077385,
+    "benchmark_max_drawdown": -0.2803025827657287,
+    "years": 24.917180013689254
+  },
+  "val": null,
+  "walk_forward": {
+    "train_days": 377,
+    "test_days": 125,
+    "segments": 47,
+    "fraction_positive": 0.3829787234042553,
+    "oos_sharpe": 0.3665445842241548,
+    "oos_return": 1.3438620424852012,
+    "efficiency": NaN
+  },
+  "pbo": null,
+  "extra": {},
+  "warnings": [
+    "Daily bars: entries/exits assume market-on-open fills; intraday path of stops is approximated from daily high/low (stop assumed to win when stop and target share a bar)."
+  ],
+  "report": "reports/strategies/H4-16.md",
+  "seconds": 3.9,
+  "trade_monte_carlo": {
+    "final_p05": 7670.606425477504,
+    "final_p50": 15833.041374337223,
+    "final_p95": 34863.18755982777,
+    "prob_loss": 0.002,
+    "max_dd_p50": -0.140139972172256,
+    "max_dd_p95": -0.2620637946758878,
+    "prob_ruin_50pct": 0.0
+  }
+}

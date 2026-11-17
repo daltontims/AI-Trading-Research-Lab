@@ -1,0 +1,71 @@
+{
+  "id": "H4-06",
+  "title": "BTC funding-rate contrarian carry",
+  "verdict": "REJECTED",
+  "confidence": "none",
+  "best_params": {
+    "exit_threshold": 0.0001,
+    "threshold": 0.001
+  },
+  "reasons": [
+    "min_trades: 6 (needs \u2265 30)",
+    "deflated_sharpe: 0.520 (needs \u2265 0.950)",
+    "spa: 0.296 (needs \u2264 0.050)",
+    "walk_forward_positive_windows: 0.286 (needs \u2265 0.500)",
+    "parameter_plateau: -0.398 (needs \u2265 0.500)"
+  ],
+  "grid_size": 3,
+  "family_trials": 4,
+  "experiments": [
+    "E-20261117-0730"
+  ],
+  "spa_p": 0.296,
+  "dsr": 0.5195613022144179,
+  "dev": {
+    "trades": 6,
+    "win_rate": 0.8333333333333334,
+    "profit_factor": 148.56589658234233,
+    "expectancy": 666.2650473872922,
+    "expectancy_r": null,
+    "total_return": 0.7995180568647515,
+    "cagr": 0.12470397102790809,
+    "sharpe": 0.4920657742126169,
+    "sortino": 0.7773853164251099,
+    "calmar": 0.1659710275166328,
+    "max_drawdown": -0.7513598782499004,
+    "exposure": 0.13711870215925967,
+    "avg_holding_hours": 1002.6666666666666,
+    "cost_share_of_gross": 0.2285639227759791,
+    "benchmark_total_return": 10.412186873751807,
+    "benchmark_sharpe": 1.0640726746249785,
+    "benchmark_max_drawdown": -0.7719848663243956,
+    "years": 4.999315537303217
+  },
+  "val": null,
+  "walk_forward": {
+    "train_days": 547,
+    "test_days": 182,
+    "segments": 7,
+    "fraction_positive": 0.2857142857142857,
+    "oos_sharpe": 0.26513185521152605,
+    "oos_return": -0.2138454094022758,
+    "efficiency": 0.138474668492423
+  },
+  "pbo": null,
+  "extra": {},
+  "warnings": [
+    "No bid/ask data: spreads are assumed constants from configs, not observed.",
+    "Only 6 trades: statistically meaningless."
+  ],
+  "report": "reports/strategies/H4-06.md",
+  "seconds": 0.7,
+  "trade_monte_carlo": {
+    "final_p05": 6018.203889030697,
+    "final_p50": 8930.698253764578,
+    "final_p95": 14872.70525098957,
+    "prob_loss": 0.0005,
+    "max_dd_p50": -0.0035606571787867303,
+    "max_dd_p95": -0.007108636078028585,
+    "prob_ruin_50pct": 0.0
+  }
+}

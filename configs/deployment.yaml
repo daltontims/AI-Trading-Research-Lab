@@ -1,0 +1,14 @@
+# Strategies deployed to PAPER trading. Only VALIDATED hypotheses may be listed.
+# Changing this file changes what the paper account trades: commit every change.
+mode: paper                     # the only supported mode
+kill_switch: false              # true = cancel open orders and place no new ones
+capital: 5000                   # size orders as if the account held at most this much (Alpaca paper starts at $100k)
+max_order_notional_pct: 1.05    # refuse any order larger than this × allocation × equity
+strategies:
+  - hypothesis: H4-17
+    strategy: rsi2_reversion
+    params: {entry_rsi: 10.0, exit_rsi: 70.0, trend_n: 200}
+    symbols: [SPY]
+    timeframe: 1d
+    allocation: 1.0             # fraction of account equity per position (same as the backtest)
+    history_days: 600           # bars of history fetched to rebuild indicators

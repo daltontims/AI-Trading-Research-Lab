@@ -1,0 +1,74 @@
+{
+  "id": "H4-01",
+  "title": "BTC hourly time-series momentum",
+  "verdict": "REJECTED",
+  "confidence": "none",
+  "best_params": {
+    "lookback": 96
+  },
+  "reasons": [
+    "net_profit_after_costs: -0.958 (needs > 0)",
+    "profit_factor: 0.835 (needs \u2265 1.000)",
+    "profitable_at_2x_costs: -0.999 (needs \u2265 0)",
+    "deflated_sharpe: 0.000 (needs \u2265 0.950)",
+    "spa: 1.000 (needs \u2264 0.050)",
+    "walk_forward_oos_sharpe: -0.750 (needs \u2265 0.000)",
+    "walk_forward_positive_windows: 0.286 (needs \u2265 0.500)",
+    "parameter_plateau: n/a (needs \u2265 0.500)",
+    "years_positive: 0.200 (needs \u2265 0.500)",
+    "profitable_without_best_year: -0.959 (needs \u2265 0)"
+  ],
+  "grid_size": 5,
+  "family_trials": 6,
+  "experiments": [
+    "E-20261117-0724"
+  ],
+  "spa_p": 1.0,
+  "dsr": 2.371044000246575e-05,
+  "dev": {
+    "trades": 1984,
+    "win_rate": 0.21018145161290322,
+    "profit_factor": 0.8350010888659365,
+    "expectancy": -2.413236282105776,
+    "expectancy_r": null,
+    "total_return": -0.9575721567395742,
+    "cagr": -0.46851304056024423,
+    "sharpe": -0.6261076928156024,
+    "sortino": -0.9225705482512313,
+    "calmar": -0.4869851858948149,
+    "max_drawdown": -0.9620683629202624,
+    "exposure": 0.9977607677367759,
+    "avg_holding_hours": 22.039314516129032,
+    "cost_share_of_gross": 2.0131483059268076,
+    "benchmark_total_return": 10.412186873751807,
+    "benchmark_sharpe": 1.0640726746249785,
+    "benchmark_max_drawdown": -0.7719848663243956,
+    "years": 4.999315537303217
+  },
+  "val": null,
+  "walk_forward": {
+    "train_days": 547,
+    "test_days": 182,
+    "segments": 7,
+    "fraction_positive": 0.2857142857142857,
+    "oos_sharpe": -0.7504626208943207,
+    "oos_return": -0.9014669558153072,
+    "efficiency": NaN
+  },
+  "pbo": 0.018725718725718727,
+  "extra": {},
+  "warnings": [
+    "No bid/ask data: spreads are assumed constants from configs, not observed."
+  ],
+  "report": "reports/strategies/H4-01.md",
+  "seconds": 1.3,
+  "trade_monte_carlo": {
+    "final_p05": 20.120930078723116,
+    "final_p50": 200.38121839476486,
+    "final_p95": 2245.6271007720125,
+    "prob_loss": 0.9835,
+    "max_dd_p50": -0.9777087147577673,
+    "max_dd_p95": -0.9969826452333548,
+    "prob_ruin_50pct": 0.9885
+  }
+}

@@ -1,0 +1,131 @@
+{
+  "id": "H4-02",
+  "title": "BTC daily trend filter (long/flat)",
+  "verdict": "CANDIDATE",
+  "confidence": "low",
+  "best_params": {
+    "n": 50
+  },
+  "reasons": [],
+  "grid_size": 4,
+  "family_trials": 5,
+  "experiments": [
+    "E-20261117-0725",
+    "E-20261117-0726"
+  ],
+  "spa_p": 0.004,
+  "dsr": 0.9765323458867445,
+  "dev": {
+    "trades": 40,
+    "win_rate": 0.275,
+    "profit_factor": 2.1301511668466397,
+    "expectancy": 1927.760275723443,
+    "expectancy_r": null,
+    "total_return": 15.422082205787536,
+    "cagr": 0.7503259255059658,
+    "sharpe": 1.407392737701977,
+    "sortino": 2.244753422141599,
+    "calmar": 1.2117278837810206,
+    "max_drawdown": -0.61921982282415,
+    "exposure": 0.5366922234392114,
+    "avg_holding_hours": 588.0,
+    "cost_share_of_gross": 0.16900867569145378,
+    "benchmark_total_return": 10.110041685593513,
+    "benchmark_sharpe": 1.0564756755895248,
+    "benchmark_max_drawdown": -0.7662925431645935,
+    "years": 4.999315537303217
+  },
+  "val": {
+    "trades": 14,
+    "win_rate": 0.2857142857142857,
+    "profit_factor": 2.5063619760059845,
+    "expectancy": 217.85816121404832,
+    "expectancy_r": null,
+    "total_return": 0.6100028513993352,
+    "cagr": 0.3743742028201702,
+    "sharpe": 1.0485924624553429,
+    "sortino": 1.7072803028550645,
+    "calmar": 1.296364635927274,
+    "max_drawdown": -0.28878773181928463,
+    "exposure": 0.5612431444241316,
+    "avg_holding_hours": 526.2857142857143,
+    "cost_share_of_gross": 0.17993430998586304,
+    "benchmark_total_return": 1.4196761793917374,
+    "benchmark_sharpe": 1.4123900659603288,
+    "benchmark_max_drawdown": -0.2809527676693755,
+    "years": 1.4976043805612593
+  },
+  "walk_forward": {
+    "train_days": 547,
+    "test_days": 182,
+    "segments": 7,
+    "fraction_positive": 0.7142857142857143,
+    "oos_sharpe": 1.1680889085766502,
+    "oos_return": 3.571899644260073,
+    "efficiency": 0.5398694010688172
+  },
+  "pbo": 0.10808080808080808,
+  "extra": {
+    "us_retail_costs": {
+      "total_return": 11.815083035329433,
+      "sharpe": 1.3025930860251744
+    }
+  },
+  "warnings": [
+    "Daily bars: entries/exits assume market-on-open fills; intraday path of stops is approximated from daily high/low (stop assumed to win when stop and target share a bar)."
+  ],
+  "report": "reports/strategies/H4-02.md",
+  "seconds": 1.1,
+  "trade_monte_carlo": {
+    "final_p05": 4641.686823018543,
+    "final_p50": 66819.38562186554,
+    "final_p95": 2677325.3858141694,
+    "prob_loss": 0.058,
+    "max_dd_p50": -0.39389404601187755,
+    "max_dd_p95": -0.6233125682371151,
+    "prob_ruin_50pct": 0.063
+  },
+  "review": {
+    "dsr_final": 0.9592222562273086,
+    "family_trials_final": 16,
+    "cross_market": {
+      "ETHUSDT": {
+        "total_return": 9.487120257909927,
+        "sharpe": 1.0648897316076178,
+        "trades": 51
+      },
+      "SOLUSDT": {
+        "total_return": 83.51543422883192,
+        "sharpe": 1.831950330361755,
+        "trades": 32
+      }
+    },
+    "replicated": "2/2"
+  },
+  "vault": {
+    "verdict": "REJECTED",
+    "experiment": "E-20261117-0757",
+    "period": [
+      "2025-07-01",
+      "2026-10-31"
+    ],
+    "psr": 0.539708079223241,
+    "reasons": [
+      "vault_net_profit: -0.010 (needs 0)",
+      "vault_profit_factor: 0.966 (needs 1.000)",
+      "vault_psr: 0.540 (needs 0.800)"
+    ],
+    "metrics": {
+      "total_return": -0.00956043661171968,
+      "cagr": -0.007164272609995748,
+      "sharpe": 0.08634171053390521,
+      "max_drawdown": -0.24884344807493142,
+      "trades": 15,
+      "win_rate": 0.13333333333333333,
+      "profit_factor": 0.9657517850309829,
+      "benchmark_total_return": -0.26757334415373024,
+      "benchmark_sharpe": -0.3547376668804945,
+      "total_interest": 0.0
+    }
+  }
+}
