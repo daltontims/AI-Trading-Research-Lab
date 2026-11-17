@@ -90,3 +90,76 @@ def _as_bool(v):
     if a.dtype != np.bool_:
         a = np.nan_to_num(a.astype(np.float64), nan=0.0) != 0
     return a
+
+
+# ----------------------------------------------------------------- context (non-traded inputs)
+
+def load_context(symbol: str, until_us: int) -> pl.DataFrame:
+    """Daily bars of a context series (e.g. IDX_VIX), restricted to dates up to `until_us`.
+
+    Restricting to the traded data's last timestamp means context never extends into later
+    research partitions (no vault leakage) and is truncated together with the data in
+    look-ahead checks.
+    """
+    from lab import instruments
+    from lab.data import lake
+    inst = instruments.get(symbol)
+    key = lake.DatasetKey(inst.asset_class, inst.source, symbol, "bars_1d")
+    df = lake.scan(key).select("ts", "open", "high", "low", "close").collect()
+    return df.filter(pl.col("ts").dt.epoch("us") <= until_us)
+
+
+def asof_daily(bar_ts: pl.Series, daily: pl.DataFrame, column: str = "close", same_day: bool = True,
+               bar_is_daily: bool = True) -> np.ndarray:
+    """Value of a daily series known at each bar's close.
+
+    For daily bars (`bar_is_daily`), the context value of the same date is allowed when
+    `same_day=True` (e.g. VIX close at 16:15 ET is known before the next US open, where orders
+    fill). For intraday bars, only fully completed previous days are used.
+    """
+    d = daily.select("ts", pl.col(column).alias("_v")).sort("ts")
+    if not (bar_is_daily and same_day):
+        d = d.with_columns(pl.col("ts") + pl.duration(days=1))  # available from the next day
+    left = pl.DataFrame({"ts": bar_ts}).with_row_index("_i")
+    j = left.sort("ts").join_asof(d, on="ts", strategy="backward").sort("_i")
+    return j["_v"].to_numpy().astype(np.float64)
+
+
+class ContextStrategy(Strategy):
+    """Strategy that also reads non-traded daily series (VIX, yields, ...): `context_symbols`."""
+
+    context_symbols: tuple = ()
+
+    def generate(self, data: MarketData) -> SignalGrid:
+        until = int(data.ts[-1])
+        self.context = {c: load_context(c, until) for c in self.context_symbols}
+        return super().generate(data)
+
+
+class PortfolioStrategy(Strategy):
+    """Strategy that sees all instruments at once on the common grid (rotation, pairs, lead-lag).
+
+    Implement `portfolio_signals(data, closes)` returning a dict of (T, N) arrays with the same
+    keys as `signals`. `closes` is the (T, N) close grid, forward-filled, NaN before each
+    instrument's first bar. Row t may only use rows <= t.
+    """
+
+    def portfolio_signals(self, data: MarketData, closes: np.ndarray) -> dict:
+        raise NotImplementedError
+
+    def generate(self, data: MarketData) -> SignalGrid:
+        raw = data.grid("close")
+        closes = pl.DataFrame(raw, schema=data.symbols, orient="row").fill_nan(None).fill_null(strategy="forward").to_numpy()
+        closes = np.where(np.isnan(closes), np.nan, closes).astype(np.float64)
+        out = self.portfolio_signals(data, closes)
+        T, N = raw.shape
+        valid = data.valid()
+        res = {}
+        for k in SIGNAL_KEYS:
+            v = out.get(k)
+            res[k] = (np.zeros((T, N), dtype=bool) if v is None else _as_bool(v).reshape(T, N)) & valid
+        for k in LEVEL_KEYS:
+            v = out.get(k)
+            fill = 0.0 if k == "priority" else np.nan
+            res[k] = np.full((T, N), fill) if v is None else np.asarray(v, dtype=np.float64).reshape(T, N)
+        return SignalGrid(**res)
