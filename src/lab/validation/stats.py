@@ -110,15 +110,20 @@ def max_drawdown_of_returns(r: np.ndarray) -> float:
     return float((eq / np.maximum.accumulate(eq) - 1).min())
 
 
-def trade_monte_carlo(pnl: np.ndarray, initial: float, n_sims: int = 2000, seed: int = 0) -> dict:
+def trade_monte_carlo(returns: np.ndarray, initial: float, n_sims: int = 2000, seed: int = 0) -> dict:
     """Resample trades with replacement (same count) to see the range of outcomes and drawdowns
-    that the same edge could have produced in a different order."""
-    pnl = np.asarray(pnl, dtype=np.float64)
-    if len(pnl) == 0:
+    that the same edge could have produced in a different order.
+
+    `returns` are per-trade returns on account equity (P&L / equity before the trade), compounded.
+    (Resampling dollar P&L is wrong for compounding strategies: a late, large trade replayed early
+    can exceed the whole account.)
+    """
+    r = np.asarray(returns, dtype=np.float64)
+    if len(r) == 0:
         return {}
     rng = np.random.default_rng(seed)
-    sims = rng.choice(pnl, size=(n_sims, len(pnl)), replace=True)
-    eq = initial + np.cumsum(sims, axis=1)
+    sims = rng.choice(r, size=(n_sims, len(r)), replace=True)
+    eq = initial * np.cumprod(1.0 + np.maximum(sims, -1.0), axis=1)
     eq = np.concatenate([np.full((n_sims, 1), initial), eq], axis=1)
     dd = (eq / np.maximum.accumulate(eq, axis=1) - 1).min(axis=1)
     final = eq[:, -1]
@@ -126,6 +131,16 @@ def trade_monte_carlo(pnl: np.ndarray, initial: float, n_sims: int = 2000, seed:
             "final_p95": float(np.quantile(final, 0.95)), "prob_loss": float((final < initial).mean()),
             "max_dd_p50": float(np.median(dd)), "max_dd_p95": float(np.quantile(dd, 0.05)),
             "prob_ruin_50pct": float((eq.min(axis=1) <= initial * 0.5).mean())}
+
+
+def trade_returns(trades, equity) -> np.ndarray:
+    """Per-trade return on account equity: net P&L / equity at the bar before entry."""
+    import polars as pl
+    if trades.height == 0:
+        return np.array([])
+    eq = equity.select("ts", pl.col("equity").shift(1).fill_null(equity["equity"][0]).alias("eq_before"))
+    j = trades.select("entry_ts", "pnl_net").join(eq.rename({"ts": "entry_ts"}), on="entry_ts", how="left")
+    return (j["pnl_net"] / j["eq_before"]).to_numpy()
 
 
 # ----------------------------------------------------------------- data-snooping tests

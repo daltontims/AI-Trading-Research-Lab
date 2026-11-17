@@ -75,5 +75,31 @@
     "Daily bars: entries/exits assume market-on-open fills; intraday path of stops is approximated from daily high/low (stop assumed to win when stop and target share a bar)."
   ],
   "report": "reports/strategies/H4-02.md",
-  "seconds": 1.1
+  "seconds": 1.1,
+  "trade_monte_carlo": {
+    "final_p05": 4641.686823018543,
+    "final_p50": 66819.38562186554,
+    "final_p95": 2677325.3858141694,
+    "prob_loss": 0.058,
+    "max_dd_p50": -0.39389404601187755,
+    "max_dd_p95": -0.6233125682371151,
+    "prob_ruin_50pct": 0.063
+  },
+  "review": {
+    "dsr_final": 0.9592222562273086,
+    "family_trials_final": 16,
+    "cross_market": {
+      "ETHUSDT": {
+        "total_return": 9.487120257909927,
+        "sharpe": 1.0648897316076178,
+        "trades": 51
+      },
+      "SOLUSDT": {
+        "total_return": 83.51543422883192,
+        "sharpe": 1.831950330361755,
+        "trades": 32
+      }
+    },
+    "replicated": "2/2"
+  }
 }

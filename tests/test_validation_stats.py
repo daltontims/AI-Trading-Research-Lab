@@ -70,10 +70,13 @@ def test_bootstrap_metric_interval_covers_truth():
 
 
 def test_trade_monte_carlo():
-    out = stats.trade_monte_carlo(np.array([10.0, 20.0, 5.0]), 1000)
+    out = stats.trade_monte_carlo(np.array([0.01, 0.02, 0.005]), 1000)
     assert out["prob_loss"] == 0 and out["max_dd_p95"] == 0
-    out2 = stats.trade_monte_carlo(np.array([100.0, -150.0] * 20), 1000)
-    assert 0 < out2["prob_loss"] < 1 and out2["max_dd_p95"] < 0
+    out2 = stats.trade_monte_carlo(np.array([0.10, -0.12] * 20), 1000)
+    assert 0 < out2["prob_loss"] < 1 and -1 < out2["max_dd_p95"] < 0
+    # Even huge losses cannot push simulated drawdowns beyond -100%.
+    out3 = stats.trade_monte_carlo(np.array([2.0, -0.9, -0.95]), 1000)
+    assert out3["max_dd_p95"] >= -1.0
 
 
 def test_reality_check_size_and_power():

@@ -61,5 +61,14 @@
     "No bid/ask data: spreads are assumed constants from configs, not observed."
   ],
   "report": "reports/strategies/H4-07.md",
-  "seconds": 0.9
+  "seconds": 0.9,
+  "trade_monte_carlo": {
+    "final_p05": 9.43460260639299,
+    "final_p50": 45.175730528756375,
+    "final_p95": 193.13454163899883,
+    "prob_loss": 1.0,
+    "max_dd_p50": -0.9922016406973573,
+    "max_dd_p95": -0.9982661486519618,
+    "prob_ruin_50pct": 1.0
+  }
 }

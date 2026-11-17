@@ -8,7 +8,7 @@ data purchases happen without the owner's explicit permission.
 
 ## Status
 
-**Phase 3 — Statistical validation: complete.** Promotion pipeline (Deflated Sharpe, PBO, SPA, walk-forward, robustness) calibrated: 0 false discoveries on 160 null datasets. Next: Phase 4 (first research batch). Forex data download still pending.
+**Phase 4 — First research batch: complete.** 21 pre-registered hypotheses tested: 2 candidates, 19 rejected (see [reports/phase4_summary.md](reports/phase4_summary.md)). Next: cash-interest modelling, then the final (vault) test for the candidates. Forex data download still pending.
 
 | Document | What it covers |
 |---|---|
@@ -26,5 +26,13 @@ data purchases happen without the owner's explicit permission.
 
 ## Leaderboard
 
-No research strategies tested yet (only engine diagnostics). Validated strategies and promising candidates will be
-listed separately in `reports/` once research begins.
+**Validated strategies: none.** Nothing has passed the final (vault) test or paper trading yet.
+
+**Candidates** (passed development and validation gates — promising, not proven):
+
+| ID | Strategy | Market | Timeframe | Validation net return | Validation Sharpe (buy & hold) | Confidence |
+|---|---|---|---|---|---|---|
+| [H4-17](reports/strategies/H4-17.md) | 2-day RSI pullback in an uptrend | SPY (replicates on 6/6 ETFs) | Daily | +14.5% | 0.51 (0.54) | Low |
+| [H4-02](reports/strategies/H4-02.md) | 50-day trend filter, long/flat | BTC | Daily | +61.0% | 1.05 (1.41) | Low |
+
+Rejected ideas and reasons: [research/graveyard/README.md](research/graveyard/README.md).

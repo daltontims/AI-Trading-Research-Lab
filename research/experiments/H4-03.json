@@ -53,5 +53,14 @@
     "Daily bars: entries/exits assume market-on-open fills; intraday path of stops is approximated from daily high/low (stop assumed to win when stop and target share a bar)."
   ],
   "report": "reports/strategies/H4-03.md",
-  "seconds": 0.7
+  "seconds": 0.7,
+  "trade_monte_carlo": {
+    "final_p05": 4278.744900249748,
+    "final_p50": 46000.76028289835,
+    "final_p95": 926449.5406296976,
+    "prob_loss": 0.0605,
+    "max_dd_p50": -0.4342246259428507,
+    "max_dd_p95": -0.6795168596019137,
+    "prob_ruin_50pct": 0.0895
+  }
 }

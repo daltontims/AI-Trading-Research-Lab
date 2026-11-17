@@ -1,0 +1,67 @@
+{
+  "id": "H4-15",
+  "title": "Sector ETF momentum rotation",
+  "verdict": "REJECTED",
+  "confidence": "none",
+  "best_params": {
+    "skip": 21,
+    "top": 3,
+    "lookback": 126
+  },
+  "reasons": [
+    "deflated_sharpe: 0.764 (needs \u2265 0.950)"
+  ],
+  "grid_size": 3,
+  "family_trials": 4,
+  "experiments": [
+    "E-20261117-0739"
+  ],
+  "spa_p": 0.03,
+  "dsr": 0.7644835105570981,
+  "dev": {
+    "trades": 110,
+    "win_rate": 0.6454545454545455,
+    "profit_factor": 2.836113921918049,
+    "expectancy": 63.35455309679798,
+    "expectancy_r": null,
+    "total_return": 1.3938001681295566,
+    "cagr": 0.04695569479072348,
+    "sharpe": 0.40743786807400983,
+    "sortino": 0.5644748792188804,
+    "calmar": 0.09953967758422355,
+    "max_drawdown": -0.4717284195640762,
+    "exposure": 0.5824106956340088,
+    "avg_holding_hours": 2648.2909090909093,
+    "cost_share_of_gross": 0.04568261004384751,
+    "benchmark_total_return": 2.1290753081337583,
+    "benchmark_sharpe": 0.45210705353142355,
+    "benchmark_max_drawdown": -0.4682857617532603,
+    "years": 19.02258726899384
+  },
+  "val": null,
+  "walk_forward": {
+    "train_days": 377,
+    "test_days": 125,
+    "segments": 36,
+    "fraction_positive": 0.5555555555555556,
+    "oos_sharpe": 0.2722860039211346,
+    "oos_return": 0.6644045108567518,
+    "efficiency": NaN
+  },
+  "pbo": null,
+  "extra": {},
+  "warnings": [
+    "Daily bars: entries/exits assume market-on-open fills; intraday path of stops is approximated from daily high/low (stop assumed to win when stop and target share a bar)."
+  ],
+  "report": "reports/strategies/H4-15.md",
+  "seconds": 3.1,
+  "trade_monte_carlo": {
+    "final_p05": 7934.40189926179,
+    "final_p50": 12662.305949037365,
+    "final_p95": 20689.964750991126,
+    "prob_loss": 0.0015,
+    "max_dd_p50": -0.11167257097858219,
+    "max_dd_p95": -0.1983660527457481,
+    "prob_ruin_50pct": 0.0
+  }
+}

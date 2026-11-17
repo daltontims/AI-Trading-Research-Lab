@@ -45,9 +45,14 @@ Checkboxes are updated as work completes. See ARCHITECTURE.md §D for context.
 - [x] Calibration on null and planted-edge data (reports/phase3_calibration.md)
 - [x] Found and fixed a stop-fill optimism + flawed synthetic generator (D-015, D-016)
 
-## Phase 4 — Registry & first research
-- [ ] SQLite registry + CLI + git export of hypothesis cards
-- [ ] ~20 hand-designed hypotheses across crypto, FX, ETFs
+## Phase 4 — Registry & first research ✅
+- [x] SQLite registry + CLI + git export of hypothesis cards
+- [x] 21 hand-designed hypotheses (crypto, ETFs), pre-registered before testing
+- [x] Context (VIX) and portfolio (rotation, pairs, lead-lag) strategy types; calendar features
+- [x] Results: 2 candidates (H4-17, H4-02), 19 rejected (reports/phase4_summary.md)
+- [ ] Model interest on idle cash (needed before vault tests)
+- [ ] Vault test for H4-17 and H4-02 (one look each)
+- [ ] FX hypotheses (blocked: no FX data)
 
 ## Phase 5 — Discovery engine
 - [ ] Feature library + hypothesis templates/grammar

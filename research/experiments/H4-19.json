@@ -1,0 +1,67 @@
+{
+  "id": "H4-19",
+  "title": "SPY with VIX term-structure filter",
+  "verdict": "REJECTED",
+  "confidence": "none",
+  "best_params": {
+    "ratio": 0.95
+  },
+  "reasons": [
+    "deflated_sharpe: 0.908 (needs \u2265 0.950)",
+    "walk_forward_positive_windows: 0.255 (needs \u2265 0.500)",
+    "years_positive: 0.320 (needs \u2265 0.500)"
+  ],
+  "grid_size": 3,
+  "family_trials": 4,
+  "experiments": [
+    "E-20261117-0744"
+  ],
+  "spa_p": 0.014,
+  "dsr": 0.9084814532577711,
+  "dev": {
+    "trades": 120,
+    "win_rate": 0.4583333333333333,
+    "profit_factor": 1.833756835502398,
+    "expectancy": 49.617386788979985,
+    "expectancy_r": null,
+    "total_return": 1.1908172829355195,
+    "cagr": 0.031975841851964004,
+    "sharpe": 0.4801113337889562,
+    "sortino": 0.6704782242122207,
+    "calmar": 0.11760941220101895,
+    "max_drawdown": -0.27188165686357346,
+    "exposure": 0.3283415644416122,
+    "avg_holding_hours": 597.2,
+    "cost_share_of_gross": 0.12669720968496617,
+    "benchmark_total_return": 6.3999302170485795,
+    "benchmark_sharpe": 0.5914574962002354,
+    "benchmark_max_drawdown": -0.4702499189765019,
+    "years": 24.917180013689254
+  },
+  "val": null,
+  "walk_forward": {
+    "train_days": 377,
+    "test_days": 125,
+    "segments": 47,
+    "fraction_positive": 0.2553191489361702,
+    "oos_sharpe": 0.2648580017769041,
+    "oos_return": 0.5028865582837425,
+    "efficiency": NaN
+  },
+  "pbo": null,
+  "extra": {},
+  "warnings": [
+    "Daily bars: entries/exits assume market-on-open fills; intraday path of stops is approximated from daily high/low (stop assumed to win when stop and target share a bar)."
+  ],
+  "report": "reports/strategies/H4-19.md",
+  "seconds": 4.2,
+  "trade_monte_carlo": {
+    "final_p05": 5659.870552808597,
+    "final_p50": 10963.390468537502,
+    "final_p95": 22811.128400290512,
+    "prob_loss": 0.0225,
+    "max_dd_p50": -0.1783815946033449,
+    "max_dd_p95": -0.31661964255707525,
+    "prob_ruin_50pct": 0.0
+  }
+}

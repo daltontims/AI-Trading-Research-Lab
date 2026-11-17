@@ -263,8 +263,8 @@ def evaluate(strategy_cls, space: dict[str, list], symbols: list[str] | str, tim
         diag["bootstrap_sharpe_annual"] = {k: (v * math.sqrt(ppy) if k != "p_le_zero" else v) for k, v in
                                            stats.bootstrap_metric(r_best, stats.sharpe_per_period, n_boot, 10, seed).items()}
         diag["bootstrap_max_drawdown"] = stats.bootstrap_metric(r_best, stats.max_drawdown_of_returns, n_boot, 10, seed)
-        diag["trade_monte_carlo"] = stats.trade_monte_carlo(best_res.trades["pnl_net"].to_numpy(), risk.initial_cash,
-                                                            seed=seed)
+        diag["trade_monte_carlo"] = stats.trade_monte_carlo(stats.trade_returns(best_res.trades, best_res.equity),
+                                                            risk.initial_cash, seed=seed)
         delay = run_backtest(strat, dev, risk, ExecutionConfig(**{**execution.__dict__,
                                                                   "delay_bars": execution.delay_bars + 1}))
         reg.add_trial(eid, {**best_params, "_delay_bars": execution.delay_bars + 1}, delay.metrics,

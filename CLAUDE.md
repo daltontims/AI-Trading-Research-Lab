@@ -35,7 +35,9 @@
 - Phase 3 complete (2026-11-17): validation toolkit + promotion pipeline (docs/VALIDATION.md,
   reports/phase3_calibration.md). Evaluate ideas with `lab.validation.evaluate.evaluate` or
   `lab evaluate`; it records everything and writes reports/strategies/<hypothesis>.md.
-- Next: Phase 4 — first research batch (~20 hand-designed hypotheses across crypto and ETFs).
+- Phase 4 complete (2026-11-17): 21 hypotheses (scripts/phase4_batch.py, research/hypotheses/),
+  2 candidates H4-17 (SPY RSI2) and H4-02 (BTC 50d trend), 19 rejected. reports/phase4_summary.md.
+- Next: model cash interest (D-020), then vault test for H4-17 and H4-02, then Phase 5 discovery engine.
 
 ## Validation conventions (do not break)
 - Validation split: one look per hypothesis (enforced). Changed rules = new hypothesis.

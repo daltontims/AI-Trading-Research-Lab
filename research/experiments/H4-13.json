@@ -1,0 +1,66 @@
+{
+  "id": "H4-13",
+  "title": "BTC daily time-series momentum (long/short)",
+  "verdict": "REJECTED",
+  "confidence": "none",
+  "best_params": {
+    "lookback": 30
+  },
+  "reasons": [
+    "deflated_sharpe: 0.890 (needs \u2265 0.950)",
+    "pbo: 0.405 (needs \u2264 0.200)"
+  ],
+  "grid_size": 4,
+  "family_trials": 5,
+  "experiments": [
+    "E-20261117-0737"
+  ],
+  "spa_p": 0.034,
+  "dsr": 0.889590990936897,
+  "dev": {
+    "trades": 126,
+    "win_rate": 0.36507936507936506,
+    "profit_factor": 1.5929917741101136,
+    "expectancy": 382.2437176273714,
+    "expectancy_r": null,
+    "total_return": 9.632541684209748,
+    "cagr": 0.6045584074199406,
+    "sharpe": 1.0732476718053388,
+    "sortino": 1.6603323476796514,
+    "calmar": 1.0065091191064732,
+    "max_drawdown": -0.600648713403249,
+    "exposure": 0.9824753559693319,
+    "avg_holding_hours": 341.7142857142857,
+    "cost_share_of_gross": 0.2197468235828975,
+    "benchmark_total_return": 10.121167302446722,
+    "benchmark_sharpe": 1.056771419057969,
+    "benchmark_max_drawdown": -0.7662925431645935,
+    "years": 4.999315537303217
+  },
+  "val": null,
+  "walk_forward": {
+    "train_days": 547,
+    "test_days": 182,
+    "segments": 7,
+    "fraction_positive": 0.7142857142857143,
+    "oos_sharpe": 0.6064480281450711,
+    "oos_return": 0.900269227647261,
+    "efficiency": 0.7072933131906027
+  },
+  "pbo": 0.4052059052059052,
+  "extra": {},
+  "warnings": [
+    "Daily bars: entries/exits assume market-on-open fills; intraday path of stops is approximated from daily high/low (stop assumed to win when stop and target share a bar)."
+  ],
+  "report": "reports/strategies/H4-13.md",
+  "seconds": 0.8,
+  "trade_monte_carlo": {
+    "final_p05": 3425.706991361517,
+    "final_p50": 52457.463223001076,
+    "final_p95": 1821182.8859967636,
+    "prob_loss": 0.0915,
+    "max_dd_p50": -0.5997139641718036,
+    "max_dd_p95": -0.8247726460008958,
+    "prob_ruin_50pct": 0.23
+  }
+}

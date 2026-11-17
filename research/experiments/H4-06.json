@@ -58,5 +58,14 @@
     "Only 6 trades: statistically meaningless."
   ],
   "report": "reports/strategies/H4-06.md",
-  "seconds": 0.7
+  "seconds": 0.7,
+  "trade_monte_carlo": {
+    "final_p05": 6018.203889030697,
+    "final_p50": 8930.698253764578,
+    "final_p95": 14872.70525098957,
+    "prob_loss": 0.0005,
+    "max_dd_p50": -0.0035606571787867303,
+    "max_dd_p95": -0.007108636078028585,
+    "prob_ruin_50pct": 0.0
+  }
 }

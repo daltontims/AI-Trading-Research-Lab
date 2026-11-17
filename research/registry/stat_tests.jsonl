@@ -6005,3 +6005,132 @@
 {"details": "{\"note\": \"1 neighbours, 0% positive\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0736", "id": 6005, "p_value": null, "passed": 0, "statistic": null, "test": "parameter_plateau"}
 {"details": "{\"note\": \"5 years\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0736", "id": 6006, "p_value": null, "passed": 0, "statistic": 0.2, "test": "years_positive"}
 {"details": "{\"note\": \"best year 2023\", \"threshold\": 0}", "experiment_id": "E-20261117-0736", "id": 6007, "p_value": null, "passed": 0, "statistic": -0.4686472554159128, "test": "profitable_without_best_year"}
+{"details": "{\"configs\": 4}", "experiment_id": "E-20261117-0737", "id": 6008, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}
+{"details": "{\"note\": \"style=swing\", \"threshold\": 30}", "experiment_id": "E-20261117-0737", "id": 6009, "p_value": null, "passed": 1, "statistic": 126.0, "test": "min_trades"}
+{"details": "{\"note\": \"\", \"threshold\": 0}", "experiment_id": "E-20261117-0737", "id": 6010, "p_value": null, "passed": 1, "statistic": 9.632541684209748, "test": "net_profit_after_costs"}
+{"details": "{\"note\": \"\", \"threshold\": 1.0}", "experiment_id": "E-20261117-0737", "id": 6011, "p_value": null, "passed": 1, "statistic": 1.5929917741101136, "test": "profit_factor"}
+{"details": "{\"note\": \"cost x2.0\", \"threshold\": 0}", "experiment_id": "E-20261117-0737", "id": 6012, "p_value": null, "passed": 1, "statistic": 3.878647268826615, "test": "profitable_at_2x_costs"}
+{"details": "{\"note\": \"5 trials in family 'H4-13'\", \"threshold\": 0.95}", "experiment_id": "E-20261117-0737", "id": 6013, "p_value": null, "passed": 0, "statistic": 0.889590990936897, "test": "deflated_sharpe"}
+{"details": "{\"note\": \"\", \"threshold\": 0.2}", "experiment_id": "E-20261117-0737", "id": 6014, "p_value": null, "passed": 0, "statistic": 0.4052059052059052, "test": "pbo"}
+{"details": "{\"note\": \"4 configurations\", \"threshold\": 0.05}", "experiment_id": "E-20261117-0737", "id": 6015, "p_value": null, "passed": 1, "statistic": 0.034, "test": "spa"}
+{"details": "{\"note\": \"7 windows\", \"threshold\": 0.0}", "experiment_id": "E-20261117-0737", "id": 6016, "p_value": null, "passed": 1, "statistic": 0.6064480281450711, "test": "walk_forward_oos_sharpe"}
+{"details": "{\"note\": \"\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0737", "id": 6017, "p_value": null, "passed": 1, "statistic": 0.7142857142857143, "test": "walk_forward_positive_windows"}
+{"details": "{\"note\": \"2 neighbours, 100% positive\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0737", "id": 6018, "p_value": null, "passed": 1, "statistic": 0.7504420060827524, "test": "parameter_plateau"}
+{"details": "{\"note\": \"5 years\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0737", "id": 6019, "p_value": null, "passed": 1, "statistic": 0.8, "test": "years_positive"}
+{"details": "{\"note\": \"best year 2020\", \"threshold\": 0}", "experiment_id": "E-20261117-0737", "id": 6020, "p_value": null, "passed": 1, "statistic": 1.877146923839354, "test": "profitable_without_best_year"}
+{"details": "{\"configs\": 5}", "experiment_id": "E-20261117-0738", "id": 6021, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}
+{"details": "{\"note\": \"style=swing\", \"threshold\": 30}", "experiment_id": "E-20261117-0738", "id": 6022, "p_value": null, "passed": 1, "statistic": 73.0, "test": "min_trades"}
+{"details": "{\"note\": \"\", \"threshold\": 0}", "experiment_id": "E-20261117-0738", "id": 6023, "p_value": null, "passed": 1, "statistic": 5.064983940986554, "test": "net_profit_after_costs"}
+{"details": "{\"note\": \"\", \"threshold\": 1.0}", "experiment_id": "E-20261117-0738", "id": 6024, "p_value": null, "passed": 1, "statistic": 3.66333878825013, "test": "profit_factor"}
+{"details": "{\"note\": \"cost x2.0\", \"threshold\": 0}", "experiment_id": "E-20261117-0738", "id": 6025, "p_value": null, "passed": 1, "statistic": 4.7037254448728945, "test": "profitable_at_2x_costs"}
+{"details": "{\"note\": \"6 trials in family 'H4-14'\", \"threshold\": 0.95}", "experiment_id": "E-20261117-0738", "id": 6026, "p_value": null, "passed": 1, "statistic": 0.9932726451739081, "test": "deflated_sharpe"}
+{"details": "{\"note\": \"\", \"threshold\": 0.2}", "experiment_id": "E-20261117-0738", "id": 6027, "p_value": null, "passed": 0, "statistic": 0.23566433566433567, "test": "pbo"}
+{"details": "{\"note\": \"5 configurations\", \"threshold\": 0.05}", "experiment_id": "E-20261117-0738", "id": 6028, "p_value": null, "passed": 1, "statistic": 0.0, "test": "spa"}
+{"details": "{\"note\": \"47 windows\", \"threshold\": 0.0}", "experiment_id": "E-20261117-0738", "id": 6029, "p_value": null, "passed": 1, "statistic": 0.6037260078506675, "test": "walk_forward_oos_sharpe"}
+{"details": "{\"note\": \"\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0738", "id": 6030, "p_value": null, "passed": 1, "statistic": 0.574468085106383, "test": "walk_forward_positive_windows"}
+{"details": "{\"note\": \"1 neighbours, 100% positive\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0738", "id": 6031, "p_value": null, "passed": 1, "statistic": 0.9996502390350492, "test": "parameter_plateau"}
+{"details": "{\"note\": \"25 years\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0738", "id": 6032, "p_value": null, "passed": 1, "statistic": 0.6, "test": "years_positive"}
+{"details": "{\"note\": \"best year 1995\", \"threshold\": 0}", "experiment_id": "E-20261117-0738", "id": 6033, "p_value": null, "passed": 1, "statistic": 3.485737858474481, "test": "profitable_without_best_year"}
+{"details": "{\"configs\": 3}", "experiment_id": "E-20261117-0739", "id": 6034, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}
+{"details": "{\"note\": \"style=swing\", \"threshold\": 30}", "experiment_id": "E-20261117-0739", "id": 6035, "p_value": null, "passed": 1, "statistic": 110.0, "test": "min_trades"}
+{"details": "{\"note\": \"\", \"threshold\": 0}", "experiment_id": "E-20261117-0739", "id": 6036, "p_value": null, "passed": 1, "statistic": 1.3938001681295566, "test": "net_profit_after_costs"}
+{"details": "{\"note\": \"\", \"threshold\": 1.0}", "experiment_id": "E-20261117-0739", "id": 6037, "p_value": null, "passed": 1, "statistic": 2.836113921918049, "test": "profit_factor"}
+{"details": "{\"note\": \"cost x2.0\", \"threshold\": 0}", "experiment_id": "E-20261117-0739", "id": 6038, "p_value": null, "passed": 1, "statistic": 1.3112845353407838, "test": "profitable_at_2x_costs"}
+{"details": "{\"note\": \"4 trials in family 'H4-15'\", \"threshold\": 0.95}", "experiment_id": "E-20261117-0739", "id": 6039, "p_value": null, "passed": 0, "statistic": 0.7644835105570981, "test": "deflated_sharpe"}
+{"details": "{\"note\": \"fewer than 4 configurations\", \"threshold\": 0.2}", "experiment_id": "E-20261117-0739", "id": 6040, "p_value": null, "passed": null, "statistic": null, "test": "pbo"}
+{"details": "{\"note\": \"3 configurations\", \"threshold\": 0.05}", "experiment_id": "E-20261117-0739", "id": 6041, "p_value": null, "passed": 1, "statistic": 0.03, "test": "spa"}
+{"details": "{\"note\": \"36 windows\", \"threshold\": 0.0}", "experiment_id": "E-20261117-0739", "id": 6042, "p_value": null, "passed": 1, "statistic": 0.2722860039211346, "test": "walk_forward_oos_sharpe"}
+{"details": "{\"note\": \"\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0739", "id": 6043, "p_value": null, "passed": 1, "statistic": 0.5555555555555556, "test": "walk_forward_positive_windows"}
+{"details": "{\"note\": \"2 neighbours, 100% positive\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0739", "id": 6044, "p_value": null, "passed": 1, "statistic": 0.8997943806073904, "test": "parameter_plateau"}
+{"details": "{\"note\": \"20 years\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0739", "id": 6045, "p_value": null, "passed": 1, "statistic": 0.5, "test": "years_positive"}
+{"details": "{\"note\": \"best year 2013\", \"threshold\": 0}", "experiment_id": "E-20261117-0739", "id": 6046, "p_value": null, "passed": 1, "statistic": 0.7328619327188433, "test": "profitable_without_best_year"}
+{"details": "{\"configs\": 3}", "experiment_id": "E-20261117-0740", "id": 6047, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}
+{"details": "{\"note\": \"style=swing\", \"threshold\": 30}", "experiment_id": "E-20261117-0740", "id": 6048, "p_value": null, "passed": 1, "statistic": 43.0, "test": "min_trades"}
+{"details": "{\"note\": \"\", \"threshold\": 0}", "experiment_id": "E-20261117-0740", "id": 6049, "p_value": null, "passed": 1, "statistic": 2.237980323168842, "test": "net_profit_after_costs"}
+{"details": "{\"note\": \"\", \"threshold\": 1.0}", "experiment_id": "E-20261117-0740", "id": 6050, "p_value": null, "passed": 1, "statistic": 3.114133731750461, "test": "profit_factor"}
+{"details": "{\"note\": \"cost x2.0\", \"threshold\": 0}", "experiment_id": "E-20261117-0740", "id": 6051, "p_value": null, "passed": 1, "statistic": 2.139204042951297, "test": "profitable_at_2x_costs"}
+{"details": "{\"note\": \"4 trials in family 'H4-16'\", \"threshold\": 0.95}", "experiment_id": "E-20261117-0740", "id": 6052, "p_value": null, "passed": 0, "statistic": 0.9264857089404949, "test": "deflated_sharpe"}
+{"details": "{\"note\": \"fewer than 4 configurations\", \"threshold\": 0.2}", "experiment_id": "E-20261117-0740", "id": 6053, "p_value": null, "passed": null, "statistic": null, "test": "pbo"}
+{"details": "{\"note\": \"3 configurations\", \"threshold\": 0.05}", "experiment_id": "E-20261117-0740", "id": 6054, "p_value": null, "passed": 1, "statistic": 0.008, "test": "spa"}
+{"details": "{\"note\": \"47 windows\", \"threshold\": 0.0}", "experiment_id": "E-20261117-0740", "id": 6055, "p_value": null, "passed": 1, "statistic": 0.3665445842241548, "test": "walk_forward_oos_sharpe"}
+{"details": "{\"note\": \"\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0740", "id": 6056, "p_value": null, "passed": 0, "statistic": 0.3829787234042553, "test": "walk_forward_positive_windows"}
+{"details": "{\"note\": \"2 neighbours, 100% positive\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0740", "id": 6057, "p_value": null, "passed": 1, "statistic": 0.5543207188759979, "test": "parameter_plateau"}
+{"details": "{\"note\": \"25 years\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0740", "id": 6058, "p_value": null, "passed": 0, "statistic": 0.36, "test": "years_positive"}
+{"details": "{\"note\": \"best year 2008\", \"threshold\": 0}", "experiment_id": "E-20261117-0740", "id": 6059, "p_value": null, "passed": 1, "statistic": 1.3046647861160774, "test": "profitable_without_best_year"}
+{"details": "{\"configs\": 3}", "experiment_id": "E-20261117-0741", "id": 6060, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}
+{"details": "{\"note\": \"style=swing\", \"threshold\": 30}", "experiment_id": "E-20261117-0741", "id": 6061, "p_value": null, "passed": 1, "statistic": 175.0, "test": "min_trades"}
+{"details": "{\"note\": \"\", \"threshold\": 0}", "experiment_id": "E-20261117-0741", "id": 6062, "p_value": null, "passed": 1, "statistic": 2.392964269579582, "test": "net_profit_after_costs"}
+{"details": "{\"note\": \"\", \"threshold\": 1.0}", "experiment_id": "E-20261117-0741", "id": 6063, "p_value": null, "passed": 1, "statistic": 3.0956350385847813, "test": "profit_factor"}
+{"details": "{\"note\": \"cost x2.0\", \"threshold\": 0}", "experiment_id": "E-20261117-0741", "id": 6064, "p_value": null, "passed": 1, "statistic": 1.910256334169214, "test": "profitable_at_2x_costs"}
+{"details": "{\"note\": \"4 trials in family 'H4-17'\", \"threshold\": 0.95}", "experiment_id": "E-20261117-0741", "id": 6065, "p_value": null, "passed": 1, "statistic": 0.9969786966100322, "test": "deflated_sharpe"}
+{"details": "{\"note\": \"fewer than 4 configurations\", \"threshold\": 0.2}", "experiment_id": "E-20261117-0741", "id": 6066, "p_value": null, "passed": null, "statistic": null, "test": "pbo"}
+{"details": "{\"note\": \"3 configurations\", \"threshold\": 0.05}", "experiment_id": "E-20261117-0741", "id": 6067, "p_value": null, "passed": 1, "statistic": 0.0, "test": "spa"}
+{"details": "{\"note\": \"47 windows\", \"threshold\": 0.0}", "experiment_id": "E-20261117-0741", "id": 6068, "p_value": null, "passed": 1, "statistic": 0.668793545151986, "test": "walk_forward_oos_sharpe"}
+{"details": "{\"note\": \"\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0741", "id": 6069, "p_value": null, "passed": 1, "statistic": 0.5957446808510638, "test": "walk_forward_positive_windows"}
+{"details": "{\"note\": \"2 neighbours, 100% positive\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0741", "id": 6070, "p_value": null, "passed": 1, "statistic": 0.8860582854588497, "test": "parameter_plateau"}
+{"details": "{\"note\": \"25 years\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0741", "id": 6071, "p_value": null, "passed": 1, "statistic": 0.8, "test": "years_positive"}
+{"details": "{\"note\": \"best year 1997\", \"threshold\": 0}", "experiment_id": "E-20261117-0741", "id": 6072, "p_value": null, "passed": 1, "statistic": 1.5224495564857299, "test": "profitable_without_best_year"}
+{"details": "{\"threshold\": 0}", "experiment_id": "E-20261117-0742", "id": 6073, "p_value": null, "passed": 1, "statistic": 0.1446674770085803, "test": "validation_net_profit"}
+{"details": "{\"threshold\": 1.0}", "experiment_id": "E-20261117-0742", "id": 6074, "p_value": null, "passed": 1, "statistic": 1.9894578019425682, "test": "validation_profit_factor"}
+{"details": "{\"threshold\": 0.8}", "experiment_id": "E-20261117-0742", "id": 6075, "p_value": null, "passed": 1, "statistic": 0.8582571940017525, "test": "validation_psr"}
+{"details": "{\"threshold\": 7.5}", "experiment_id": "E-20261117-0742", "id": 6076, "p_value": null, "passed": 1, "statistic": 25.0, "test": "validation_trades"}
+{"details": "{\"configs\": 3}", "experiment_id": "E-20261117-0743", "id": 6077, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}
+{"details": "{\"note\": \"style=swing\", \"threshold\": 30}", "experiment_id": "E-20261117-0743", "id": 6078, "p_value": null, "passed": 1, "statistic": 134.0, "test": "min_trades"}
+{"details": "{\"note\": \"\", \"threshold\": 0}", "experiment_id": "E-20261117-0743", "id": 6079, "p_value": null, "passed": 1, "statistic": 0.0065030438439344085, "test": "net_profit_after_costs"}
+{"details": "{\"note\": \"\", \"threshold\": 1.0}", "experiment_id": "E-20261117-0743", "id": 6080, "p_value": null, "passed": 1, "statistic": 1.0064641688503555, "test": "profit_factor"}
+{"details": "{\"note\": \"cost x2.0\", \"threshold\": 0}", "experiment_id": "E-20261117-0743", "id": 6081, "p_value": null, "passed": 0, "statistic": -0.09532230647386875, "test": "profitable_at_2x_costs"}
+{"details": "{\"note\": \"4 trials in family 'H4-18'\", \"threshold\": 0.95}", "experiment_id": "E-20261117-0743", "id": 6082, "p_value": null, "passed": 0, "statistic": 0.19146449339261395, "test": "deflated_sharpe"}
+{"details": "{\"note\": \"fewer than 4 configurations\", \"threshold\": 0.2}", "experiment_id": "E-20261117-0743", "id": 6083, "p_value": null, "passed": null, "statistic": null, "test": "pbo"}
+{"details": "{\"note\": \"3 configurations\", \"threshold\": 0.05}", "experiment_id": "E-20261117-0743", "id": 6084, "p_value": null, "passed": 0, "statistic": 0.544, "test": "spa"}
+{"details": "{\"note\": \"47 windows\", \"threshold\": 0.0}", "experiment_id": "E-20261117-0743", "id": 6085, "p_value": null, "passed": 0, "statistic": -0.010516193383845738, "test": "walk_forward_oos_sharpe"}
+{"details": "{\"note\": \"\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0743", "id": 6086, "p_value": null, "passed": 0, "statistic": 0.23404255319148937, "test": "walk_forward_positive_windows"}
+{"details": "{\"note\": \"1 neighbours, 0% positive\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0743", "id": 6087, "p_value": null, "passed": 0, "statistic": -0.9424745742141891, "test": "parameter_plateau"}
+{"details": "{\"note\": \"25 years\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0743", "id": 6088, "p_value": null, "passed": 0, "statistic": 0.32, "test": "years_positive"}
+{"details": "{\"note\": \"best year 2010\", \"threshold\": 0}", "experiment_id": "E-20261117-0743", "id": 6089, "p_value": null, "passed": 0, "statistic": -0.09756337640555501, "test": "profitable_without_best_year"}
+{"details": "{\"configs\": 3}", "experiment_id": "E-20261117-0744", "id": 6090, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}
+{"details": "{\"note\": \"style=swing\", \"threshold\": 30}", "experiment_id": "E-20261117-0744", "id": 6091, "p_value": null, "passed": 1, "statistic": 120.0, "test": "min_trades"}
+{"details": "{\"note\": \"\", \"threshold\": 0}", "experiment_id": "E-20261117-0744", "id": 6092, "p_value": null, "passed": 1, "statistic": 1.1908172829355195, "test": "net_profit_after_costs"}
+{"details": "{\"note\": \"\", \"threshold\": 1.0}", "experiment_id": "E-20261117-0744", "id": 6093, "p_value": null, "passed": 1, "statistic": 1.833756835502398, "test": "profit_factor"}
+{"details": "{\"note\": \"cost x2.0\", \"threshold\": 0}", "experiment_id": "E-20261117-0744", "id": 6094, "p_value": null, "passed": 1, "statistic": 0.9692850639377488, "test": "profitable_at_2x_costs"}
+{"details": "{\"note\": \"4 trials in family 'H4-19'\", \"threshold\": 0.95}", "experiment_id": "E-20261117-0744", "id": 6095, "p_value": null, "passed": 0, "statistic": 0.9084814532577711, "test": "deflated_sharpe"}
+{"details": "{\"note\": \"fewer than 4 configurations\", \"threshold\": 0.2}", "experiment_id": "E-20261117-0744", "id": 6096, "p_value": null, "passed": null, "statistic": null, "test": "pbo"}
+{"details": "{\"note\": \"3 configurations\", \"threshold\": 0.05}", "experiment_id": "E-20261117-0744", "id": 6097, "p_value": null, "passed": 1, "statistic": 0.014, "test": "spa"}
+{"details": "{\"note\": \"47 windows\", \"threshold\": 0.0}", "experiment_id": "E-20261117-0744", "id": 6098, "p_value": null, "passed": 1, "statistic": 0.2648580017769041, "test": "walk_forward_oos_sharpe"}
+{"details": "{\"note\": \"\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0744", "id": 6099, "p_value": null, "passed": 0, "statistic": 0.2553191489361702, "test": "walk_forward_positive_windows"}
+{"details": "{\"note\": \"2 neighbours, 100% positive\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0744", "id": 6100, "p_value": null, "passed": 1, "statistic": 0.7485537581985412, "test": "parameter_plateau"}
+{"details": "{\"note\": \"25 years\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0744", "id": 6101, "p_value": null, "passed": 0, "statistic": 0.32, "test": "years_positive"}
+{"details": "{\"note\": \"best year 2012\", \"threshold\": 0}", "experiment_id": "E-20261117-0744", "id": 6102, "p_value": null, "passed": 1, "statistic": 0.8509065993310794, "test": "profitable_without_best_year"}
+{"details": "{\"configs\": 3}", "experiment_id": "E-20261117-0745", "id": 6103, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}
+{"details": "{\"note\": \"style=swing\", \"threshold\": 30}", "experiment_id": "E-20261117-0745", "id": 6104, "p_value": null, "passed": 1, "statistic": 96.0, "test": "min_trades"}
+{"details": "{\"note\": \"\", \"threshold\": 0}", "experiment_id": "E-20261117-0745", "id": 6105, "p_value": null, "passed": 1, "statistic": 1.2373356408890221, "test": "net_profit_after_costs"}
+{"details": "{\"note\": \"\", \"threshold\": 1.0}", "experiment_id": "E-20261117-0745", "id": 6106, "p_value": null, "passed": 1, "statistic": 1.6299768095380158, "test": "profit_factor"}
+{"details": "{\"note\": \"cost x2.0\", \"threshold\": 0}", "experiment_id": "E-20261117-0745", "id": 6107, "p_value": null, "passed": 1, "statistic": 1.0227795900748462, "test": "profitable_at_2x_costs"}
+{"details": "{\"note\": \"4 trials in family 'H4-20'\", \"threshold\": 0.95}", "experiment_id": "E-20261117-0745", "id": 6108, "p_value": null, "passed": 0, "statistic": 0.7818921270487305, "test": "deflated_sharpe"}
+{"details": "{\"note\": \"fewer than 4 configurations\", \"threshold\": 0.2}", "experiment_id": "E-20261117-0745", "id": 6109, "p_value": null, "passed": null, "statistic": null, "test": "pbo"}
+{"details": "{\"note\": \"3 configurations\", \"threshold\": 0.05}", "experiment_id": "E-20261117-0745", "id": 6110, "p_value": null, "passed": 0, "statistic": 0.056, "test": "spa"}
+{"details": "{\"note\": \"47 windows\", \"threshold\": 0.0}", "experiment_id": "E-20261117-0745", "id": 6111, "p_value": null, "passed": 1, "statistic": 0.16704042750941883, "test": "walk_forward_oos_sharpe"}
+{"details": "{\"note\": \"\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0745", "id": 6112, "p_value": null, "passed": 1, "statistic": 0.5106382978723404, "test": "walk_forward_positive_windows"}
+{"details": "{\"note\": \"1 neighbours, 100% positive\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0745", "id": 6113, "p_value": null, "passed": 1, "statistic": 0.5569509910951325, "test": "parameter_plateau"}
+{"details": "{\"note\": \"25 years\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0745", "id": 6114, "p_value": null, "passed": 1, "statistic": 0.68, "test": "years_positive"}
+{"details": "{\"note\": \"best year 1996\", \"threshold\": 0}", "experiment_id": "E-20261117-0745", "id": 6115, "p_value": null, "passed": 1, "statistic": 0.9252568014296076, "test": "profitable_without_best_year"}
+{"details": "{\"configs\": 3}", "experiment_id": "E-20261117-0746", "id": 6116, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}
+{"details": "{\"note\": \"style=swing\", \"threshold\": 30}", "experiment_id": "E-20261117-0746", "id": 6117, "p_value": null, "passed": 1, "statistic": 238.0, "test": "min_trades"}
+{"details": "{\"note\": \"\", \"threshold\": 0}", "experiment_id": "E-20261117-0746", "id": 6118, "p_value": null, "passed": 1, "statistic": 1.0218782756916225, "test": "net_profit_after_costs"}
+{"details": "{\"note\": \"\", \"threshold\": 1.0}", "experiment_id": "E-20261117-0746", "id": 6119, "p_value": null, "passed": 1, "statistic": 1.3592030591294424, "test": "profit_factor"}
+{"details": "{\"note\": \"cost x2.0\", \"threshold\": 0}", "experiment_id": "E-20261117-0746", "id": 6120, "p_value": null, "passed": 1, "statistic": 0.6628863144364736, "test": "profitable_at_2x_costs"}
+{"details": "{\"note\": \"4 trials in family 'H4-21'\", \"threshold\": 0.95}", "experiment_id": "E-20261117-0746", "id": 6121, "p_value": null, "passed": 0, "statistic": 0.7560577257792859, "test": "deflated_sharpe"}
+{"details": "{\"note\": \"fewer than 4 configurations\", \"threshold\": 0.2}", "experiment_id": "E-20261117-0746", "id": 6122, "p_value": null, "passed": null, "statistic": null, "test": "pbo"}
+{"details": "{\"note\": \"3 configurations\", \"threshold\": 0.05}", "experiment_id": "E-20261117-0746", "id": 6123, "p_value": null, "passed": 1, "statistic": 0.044, "test": "spa"}
+{"details": "{\"note\": \"47 windows\", \"threshold\": 0.0}", "experiment_id": "E-20261117-0746", "id": 6124, "p_value": null, "passed": 1, "statistic": 0.413162227979925, "test": "walk_forward_oos_sharpe"}
+{"details": "{\"note\": \"\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0746", "id": 6125, "p_value": null, "passed": 1, "statistic": 0.7021276595744681, "test": "walk_forward_positive_windows"}
+{"details": "{\"note\": \"1 neighbours, 100% positive\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0746", "id": 6126, "p_value": null, "passed": 0, "statistic": 0.4625409395538908, "test": "parameter_plateau"}
+{"details": "{\"note\": \"25 years\", \"threshold\": 0.5}", "experiment_id": "E-20261117-0746", "id": 6127, "p_value": null, "passed": 1, "statistic": 0.68, "test": "years_positive"}
+{"details": "{\"note\": \"best year 2009\", \"threshold\": 0}", "experiment_id": "E-20261117-0746", "id": 6128, "p_value": null, "passed": 1, "statistic": 0.5611559117452987, "test": "profitable_without_best_year"}
+{"details": "{\"checks\": 3, \"failures\": []}", "experiment_id": "E-20261117-0747", "id": 6129, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}
+{"details": "{\"checks\": 3, \"failures\": []}", "experiment_id": "E-20261117-0748", "id": 6130, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}
+{"details": "{\"checks\": 3, \"failures\": []}", "experiment_id": "E-20261117-0749", "id": 6131, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}
+{"details": "{\"checks\": 3, \"failures\": []}", "experiment_id": "E-20261117-0750", "id": 6132, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}
+{"details": "{\"checks\": 3, \"failures\": []}", "experiment_id": "E-20261117-0751", "id": 6133, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}
+{"details": "{\"checks\": 3, \"failures\": []}", "experiment_id": "E-20261117-0752", "id": 6134, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}
+{"details": "{\"checks\": 3, \"failures\": []}", "experiment_id": "E-20261117-0753", "id": 6135, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}
+{"details": "{\"checks\": 3, \"failures\": []}", "experiment_id": "E-20261117-0754", "id": 6136, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}

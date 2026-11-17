@@ -1,0 +1,122 @@
+{
+  "id": "H4-17",
+  "title": "SPY 2-day RSI pullback",
+  "verdict": "CANDIDATE",
+  "confidence": "low",
+  "best_params": {
+    "exit_rsi": 70.0,
+    "trend_n": 200,
+    "entry_rsi": 10.0
+  },
+  "reasons": [],
+  "grid_size": 3,
+  "family_trials": 4,
+  "experiments": [
+    "E-20261117-0741",
+    "E-20261117-0742"
+  ],
+  "spa_p": 0.0,
+  "dsr": 0.9969786966100322,
+  "dev": {
+    "trades": 175,
+    "win_rate": 0.7657142857142857,
+    "profit_factor": 3.0956350385847813,
+    "expectancy": 68.37040770227385,
+    "expectancy_r": null,
+    "total_return": 2.392964269579582,
+    "cagr": 0.050252474011919235,
+    "sharpe": 0.7560033806790327,
+    "sortino": 1.174808965483218,
+    "calmar": 0.32908205930560336,
+    "max_drawdown": -0.15270499436510476,
+    "exposure": 0.12394455950294726,
+    "avg_holding_hours": 151.81714285714287,
+    "cost_share_of_gross": 0.12352168673352631,
+    "benchmark_total_return": 6.3999302170485795,
+    "benchmark_sharpe": 0.5914574962002354,
+    "benchmark_max_drawdown": -0.4702499189765019,
+    "years": 24.917180013689254
+  },
+  "val": {
+    "trades": 25,
+    "win_rate": 0.72,
+    "profit_factor": 1.9894578019425682,
+    "expectancy": 28.933495401716005,
+    "expectancy_r": null,
+    "total_return": 0.1446674770085803,
+    "cagr": 0.030530175532812898,
+    "sharpe": 0.5063483747013271,
+    "sortino": 0.7088441347826067,
+    "calmar": 0.3681737338682642,
+    "max_drawdown": -0.08292328518942327,
+    "exposure": 0.0980565371024735,
+    "avg_holding_hours": 150.72,
+    "cost_share_of_gross": 0.14230447910914304,
+    "benchmark_total_return": 0.4965004289922086,
+    "benchmark_sharpe": 0.5399107622375267,
+    "benchmark_max_drawdown": -0.32654558123386823,
+    "years": 4.492813141683778
+  },
+  "walk_forward": {
+    "train_days": 377,
+    "test_days": 125,
+    "segments": 47,
+    "fraction_positive": 0.5957446808510638,
+    "oos_sharpe": 0.668793545151986,
+    "oos_return": 1.905074526004813,
+    "efficiency": 0.7153975115570451
+  },
+  "pbo": null,
+  "extra": {},
+  "warnings": [
+    "Daily bars: entries/exits assume market-on-open fills; intraday path of stops is approximated from daily high/low (stop assumed to win when stop and target share a bar)."
+  ],
+  "report": "reports/strategies/H4-17.md",
+  "seconds": 3.9,
+  "trade_monte_carlo": {
+    "final_p05": 11564.915026351886,
+    "final_p50": 16860.580602392904,
+    "final_p95": 24067.621516455503,
+    "prob_loss": 0.0,
+    "max_dd_p50": -0.08794203899389352,
+    "max_dd_p95": -0.14989778048664584,
+    "prob_ruin_50pct": 0.0
+  },
+  "review": {
+    "dsr_final": 0.9993512318718494,
+    "family_trials_final": 12,
+    "cross_market": {
+      "QQQ": {
+        "total_return": 1.66742056539261,
+        "sharpe": 0.6160162870178684,
+        "trades": 137
+      },
+      "IWM": {
+        "total_return": 1.1057542546861536,
+        "sharpe": 0.5796353757817694,
+        "trades": 122
+      },
+      "DIA": {
+        "total_return": 0.5503575064190869,
+        "sharpe": 0.4111085860810856,
+        "trades": 135
+      },
+      "XLK": {
+        "total_return": 0.5406595123725171,
+        "sharpe": 0.3326017892917644,
+        "trades": 118
+      },
+      "XLF": {
+        "total_return": 1.1107785204954164,
+        "sharpe": 0.5947988488259975,
+        "trades": 117
+      },
+      "XLI": {
+        "total_return": 0.9248439159662709,
+        "sharpe": 0.5299653716477526,
+        "trades": 134
+      }
+    },
+    "replicated": "6/6"
+  }
+}

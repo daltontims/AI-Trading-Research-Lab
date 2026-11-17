@@ -109,3 +109,13 @@ On real BTC 1-minute data, random entries without the overshoot average zero at 
 (t = 0.59: no stop-fill bias on fine-grained real paths); with it they lose ≈20% over five years at
 0.5% risk per trade. The overshoot is therefore conservative on liquid real data. Kept at 20%
 because short-term crypto stops do slip in fast markets; revisit with tick data (Phase 7).
+
+## D-019 — Trade-order Monte Carlo uses per-trade returns (2026-11-17)
+The first version resampled dollar P&L, which is wrong for compounding strategies (a large late
+trade replayed early could exceed the account; one card showed a −772% drawdown). It now compounds
+per-trade returns on equity. Diagnostic only — no verdict changed; all cards were corrected.
+
+## D-020 — Vault tests postponed until idle cash earns interest (2026-11-17)
+Vault results are final. Low-exposure candidates (H4-17 is in the market ~12% of the time) are
+materially affected by the 0% interest assumption on cash, so cash interest (T-bill yield) will be
+modelled before the vault is opened for H4-17 and H4-02.

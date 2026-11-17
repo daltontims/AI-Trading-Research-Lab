@@ -1,0 +1,67 @@
+{
+  "id": "H4-20",
+  "title": "Buy SPY after VIX spikes",
+  "verdict": "REJECTED",
+  "confidence": "none",
+  "best_params": {
+    "n": 10,
+    "spike": 1.2
+  },
+  "reasons": [
+    "deflated_sharpe: 0.782 (needs \u2265 0.950)",
+    "spa: 0.056 (needs \u2264 0.050)"
+  ],
+  "grid_size": 3,
+  "family_trials": 4,
+  "experiments": [
+    "E-20261117-0745"
+  ],
+  "spa_p": 0.056,
+  "dsr": 0.7818921270487305,
+  "dev": {
+    "trades": 96,
+    "win_rate": 0.6875,
+    "profit_factor": 1.6299768095380158,
+    "expectancy": 64.44456462963667,
+    "expectancy_r": null,
+    "total_return": 1.2373356408890221,
+    "cagr": 0.032846407443722025,
+    "sharpe": 0.3645024448538281,
+    "sortino": 0.5467387954874693,
+    "calmar": 0.11454757785023333,
+    "max_drawdown": -0.28674903529315543,
+    "exposure": 0.15293930221443364,
+    "avg_holding_hours": 349.75,
+    "cost_share_of_gross": 0.13272507381602242,
+    "benchmark_total_return": 6.3999302170485795,
+    "benchmark_sharpe": 0.5914574962002354,
+    "benchmark_max_drawdown": -0.4702499189765019,
+    "years": 24.917180013689254
+  },
+  "val": null,
+  "walk_forward": {
+    "train_days": 377,
+    "test_days": 125,
+    "segments": 47,
+    "fraction_positive": 0.5106382978723404,
+    "oos_sharpe": 0.16704042750941883,
+    "oos_return": 0.3117962603058564,
+    "efficiency": 0.5041507295352919
+  },
+  "pbo": null,
+  "extra": {},
+  "warnings": [
+    "Daily bars: entries/exits assume market-on-open fills; intraday path of stops is approximated from daily high/low (stop assumed to win when stop and target share a bar)."
+  ],
+  "report": "reports/strategies/H4-20.md",
+  "seconds": 4.0,
+  "trade_monte_carlo": {
+    "final_p05": 5325.989163603081,
+    "final_p50": 11093.508572494797,
+    "final_p95": 22077.30265757917,
+    "prob_loss": 0.0365,
+    "max_dd_p50": -0.2351747494365094,
+    "max_dd_p95": -0.4312044418911308,
+    "prob_ruin_50pct": 0.0065
+  }
+}

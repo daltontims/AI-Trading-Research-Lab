@@ -1,0 +1,72 @@
+{
+  "id": "H4-18",
+  "title": "SPY turn-of-the-month",
+  "verdict": "REJECTED",
+  "confidence": "none",
+  "best_params": {
+    "days_after": 4
+  },
+  "reasons": [
+    "profitable_at_2x_costs: -0.095 (needs \u2265 0)",
+    "deflated_sharpe: 0.191 (needs \u2265 0.950)",
+    "spa: 0.544 (needs \u2264 0.050)",
+    "walk_forward_oos_sharpe: -0.011 (needs \u2265 0.000)",
+    "walk_forward_positive_windows: 0.234 (needs \u2265 0.500)",
+    "parameter_plateau: -0.942 (needs \u2265 0.500)",
+    "years_positive: 0.320 (needs \u2265 0.500)",
+    "profitable_without_best_year: -0.098 (needs \u2265 0)"
+  ],
+  "grid_size": 3,
+  "family_trials": 4,
+  "experiments": [
+    "E-20261117-0743"
+  ],
+  "spa_p": 0.544,
+  "dsr": 0.19146449339261395,
+  "dev": {
+    "trades": 134,
+    "win_rate": 0.5522388059701493,
+    "profit_factor": 1.0064641688503555,
+    "expectancy": 0.24265088969902074,
+    "expectancy_r": null,
+    "total_return": 0.0065030438439344085,
+    "cagr": 0.00026017524721688723,
+    "sharpe": 0.03533867283748296,
+    "sortino": 0.0465111216275193,
+    "calmar": 0.0009564156607211631,
+    "max_drawdown": -0.2720315631602144,
+    "exposure": 0.1059423291381233,
+    "avg_holding_hours": 179.1044776119403,
+    "cost_share_of_gross": 0.9385007622830086,
+    "benchmark_total_return": 6.3999302170485795,
+    "benchmark_sharpe": 0.5914574962002354,
+    "benchmark_max_drawdown": -0.4702499189765019,
+    "years": 24.917180013689254
+  },
+  "val": null,
+  "walk_forward": {
+    "train_days": 377,
+    "test_days": 125,
+    "segments": 47,
+    "fraction_positive": 0.23404255319148937,
+    "oos_sharpe": -0.010516193383845738,
+    "oos_return": -0.053231903202982545,
+    "efficiency": NaN
+  },
+  "pbo": null,
+  "extra": {},
+  "warnings": [
+    "Daily bars: entries/exits assume market-on-open fills; intraday path of stops is approximated from daily high/low (stop assumed to win when stop and target share a bar)."
+  ],
+  "report": "reports/strategies/H4-18.md",
+  "seconds": 4.2,
+  "trade_monte_carlo": {
+    "final_p05": 3205.479880058002,
+    "final_p50": 5026.955459474049,
+    "final_p95": 7639.706326897172,
+    "prob_loss": 0.4905,
+    "max_dd_p50": -0.23380256735659688,
+    "max_dd_p95": -0.4417905623397963,
+    "prob_ruin_50pct": 0.009
+  }
+}
