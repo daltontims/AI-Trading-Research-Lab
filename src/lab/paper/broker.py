@@ -100,7 +100,7 @@ class AlpacaPaperBroker:
         r = self.http.post("/orders", json=body)
         if r.status_code == 422 and "client_order_id" in r.text:
             # Already submitted (idempotent re-run): return the existing order.
-            return _order(self._get(f"/orders:by_client_order_id", client_order_id=client_order_id))
+            return _order(self._get("/orders:by_client_order_id", client_order_id=client_order_id))
         r.raise_for_status()
         return _order(r.json())
 
