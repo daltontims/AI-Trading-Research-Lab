@@ -73,3 +73,7 @@ cancels open orders and places none), or disable the scheduled task.
 After at least 3 months, paper results are compared with what the backtest expects for the same period
 (same signals, same days). Passing requires results within the backtest's expected range and real
 fill prices consistent with the cost model. Until then the strategy's status is PAPER.
+
+## Standing session
+
+Daily runs happen in the standing cloud session 'Paper trading daily runs', woken by the scheduled task at 08:40 New York time.
