@@ -101,5 +101,31 @@
       }
     },
     "replicated": "2/2"
+  },
+  "vault": {
+    "verdict": "REJECTED",
+    "experiment": "E-20261117-0757",
+    "period": [
+      "2025-07-01",
+      "2026-10-31"
+    ],
+    "psr": 0.539708079223241,
+    "reasons": [
+      "vault_net_profit: -0.010 (needs 0)",
+      "vault_profit_factor: 0.966 (needs 1.000)",
+      "vault_psr: 0.540 (needs 0.800)"
+    ],
+    "metrics": {
+      "total_return": -0.00956043661171968,
+      "cagr": -0.007164272609995748,
+      "sharpe": 0.08634171053390521,
+      "max_drawdown": -0.24884344807493142,
+      "trades": 15,
+      "win_rate": 0.13333333333333333,
+      "profit_factor": 0.9657517850309829,
+      "benchmark_total_return": -0.26757334415373024,
+      "benchmark_sharpe": -0.3547376668804945,
+      "total_interest": 0.0
+    }
   }
 }

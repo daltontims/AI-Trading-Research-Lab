@@ -6134,3 +6134,14 @@
 {"details": "{\"checks\": 3, \"failures\": []}", "experiment_id": "E-20261117-0752", "id": 6134, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}
 {"details": "{\"checks\": 3, \"failures\": []}", "experiment_id": "E-20261117-0753", "id": 6135, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}
 {"details": "{\"checks\": 3, \"failures\": []}", "experiment_id": "E-20261117-0754", "id": 6136, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}
+{"details": "{\"checks\": 3, \"failures\": []}", "experiment_id": "E-20261117-0755", "id": 6137, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}
+{"details": "{\"checks\": 3, \"failures\": []}", "experiment_id": "E-20261117-0756", "id": 6138, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}
+{"details": "{\"threshold\": 0}", "experiment_id": "E-20261117-0756", "id": 6139, "p_value": null, "passed": 1, "statistic": 0.3557382566600631, "test": "vault_net_profit"}
+{"details": "{\"threshold\": 1.0}", "experiment_id": "E-20261117-0756", "id": 6140, "p_value": null, "passed": 1, "statistic": 2.0963331026681593, "test": "vault_profit_factor"}
+{"details": "{\"threshold\": 0.8}", "experiment_id": "E-20261117-0756", "id": 6141, "p_value": null, "passed": 1, "statistic": 0.9934972331305567, "test": "vault_psr"}
+{"details": "{\"threshold\": 7.5}", "experiment_id": "E-20261117-0756", "id": 6142, "p_value": null, "passed": 1, "statistic": 40.0, "test": "vault_trades"}
+{"details": "{\"checks\": 3, \"failures\": []}", "experiment_id": "E-20261117-0757", "id": 6143, "p_value": null, "passed": 1, "statistic": null, "test": "lookahead_signal_causality"}
+{"details": "{\"threshold\": 0}", "experiment_id": "E-20261117-0757", "id": 6144, "p_value": null, "passed": 0, "statistic": -0.00956043661171968, "test": "vault_net_profit"}
+{"details": "{\"threshold\": 1.0}", "experiment_id": "E-20261117-0757", "id": 6145, "p_value": null, "passed": 0, "statistic": 0.9657517850309829, "test": "vault_profit_factor"}
+{"details": "{\"threshold\": 0.8}", "experiment_id": "E-20261117-0757", "id": 6146, "p_value": null, "passed": 0, "statistic": 0.539708079223241, "test": "vault_psr"}
+{"details": "{\"threshold\": 7.5}", "experiment_id": "E-20261117-0757", "id": 6147, "p_value": null, "passed": 1, "statistic": 15.0, "test": "vault_trades"}

@@ -118,5 +118,27 @@
       }
     },
     "replicated": "6/6"
+  },
+  "vault": {
+    "verdict": "VALIDATED",
+    "experiment": "E-20261117-0756",
+    "period": [
+      "2022-07-01",
+      "2026-11-06"
+    ],
+    "psr": 0.9934972331305567,
+    "reasons": [],
+    "metrics": {
+      "total_return": 0.3557382566600631,
+      "cagr": 0.07241538929554214,
+      "sharpe": 1.1925984159179517,
+      "max_drawdown": -0.08202812443965479,
+      "trades": 40,
+      "win_rate": 0.75,
+      "profit_factor": 2.0963331026681593,
+      "benchmark_total_return": 1.0067098125651484,
+      "benchmark_sharpe": 1.0926996890964449,
+      "total_interest": 788.0014677550448
+    }
   }
 }

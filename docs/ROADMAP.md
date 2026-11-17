@@ -50,8 +50,8 @@ Checkboxes are updated as work completes. See ARCHITECTURE.md §D for context.
 - [x] 21 hand-designed hypotheses (crypto, ETFs), pre-registered before testing
 - [x] Context (VIX) and portfolio (rotation, pairs, lead-lag) strategy types; calendar features
 - [x] Results: 2 candidates (H4-17, H4-02), 19 rejected (reports/phase4_summary.md)
-- [ ] Model interest on idle cash (needed before vault tests)
-- [ ] Vault test for H4-17 and H4-02 (one look each)
+- [x] Model interest on idle cash (T-bill − 0.5%)
+- [x] Vault test: H4-17 VALIDATED, H4-02 REJECTED (reports/phase4_vault.md)
 - [ ] FX hypotheses (blocked: no FX data)
 
 ## Phase 5 — Discovery engine

@@ -6,7 +6,14 @@ pipeline on development data, with a single validation look for those passing ev
 [phase4_candidate_review.md](phase4_candidate_review.md) (extra scrutiny), strategy cards in
 [strategies/](strategies/), failures in [../research/graveyard/](../research/graveyard/README.md).*
 
-## Results at a glance
+## Final outcome (after the vault test, reports/phase4_vault.md)
+
+- **H4-17 SPY RSI(2) pullback — VALIDATED.** Vault 2022-07 → 2026-11: +35.6% (7.2%/yr), Sharpe 1.19 vs
+  1.09 buy & hold, max drawdown −8% vs −18%, 40 trades, 75% winners, still +31% at 2× costs.
+- **H4-02 BTC 50-day trend filter — REJECTED at the vault** (−1.0% while BTC fell 27%: good protection,
+  no edge).
+
+## Results at a glance (before the vault test)
 
 | Group | Count | Notes |
 |---|---|---|
@@ -51,11 +58,10 @@ Hold BTC when its daily close is above the 50-day average, otherwise hold cash.
 3. **The gates matter.** Eight ideas made money in development but were stopped for being indistinguishable
    from luck or fragile. Without the gates, all eight would have looked attractive.
 
-## Recommended next steps
+## Next steps
 
-1. **Model interest on idle cash** (T-bill yield from ^IRX) before any final test: it materially affects
-   low-exposure strategies like H4-17 and their comparison with buy & hold.
-2. **Then the vault test** for both candidates (one look each, final) — the step that could move them
-   to "validated". Because the result is final, I will do it only after (1).
+1. Done: cash interest modelled (D-020) and vault tests run with settings fixed in advance (D-021).
+2. Paper trading of H4-17 would be the next validation stage — requires the owner's permission and a
+   free paper account (e.g. Alpaca paper trading).
 3. Phase 5: automated hypothesis generation, building on the families that showed signal (trend and
    pullback effects across many ETFs and coins), with the trial counts growing accordingly.

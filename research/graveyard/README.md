@@ -23,3 +23,4 @@ Rejected hypotheses and why. Failures are data: they stop us re-testing dead ide
 | H4-19 | SPY with VIX term-structure filter | deflated_sharpe: 0.908; walk_forward_positive_windows: 0.255; years_positive: 0.320 |
 | H4-20 | Buy SPY after VIX spikes | deflated_sharpe: 0.782; spa: 0.056 |
 | H4-21 | SPY low-volatility regime | deflated_sharpe: 0.756; parameter_plateau: 0.463 |
+| H4-02 | BTC daily trend filter (long/flat) | passed development + validation; **failed the final vault test** (−1.0%, PF 0.97, PSR 0.54) |

@@ -37,7 +37,9 @@
   `lab evaluate`; it records everything and writes reports/strategies/<hypothesis>.md.
 - Phase 4 complete (2026-11-17): 21 hypotheses (scripts/phase4_batch.py, research/hypotheses/),
   2 candidates H4-17 (SPY RSI2) and H4-02 (BTC 50d trend), 19 rejected. reports/phase4_summary.md.
-- Next: model cash interest (D-020), then vault test for H4-17 and H4-02, then Phase 5 discovery engine.
+- Vault tests done (D-021): H4-17 VALIDATED (first validated strategy), H4-02 REJECTED. Vault is now
+  used for both; never re-run them.
+- Next: Phase 5 discovery engine + Phase 6 dashboard. Paper trading H4-17 needs owner permission.
 
 ## Validation conventions (do not break)
 - Validation split: one look per hypothesis (enforced). Changed rules = new hypothesis.

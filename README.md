@@ -8,7 +8,7 @@ data purchases happen without the owner's explicit permission.
 
 ## Status
 
-**Phase 4 — First research batch: complete.** 21 pre-registered hypotheses tested: 2 candidates, 19 rejected (see [reports/phase4_summary.md](reports/phase4_summary.md)). Next: cash-interest modelling, then the final (vault) test for the candidates. Forex data download still pending.
+**Phase 4 — First research batch: complete.** 21 pre-registered hypotheses → 1 validated strategy (H4-17, SPY RSI pullback), 20 rejected. See [reports/phase4_summary.md](reports/phase4_summary.md) and [reports/phase4_vault.md](reports/phase4_vault.md). Next: Phase 5 (automated discovery) and the dashboard. Forex data download still pending.
 
 | Document | What it covers |
 |---|---|
@@ -26,13 +26,16 @@ data purchases happen without the owner's explicit permission.
 
 ## Leaderboard
 
-**Validated strategies: none.** Nothing has passed the final (vault) test or paper trading yet.
+**Validated** (passed development, validation and the one-time final vault test; NOT yet paper-traded):
 
-**Candidates** (passed development and validation gates — promising, not proven):
+| ID | Strategy | Market | Timeframe | Vault period | Vault net return | Vault Sharpe (buy & hold) | Vault max DD (buy & hold) | Confidence |
+|---|---|---|---|---|---|---|---|---|
+| [H4-17](reports/strategies/H4-17.md) | Buy 2-day RSI < 10 dips above the 200-day average; sell when RSI > 70 | SPY | Daily | 2022-07 → 2026-11 | +35.6% | 1.19 (1.09) | −8.2% (−18.2%) | Moderate |
 
-| ID | Strategy | Market | Timeframe | Validation net return | Validation Sharpe (buy & hold) | Confidence |
-|---|---|---|---|---|---|---|
-| [H4-17](reports/strategies/H4-17.md) | 2-day RSI pullback in an uptrend | SPY (replicates on 6/6 ETFs) | Daily | +14.5% | 0.51 (0.54) | Low |
-| [H4-02](reports/strategies/H4-02.md) | 50-day trend filter, long/flat | BTC | Daily | +61.0% | 1.05 (1.41) | Low |
+**Candidates:** none open.
 
-Rejected ideas and reasons: [research/graveyard/README.md](research/graveyard/README.md).
+**Rejected at the final test:** H4-02 BTC 50-day trend filter (vault −1.0%; buy & hold −26.8%) — see
+[reports/phase4_vault.md](reports/phase4_vault.md). All rejected ideas: [research/graveyard/README.md](research/graveyard/README.md).
+
+"Validated" means the result survived every statistical test on data it was never fitted to. It is still
+historical evidence, not a guarantee; the next step would be paper trading (needs your permission).
