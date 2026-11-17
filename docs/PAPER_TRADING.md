@@ -39,8 +39,11 @@ Each trading day before the US open (≈08:40 New York time; Alpaca accepts open
 
 ## Schedule
 
-A weekday scheduled task (Claude app → scheduled tasks, "Paper trading daily run") starts a fresh cloud
-session at **08:40 New York time** in the `ai-trading-research-lab` environment. It checks out the
+A weekday scheduled task (Claude app → scheduled tasks, "Paper trading daily run") wakes the standing
+cloud session **"Paper trading daily runs"** at **08:40 New York time**. That session has the repository
+attached with push access (fresh sessions started by a scheduled task get no repository access, so they
+could not save the journal). Use the scheduled task's schedule only: its manual "run now" starts a
+separate session without the repository. To run by hand, message the standing session instead. It checks out the
 paper-trading branch, runs `uv run lab paper run --submit`, commits `research/paper/journal.jsonl` and
 `research/registry/` back to that branch, and reports fills, orders and the account. Market holidays
 are harmless: the order is keyed to the last completed session, so it is queued for the next open and
