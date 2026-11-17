@@ -66,6 +66,16 @@ e.g. the best of 50 random strategies passes naive significance > 60% of the tim
 Sharpe < 10%; SPA rejects at ≈ the nominal rate under the null and finds a planted winner; PBO
 averages 0.5 on noise and ≈0 for a genuinely skilled configuration.
 
+## Calibration result (reports/phase3_calibration.md)
+
+| Test | Result |
+|---|---|
+| 160 null datasets (random walks, best-of-12 random strategies on real BTC, shuffled real BTC) | **0 false candidates (0.0%)** |
+| Planted momentum φ = 0.15 | found 20/20 |
+| Planted momentum φ ≤ 0.10 | mostly missed — the effect is too small to survive costs and the 2× cost stress |
+
+The pipeline is strict: it rarely promotes luck, and it misses small edges that costs would eat anyway.
+
 ## Rules that protect the data
 
 - The validation split is opened **once per hypothesis**; a second attempt raises an error.

@@ -103,3 +103,9 @@ on null data for every exit type it supports.
 ## D-017 — One validation look per hypothesis (2026-11-17)
 The pipeline refuses a second validation run for the same hypothesis. A modified idea must be
 registered as a new hypothesis (linked via parent_id), and its trials add to the family count.
+
+## D-018 — Stop overshoot is a deliberate, measured cost on real data (2026-11-17)
+On real BTC 1-minute data, random entries without the overshoot average zero at zero cost
+(t = 0.59: no stop-fill bias on fine-grained real paths); with it they lose ≈20% over five years at
+0.5% risk per trade. The overshoot is therefore conservative on liquid real data. Kept at 20%
+because short-term crypto stops do slip in fast markets; revisit with tick data (Phase 7).

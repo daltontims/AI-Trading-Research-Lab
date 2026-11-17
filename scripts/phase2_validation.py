@@ -149,17 +149,20 @@ def main():
                                   source="manual", asset_classes=["crypto"], instruments=["BTCUSDT"], timeframe="1m",
                                   style="calibration", spec={"strategy": "random_entry", "seeds": 30},
                                   rationale="Pipeline calibration.", trial_budget=200)
-    rets = {"crypto_perp": [], "crypto_spot": [], "crypto_perp, costs ×0": []}
+    rets = {"crypto_perp": [], "crypto_spot": [], "crypto_perp, costs ×0": [],
+            "crypto_perp, costs ×0, no stop overshoot": []}
     timings = []
     for prof in rets:
         for seed in range(30):
             venue = prof.split(",")[0]
             strat = RandomEntry(seed=seed, prob=0.002, allow_short=(venue == "crypto_perp"))
             mult = 0.0 if "×0" in prof else 1.0
+            over = {"stop_overshoot_frac": 0.0} if "no stop overshoot" in prof else {}
             t0 = time.time()
             res, _ = run_experiment(strat, "BTCUSDT", "1m", hypothesis_id=hid, stage="diagnostic", data=data,
                                     risk=RiskConfig(sizing="risk", risk_per_trade=0.005, max_bars_held=60),
-                                    execution=ExecutionConfig(cost_profile=venue, cost_multiplier=mult),
+                                    execution=ExecutionConfig(cost_profile=venue, cost_multiplier=mult,
+                                                              cost_overrides=over),
                                     registry=reg, check_lookahead=(seed == 0), export=False, seed=seed)
             timings.append(time.time() - t0)
             rets[prof].append((res.metrics["total_return"], res.metrics["trades"], res.metrics["sharpe"]))
@@ -171,11 +174,13 @@ def main():
         r = np.array([x[0] for x in rows])
         lines.append(f"| `{prof}` | {r.mean():.1%} | {np.median(r):.1%} | {(r > 0).sum()}/30 | "
                      f"{np.mean([x[1] for x in rows]):,.0f} | {np.mean([x[2] for x in rows]):.2f} |")
-    z = np.array([x[0] for x in rets["crypto_perp, costs ×0"]])
+    z = np.array([x[0] for x in rets["crypto_perp, costs ×0, no stop overshoot"]])
     tstat = z.mean() / (z.std(ddof=1) / np.sqrt(len(z)))
     lines += ["", "With realistic costs every seed should lose: costs are paid on every trade and random entries "
-              "have no edge. The stronger test is the **zero-cost** row: random long/short entries should average "
-              f"close to zero if the engine has no built-in bias. Observed t-statistic of the mean: **{tstat:.2f}** "
+              "have no edge. The stronger test is the **zero-cost, no-overshoot** row: random long/short entries should "
+              "average close to zero if the engine has no built-in bias. (The plain zero-cost row keeps the deliberate "
+              "stop-overshoot penalty, DECISIONS D-015, so it is expected to lose.) Observed t-statistic of the mean: "
+              f"**{tstat:.2f}** "
               f"({'consistent with zero' if abs(tstat) < 2.5 else 'INVESTIGATE: possible bias'}).", ""]
     lines += ["## 6. Speed", "",
               f"One BTC 1-minute backtest over {data.n_bars:,} bars (signals + simulation + metrics + registry write): "

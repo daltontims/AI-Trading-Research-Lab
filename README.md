@@ -8,7 +8,7 @@ data purchases happen without the owner's explicit permission.
 
 ## Status
 
-**Phase 2 — Backtesting engine: complete.** Multi-market engine with realistic costs, look-ahead protection, research registry and 84 automated tests. Next: Phase 3 (statistical validation toolkit). Forex data download still pending.
+**Phase 3 — Statistical validation: complete.** Promotion pipeline (Deflated Sharpe, PBO, SPA, walk-forward, robustness) calibrated: 0 false discoveries on 160 null datasets. Next: Phase 4 (first research batch). Forex data download still pending.
 
 | Document | What it covers |
 |---|---|
@@ -19,6 +19,8 @@ data purchases happen without the owner's explicit permission.
 | [docs/DATA.md](docs/DATA.md) | Data sources, lake layout, caveats |
 | [docs/ENGINE.md](docs/ENGINE.md) | Backtesting engine: execution rules, costs, risk, limitations |
 | [reports/phase2_engine_validation.md](reports/phase2_engine_validation.md) | Engine validation on BTC, ETH, SPY |
+| [docs/VALIDATION.md](docs/VALIDATION.md) | How results are judged: tests, gates, confidence |
+| [reports/phase3_calibration.md](reports/phase3_calibration.md) | Proof the pipeline rejects luck |
 | [reports/data_quality.md](reports/data_quality.md) | Latest automated data-quality report |
 | [CLAUDE.md](CLAUDE.md) | Handoff notes for resuming work |
 
