@@ -1,0 +1,65 @@
+{
+  "id": "H4-07",
+  "title": "BTC time-of-day session effect",
+  "verdict": "REJECTED",
+  "confidence": "none",
+  "best_params": {
+    "session": "us"
+  },
+  "reasons": [
+    "net_profit_after_costs: -0.991 (needs > 0)",
+    "profit_factor: 0.760 (needs \u2265 1.000)",
+    "profitable_at_2x_costs: -0.999 (needs \u2265 0)",
+    "deflated_sharpe: 0.000 (needs \u2265 0.950)",
+    "spa: 1.000 (needs \u2264 0.050)",
+    "walk_forward_oos_sharpe: -2.415 (needs \u2265 0.000)",
+    "walk_forward_positive_windows: 0.143 (needs \u2265 0.500)",
+    "parameter_plateau: n/a (needs \u2265 0.500)",
+    "years_positive: 0.000 (needs \u2265 0.500)",
+    "profitable_without_best_year: -0.989 (needs \u2265 0)"
+  ],
+  "grid_size": 3,
+  "family_trials": 4,
+  "experiments": [
+    "E-20261117-0731"
+  ],
+  "spa_p": 1.0,
+  "dsr": 1.2274843099834943e-08,
+  "dev": {
+    "trades": 1823,
+    "win_rate": 0.40647284695556773,
+    "profit_factor": 0.7599280199451456,
+    "expectancy": -2.718233265103024,
+    "expectancy_r": null,
+    "total_return": -0.9910678484565612,
+    "cagr": -0.6108338041548659,
+    "sharpe": -2.054113214955737,
+    "sortino": -2.7122338347075825,
+    "calmar": -0.6160444461711173,
+    "max_drawdown": -0.9915417758432253,
+    "exposure": 0.333165771735405,
+    "avg_holding_hours": 8.0,
+    "cost_share_of_gross": 2.2986070951884985,
+    "benchmark_total_return": 10.400770120891103,
+    "benchmark_sharpe": 1.0637793562024151,
+    "benchmark_max_drawdown": -0.7719848663243954,
+    "years": 4.999315537303217
+  },
+  "val": null,
+  "walk_forward": {
+    "train_days": 547,
+    "test_days": 182,
+    "segments": 7,
+    "fraction_positive": 0.14285714285714285,
+    "oos_sharpe": -2.4150954683366677,
+    "oos_return": -0.9722234440040212,
+    "efficiency": NaN
+  },
+  "pbo": null,
+  "extra": {},
+  "warnings": [
+    "No bid/ask data: spreads are assumed constants from configs, not observed."
+  ],
+  "report": "reports/strategies/H4-07.md",
+  "seconds": 0.9
+}

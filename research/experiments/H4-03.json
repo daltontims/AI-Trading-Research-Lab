@@ -1,0 +1,57 @@
+{
+  "id": "H4-03",
+  "title": "ETH daily trend filter (long/flat)",
+  "verdict": "REJECTED",
+  "confidence": "none",
+  "best_params": {
+    "n": 50
+  },
+  "reasons": [
+    "deflated_sharpe: 0.750 (needs \u2265 0.950)",
+    "pbo: 0.794 (needs \u2264 0.200)"
+  ],
+  "grid_size": 4,
+  "family_trials": 13,
+  "experiments": [
+    "E-20261117-0727"
+  ],
+  "spa_p": 0.034,
+  "dsr": 0.7497721221332638,
+  "dev": {
+    "trades": 51,
+    "win_rate": 0.2549019607843137,
+    "profit_factor": 1.742941549717345,
+    "expectancy": 930.1098292068558,
+    "expectancy_r": null,
+    "total_return": 9.487120257909927,
+    "cagr": 0.600144479369306,
+    "sharpe": 1.0648897316076178,
+    "sortino": 1.598843594563366,
+    "calmar": 0.987059599142598,
+    "max_drawdown": -0.6080124035981385,
+    "exposure": 0.5624315443592552,
+    "avg_holding_hours": 483.29411764705884,
+    "cost_share_of_gross": 0.28528313637917685,
+    "benchmark_total_return": 15.365181868388209,
+    "benchmark_sharpe": 1.08845446793026,
+    "benchmark_max_drawdown": -0.7930253453633335,
+    "years": 4.999315537303217
+  },
+  "val": null,
+  "walk_forward": {
+    "train_days": 547,
+    "test_days": 182,
+    "segments": 7,
+    "fraction_positive": 0.5714285714285714,
+    "oos_sharpe": 1.0939254232051547,
+    "oos_return": 3.90596368378319,
+    "efficiency": 0.4292452370578395
+  },
+  "pbo": 0.7944832944832945,
+  "extra": {},
+  "warnings": [
+    "Daily bars: entries/exits assume market-on-open fills; intraday path of stops is approximated from daily high/low (stop assumed to win when stop and target share a bar)."
+  ],
+  "report": "reports/strategies/H4-03.md",
+  "seconds": 0.7
+}

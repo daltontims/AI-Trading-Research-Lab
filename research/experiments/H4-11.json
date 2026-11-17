@@ -1,0 +1,65 @@
+{
+  "id": "H4-11",
+  "title": "ETH follows BTC (lead-lag)",
+  "verdict": "REJECTED",
+  "confidence": "none",
+  "best_params": {
+    "z": 3.0
+  },
+  "reasons": [
+    "net_profit_after_costs: -0.973 (needs > 0)",
+    "profit_factor: 0.394 (needs \u2265 1.000)",
+    "profitable_at_2x_costs: -0.999 (needs \u2265 0)",
+    "deflated_sharpe: 0.000 (needs \u2265 0.950)",
+    "spa: 1.000 (needs \u2264 0.050)",
+    "walk_forward_oos_sharpe: -3.717 (needs \u2265 0.000)",
+    "walk_forward_positive_windows: 0.000 (needs \u2265 0.500)",
+    "parameter_plateau: n/a (needs \u2265 0.500)",
+    "years_positive: 0.000 (needs \u2265 0.500)",
+    "profitable_without_best_year: -0.953 (needs \u2265 0)"
+  ],
+  "grid_size": 3,
+  "family_trials": 4,
+  "experiments": [
+    "E-20261117-0735"
+  ],
+  "spa_p": 1.0,
+  "dsr": 5.5819469352655675e-19,
+  "dev": {
+    "trades": 812,
+    "win_rate": 0.33251231527093594,
+    "profit_factor": 0.3940469142528601,
+    "expectancy": -5.991746921564415,
+    "expectancy_r": null,
+    "total_return": -0.9730597000620607,
+    "cagr": -0.5146695879258123,
+    "sharpe": -3.5013863254863473,
+    "sortino": -3.8787915647810056,
+    "calmar": -0.5286872106295248,
+    "max_drawdown": -0.9734859810831791,
+    "exposure": 0.01855363875242774,
+    "avg_holding_hours": 1.0,
+    "cost_share_of_gross": 11.484055737248998,
+    "benchmark_total_return": 13.349229911296703,
+    "benchmark_sharpe": 1.0961610408491433,
+    "benchmark_max_drawdown": -0.7888503822745173,
+    "years": 4.999315537303217
+  },
+  "val": null,
+  "walk_forward": {
+    "train_days": 547,
+    "test_days": 182,
+    "segments": 7,
+    "fraction_positive": 0.0,
+    "oos_sharpe": -3.716894576214548,
+    "oos_return": -0.8954669599738553,
+    "efficiency": NaN
+  },
+  "pbo": null,
+  "extra": {},
+  "warnings": [
+    "No bid/ask data: spreads are assumed constants from configs, not observed."
+  ],
+  "report": "reports/strategies/H4-11.md",
+  "seconds": 0.9
+}

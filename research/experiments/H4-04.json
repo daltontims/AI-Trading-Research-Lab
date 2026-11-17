@@ -1,0 +1,66 @@
+{
+  "id": "H4-04",
+  "title": "BTC+ETH 4-hour channel breakout (long/short)",
+  "verdict": "REJECTED",
+  "confidence": "none",
+  "best_params": {
+    "trail_atr": 3.0,
+    "n": 100
+  },
+  "reasons": [
+    "net_profit_after_costs: -0.014 (needs > 0)",
+    "profit_factor: 0.993 (needs \u2265 1.000)",
+    "profitable_at_2x_costs: -0.531 (needs \u2265 0)",
+    "deflated_sharpe: 0.176 (needs \u2265 0.950)",
+    "spa: 0.610 (needs \u2264 0.050)",
+    "walk_forward_oos_sharpe: -0.475 (needs \u2265 0.000)",
+    "walk_forward_positive_windows: 0.286 (needs \u2265 0.500)",
+    "parameter_plateau: -6.286 (needs \u2265 0.500)",
+    "years_positive: 0.400 (needs \u2265 0.500)",
+    "profitable_without_best_year: -0.177 (needs \u2265 0)"
+  ],
+  "grid_size": 3,
+  "family_trials": 4,
+  "experiments": [
+    "E-20261117-0728"
+  ],
+  "spa_p": 0.61,
+  "dsr": 0.1757681106720998,
+  "dev": {
+    "trades": 307,
+    "win_rate": 0.3355048859934853,
+    "profit_factor": 0.9932724371629613,
+    "expectancy": -0.22270288369730146,
+    "expectancy_r": 0.0201411057664905,
+    "total_return": -0.013673957059017083,
+    "cagr": -0.0027502494598671268,
+    "sharpe": 0.05542815274901214,
+    "sortino": 0.0961780366859542,
+    "calmar": -0.008254613814460023,
+    "max_drawdown": -0.33317724144155314,
+    "exposure": 0.2573280978906036,
+    "avg_holding_hours": 48.88599348534202,
+    "cost_share_of_gross": 0.8922656197267934,
+    "benchmark_total_return": 13.393232097767529,
+    "benchmark_sharpe": 1.096962107267723,
+    "benchmark_max_drawdown": -0.7859567520428404,
+    "years": 4.999315537303217
+  },
+  "val": null,
+  "walk_forward": {
+    "train_days": 547,
+    "test_days": 182,
+    "segments": 7,
+    "fraction_positive": 0.2857142857142857,
+    "oos_sharpe": -0.4747162178772965,
+    "oos_return": -0.24113545696043903,
+    "efficiency": -10.178034961177904
+  },
+  "pbo": null,
+  "extra": {},
+  "warnings": [
+    "No bid/ask data: spreads are assumed constants from configs, not observed."
+  ],
+  "report": "reports/strategies/H4-04.md",
+  "seconds": 0.7
+}
