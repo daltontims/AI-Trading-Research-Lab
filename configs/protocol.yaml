@@ -19,3 +19,8 @@ validation:            # one look at the validation split -> CANDIDATE
   min_profit_factor: 1.0
   min_psr: 0.80                 # probability the validation Sharpe is above zero
   min_trades_fraction: 0.25     # of the development minimum
+vault:                 # one final look per hypothesis -> VALIDATED or REJECTED (final)
+  min_profit_factor: 1.0
+  min_psr: 0.80                 # probability the vault Sharpe is above zero
+  min_trades_fraction: 0.25     # of the development minimum
+  stress_multiplier: 2.0        # reported, not gated

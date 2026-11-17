@@ -450,3 +450,53 @@ def write_strategy_report(ev: Evaluation, strategy_cls, hyp: dict, symbols, time
     path = REPORT_DIR / f"{ev.hypothesis_id}.md"
     path.write_text("\n".join(lines) + "\n")
     return path
+
+
+# ----------------------------------------------------------------- final vault test
+
+def vault_test(strategy_cls, params: dict, symbols: list[str], timeframe: str, *, hypothesis_id: str,
+               registry: Registry | None = None, risk: RiskConfig | None = None,
+               execution: ExecutionConfig | None = None, funding: bool = False, style: str = "swing",
+               notes: str = "") -> dict:
+    """The final test: run the candidate's frozen rules once on the vault partition.
+
+    Allowed only for CANDIDATE hypotheses and only once (recorded in vault_access). Outcome is
+    final: VALIDATED if every vault gate passes, otherwise REJECTED.
+    """
+    from lab.research import run_experiment
+    reg = registry or Registry()
+    hyp = reg.hypothesis(hypothesis_id)
+    if hyp["status"] != "CANDIDATE":
+        raise PermissionError(f"{hypothesis_id} is {hyp['status']}; only CANDIDATE hypotheses may open the vault")
+    cfg = protocol()
+    vc = cfg["vault"]
+    risk = risk or RiskConfig()
+    execution = execution or ExecutionConfig()
+    strat = strategy_cls(**params)
+    res, eid = run_experiment(strat, symbols, timeframe, hypothesis_id=hypothesis_id, stage="vault", split="vault",
+                              risk=risk, execution=execution, funding=funding, registry=reg,
+                              cost_multipliers=(1.0, vc["stress_multiplier"]), notes=notes or "final vault test")
+    m = res.metrics
+    _, r = daily_returns(res)
+    psr = stats.probabilistic_sharpe(stats.sharpe_per_period(r), len(r))
+    min_tr = cfg["min_trades"][style] * vc["min_trades_fraction"]
+    gates = [Gate("vault_net_profit", m["total_return"] > 0, m["total_return"], 0),
+             Gate("vault_profit_factor", m["profit_factor"] == m["profit_factor"] and m["profit_factor"] > vc["min_profit_factor"],
+                  m["profit_factor"], vc["min_profit_factor"]),
+             Gate("vault_psr", psr >= vc["min_psr"], psr, vc["min_psr"]),
+             Gate("vault_trades", m["trades"] >= min_tr, m["trades"], min_tr)]
+    for g in gates:
+        reg.add_stat_test(eid, g.name, statistic=g.value if isinstance(g.value, (int, float)) else None,
+                          passed=g.passed, details={"threshold": g.threshold})
+    stress = reg.query("SELECT net_return, sharpe FROM trials WHERE experiment_id=? AND cost_multiplier>1", (eid,))
+    ok = all(g.passed for g in gates)
+    reasons = [f"{g.name}: {_fmt(g.value)} (needs {_fmt(g.threshold)})" for g in gates if not g.passed]
+    verdict = "VALIDATED" if ok else "REJECTED"
+    reg.set_status(hypothesis_id, verdict, "vault test passed" if ok else "vault test failed: " + "; ".join(reasons), eid)
+    reg.con.execute("UPDATE hypotheses SET confidence=? WHERE id=?",
+                    ("moderate" if ok else "none", hypothesis_id))
+    reg.con.commit()
+    reg.export()
+    return {"hypothesis_id": hypothesis_id, "verdict": verdict, "reasons": reasons, "experiment": eid,
+            "metrics": m, "psr": psr, "gates": gates, "stress": stress[0] if stress else None,
+            "period": (res.data["start"][:10], res.data["end"][:10]), "warnings": res.warnings}

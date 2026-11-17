@@ -105,3 +105,23 @@ def test_breakouts_with_stops_do_not_profit_on_random_walks():
     r = np.array(rets)
     t = r.mean() / (r.std(ddof=1) / np.sqrt(len(r)))
     assert t < 2.0, f"breakouts profit on random walks (t={t:.2f}): fill bias?"
+
+
+def test_vault_test_requires_candidate_and_runs_once(reg, monkeypatch):
+    import lab.validation.evaluate as E
+    from lab.registry.db import VaultAlreadyOpenedError
+    hid = _hyp(reg, "vault")
+    with pytest.raises(PermissionError, match="only CANDIDATE"):
+        E.vault_test(TimeSeriesMomentum, {"lookback": 1}, ["BTCUSDT"], "1h", hypothesis_id=hid, registry=reg)
+    reg.set_status(hid, "CANDIDATE", "test")
+    _, vault = synthetic(9, 24 * 365, phi=0.15)
+    import lab.research as R
+    monkeypatch.setattr(R, "load", lambda *a, **k: vault)
+    out = E.vault_test(TimeSeriesMomentum, {"lookback": 1}, ["BTCUSDT"], "1h", hypothesis_id=hid, registry=reg,
+                       execution=LOW_COST, risk=RiskConfig(sizing="pct_equity", position_pct=0.5), style="intraday")
+    assert out["verdict"] == "VALIDATED" and reg.hypothesis(hid)["status"] == "VALIDATED"
+    assert reg.vault_opened(hid)
+    reg.set_status(hid, "CANDIDATE", "pretend")  # even if someone resets the status...
+    with pytest.raises((PermissionError, VaultAlreadyOpenedError)):
+        E.vault_test(TimeSeriesMomentum, {"lookback": 1}, ["BTCUSDT"], "1h", hypothesis_id=hid, registry=reg,
+                     execution=LOW_COST)

@@ -119,3 +119,14 @@ per-trade returns on equity. Diagnostic only — no verdict changed; all cards w
 Vault results are final. Low-exposure candidates (H4-17 is in the market ~12% of the time) are
 materially affected by the 0% interest assumption on cash, so cash interest (T-bill yield) will be
 modelled before the vault is opened for H4-17 and H4-02.
+
+## D-021 — Vault test settings, fixed before opening (2026-11-17)
+Rules and parameters are frozen from the development search (no changes):
+- H4-17: `RsiReversion` entry_rsi=10, exit_rsi=70, trend_n=200 on SPY daily; `equity_us` costs;
+  100% of equity per trade; **cash interest on** (13-week T-bill − 0.5%), as US brokers pay interest
+  on idle cash. Vault period: 2022-07-01 → latest data.
+- H4-02: `TrendFilter` n=50 on BTCUSDT daily; `crypto_spot` costs; 100% of equity; **no cash
+  interest** (idle USDT on an exchange earns nothing by default). Vault period: 2025-07-01 → latest data.
+Gates (configs/protocol.yaml `vault`): net profit > 0, profit factor > 1, PSR ≥ 0.80, trades ≥ 25% of
+the development minimum (≥ 7.5 for swing). 2× cost stress reported, not gated. Outcome is final.
+A development re-run of H4-17 with cash interest is recorded as a diagnostic (no new validation look).

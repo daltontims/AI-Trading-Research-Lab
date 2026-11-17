@@ -39,6 +39,8 @@ class RiskConfig:
     max_daily_loss: float = 0.0          # e.g. 0.03 = flatten & stop for the day after −3% (0 = off)
     max_drawdown: float = 0.0            # e.g. 0.25 = flatten & halt after −25% from peak (0 = off)
     max_bars_held: int = 0               # time exit after N bars (0 = off)
+    cash_interest: bool = False          # pay interest on idle cash (13-week T-bill yield minus haircut)
+    cash_rate_haircut: float = 0.005     # broker pays less than T-bills: yield − 0.5%, floored at 0
 
     def __post_init__(self):
         if self.sizing not in ("risk", "pct_equity", "fixed_notional"):
@@ -167,6 +169,7 @@ def run_backtest(strategy: Strategy, data: MarketData, risk: RiskConfig | None =
         float(risk.fixed_notional), float(risk.max_position_pct), float(risk.max_gross_exposure),
         int(risk.max_open_positions), float(risk.max_daily_loss), float(risk.max_drawdown),
         int(risk.max_bars_held), int(execution.delay_bars), n_entries + N + 16,
+        cash_rate_series(data, risk) if risk.cash_interest else np.zeros(len(data.ts)),
     )
     if stats[4] > tr.shape[0]:
         raise RuntimeError("trade buffer overflow — engine bug")
@@ -194,6 +197,15 @@ def run_backtest(strategy: Strategy, data: MarketData, risk: RiskConfig | None =
         equity=equity, trades=trades, metrics=m, monthly=monthly, regimes=reg,
         skipped=skipped_d, warnings=warnings,
     )
+
+
+def cash_rate_series(data: MarketData, risk: RiskConfig) -> np.ndarray:
+    """Annual interest rate paid on idle cash at each bar: the previous day's 13-week T-bill yield
+    (^IRX, in percent) minus a broker haircut, floored at zero. Only past values are used."""
+    from lab.engine.strategy import asof_daily, load_context
+    irx = load_context("IDX_IRX", int(data.ts[-1]))
+    rate = asof_daily(data.ts_datetime, irx, same_day=False) / 100.0 - risk.cash_rate_haircut
+    return np.clip(np.nan_to_num(rate, nan=0.0), 0.0, None)
 
 
 def _trades_frame(tr: np.ndarray, syms: list[str], ts_dt: pl.Series) -> pl.DataFrame:
@@ -233,6 +245,7 @@ def analyze(equity: pl.DataFrame, trades: pl.DataFrame, initial_cash: float, sta
     days = (ts_us - ts_us[0]) / 86400e6
     cg = metrics.cagr(total, years)
     traded, fees, carry, spread_slip = stats[:4]
+    interest = float(stats[5])
     gross = float(trades["pnl_gross"].sum()) if trades.height else 0.0
     out = {
         "initial_cash": initial_cash, "final_equity": float(eq[-1]), "net_profit": float(eq[-1] - initial_cash),
@@ -246,7 +259,7 @@ def analyze(equity: pl.DataFrame, trades: pl.DataFrame, initial_cash: float, sta
         "avg_gross_exposure": float(equity["gross_exposure"].mean()),
         "turnover": float(traded / np.mean(eq) / years) if years > 0 else float("nan"),
         "traded_notional": float(traded), "total_fees": float(fees), "total_spread_slippage": float(spread_slip),
-        "total_carry": float(carry), "pnl_gross": gross,
+        "total_carry": float(carry), "total_interest": interest, "pnl_gross": gross,
         "cost_share_of_gross": float((fees + spread_slip) / gross) if gross > 0 else float("nan"),
     }
     out.update(metrics.trade_stats(trades))

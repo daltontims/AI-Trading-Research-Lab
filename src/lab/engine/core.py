@@ -16,7 +16,7 @@ Timeline inside each bar t, for every instrument with a bar at t:
              - stop and target both inside the bar -> STOP assumed first (pessimistic)
              - target needs price to trade through it by the half-spread; filled
                at the target, never better (no favourable gap fills)
-  CLOSE   5. funding (perpetuals), borrow (shorts), financing charged
+  CLOSE   5. funding (perpetuals), borrow (shorts), financing charged; interest on idle cash
           6. trailing extremes updated with this bar's high/low (used from the NEXT bar)
           7. equity marked to market at the close
           8. portfolio risk limits checked -> flatten orders for the next bar
@@ -79,7 +79,7 @@ def simulate(
     slip_frac, slip_range, stop_overshoot, allow_short, borrow_rate, financing_rate, max_part,
     initial_cash, sizing_mode, risk_per_trade, position_pct, fixed_notional,
     max_position_pct, max_gross_exposure, max_open_positions, max_daily_loss, max_drawdown,
-    max_bars_held, delay, max_trades,
+    max_bars_held, delay, max_trades, cash_rate,
 ):
     T, N = close.shape
 
@@ -95,6 +95,7 @@ def simulate(
     total_fees = 0.0
     total_carry = 0.0
     total_spread_slip = 0.0
+    total_interest = 0.0
 
     cash = initial_cash
     pos = np.zeros(N)
@@ -323,6 +324,19 @@ def simulate(
                 pend_exit_wait[i] = delay
                 pend_exit_reason[i] = EXIT_TIME
 
+        # ---------------- interest on idle cash ----------------
+        # Paid on cash that is not short-sale proceeds (retail brokers rarely pay on those).
+        if cash_rate[t] > 0.0:
+            short_val = 0.0
+            for i in range(N):
+                if pos[i] < 0:
+                    short_val += -pos[i] * last_px[i] * mult[i]
+            base = cash - short_val
+            if base > 0.0:
+                intr = base * cash_rate[t] * dt_years[t]
+                cash += intr
+                total_interest += intr
+
         # ---------------- mark to market ----------------
         eq = cash
         g = 0.0
@@ -446,7 +460,7 @@ def simulate(
         total_fees += trades[k, T_FEES]
         total_carry += trades[k, T_CARRY]
 
-    stats = np.array([traded_notional, total_fees, total_carry, total_spread_slip, float(n_trades)])
+    stats = np.array([traded_notional, total_fees, total_carry, total_spread_slip, float(n_trades), total_interest])
     return equity, cash_hist, gross_exp, net_exp, n_pos_hist, trades[:n_rec], skipped, stats
 
 

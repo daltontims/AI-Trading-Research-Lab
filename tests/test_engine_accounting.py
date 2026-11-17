@@ -301,3 +301,44 @@ def test_accounting_identity_with_all_cost_types():
     # Targets/limits have zero spread cost; all others pay it: reconciliation is exact for this script.
     assert np.allclose(recon.to_numpy(), r.trades["pnl_net"].to_numpy(), atol=1e-8)
     assert (r.equity["gross_exposure"] <= 1.0 + 1e-9).all()
+
+
+def _write_irx(rate_pct, n_days=800):
+    from lab.data import lake, schemas
+    df = bars(o=np.full(n_days, rate_pct), step=timedelta(days=1), start=__import__("engine_helpers").T0 - timedelta(days=5))
+    lake.write_chunk(lake.DatasetKey("macro", "yahoo", "IDX_IRX", "bars_1d"), "all", schemas.conform(df, "bars"))
+
+
+def test_cash_interest_on_idle_cash():
+    _write_irx(5.5)  # 5.5% T-bill yield, 0.5% haircut -> 5.0% paid
+    step = timedelta(days=1)
+    df = bars(o=np.full(366, 100.0), step=step)
+    r = run({S: {}}, {S: df}, timeframe="1d", cash_interest=True, cash_rate_haircut=0.005)
+    dt = 1 / 365.25
+    expected = 5000 * (1 + 0.05 * dt) ** 366
+    assert r.metrics["final_equity"] == pytest.approx(expected, rel=1e-9)
+    assert r.metrics["total_interest"] == pytest.approx(expected - 5000, rel=1e-9)
+    off = run({S: {}}, {S: df}, timeframe="1d")
+    assert off.metrics["final_equity"] == 5000
+
+
+def test_cash_interest_excludes_short_proceeds_and_invested_cash():
+    _write_irx(5.5)
+    df = bars(o=np.full(30, 100.0), step=timedelta(days=1))
+    long_all = run({S: {"entry_long": {0: True}}}, {S: df}, timeframe="1d", cash_interest=True)
+    # Fully invested from bar 1: interest only on bar 0 (cash idle before the fill).
+    assert long_all.metrics["total_interest"] == pytest.approx(5000 * 0.05 / 365.25, rel=1e-6)
+    short = run({S: {"entry_short": {0: True}}}, {S: df}, timeframe="1d", cash_interest=True)
+    # Short proceeds earn nothing; the account's own 5000 still earns interest.
+    per_day = 5000 * 0.05 / 365.25
+    assert short.metrics["total_interest"] == pytest.approx(per_day * 30, rel=0.01)
+
+
+def test_cash_interest_uses_previous_day_rate():
+    from lab.data import lake, schemas
+    irx = bars(o=[1.0] * 10 + [50.0] * 10, step=timedelta(days=1))  # rate jumps on day 10
+    lake.write_chunk(lake.DatasetKey("macro", "yahoo", "IDX_IRX", "bars_1d"), "all", schemas.conform(irx, "bars"))
+    df = bars(o=np.full(11, 100.0), step=timedelta(days=1))
+    r = run({S: {}}, {S: df}, timeframe="1d", cash_interest=True, cash_rate_haircut=0.0)
+    # Bars 0..10: bar 0 has no prior rate; bars 1..10 use 1% (day 10's 50% is only known after its close).
+    assert r.metrics["total_interest"] == pytest.approx(5000 * ((1 + 0.01 / 365.25) ** 10 - 1), rel=1e-6)
