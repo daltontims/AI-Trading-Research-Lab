@@ -11,7 +11,7 @@
   including failures. Keep "candidates" separate from "validated".
 
 ## Where things are
-- Architecture: docs/ARCHITECTURE.md · Protocol: docs/RESEARCH_PROTOCOL.md · Engine: docs/ENGINE.md · Validation: docs/VALIDATION.md
+- Architecture: docs/ARCHITECTURE.md · Protocol: docs/RESEARCH_PROTOCOL.md · Engine: docs/ENGINE.md · Validation: docs/VALIDATION.md · Paper: docs/PAPER_TRADING.md
 - Progress: docs/ROADMAP.md · Decisions: docs/DECISIONS.md
 - Registry schema: src/lab/registry/schema.sql
 - Market data lives in `data/` (gitignored) and must be re-downloadable via ingestors.
@@ -39,7 +39,11 @@
   2 candidates H4-17 (SPY RSI2) and H4-02 (BTC 50d trend), 19 rejected. reports/phase4_summary.md.
 - Vault tests done (D-021): H4-17 VALIDATED (first validated strategy), H4-02 REJECTED. Vault is now
   used for both; never re-run them.
-- Next: Phase 5 discovery engine + Phase 6 dashboard. Paper trading H4-17 needs owner permission.
+- Paper trading (owner approved 2026-11-17): code done (docs/PAPER_TRADING.md, lab/paper/).
+  Alpaca paper secret key saved as network secret; owner adds ALPACA_KEY_ID env var in environment
+  settings. Then: `uv run lab paper status`, first `lab paper run --submit`, then a weekday
+  scheduled task before the US open. NEVER add live trading without explicit permission.
+- Next after paper setup: Phase 5 discovery engine + Phase 6 dashboard.
 
 ## Validation conventions (do not break)
 - Validation split: one look per hypothesis (enforced). Changed rules = new hypothesis.

@@ -182,5 +182,52 @@ def evaluate(strategy: str, symbols: list[str], timeframe: str = "1h",
     typer.echo(f"report: {ev.report_path}")
 
 
+paper_app = typer.Typer(help="PAPER trading only (Alpaca paper account). Never live.", no_args_is_help=True)
+app.add_typer(paper_app, name="paper")
+
+
+def _broker(sim: bool):
+    from lab.paper.broker import AlpacaPaperBroker, SimBroker
+    return SimBroker() if sim else AlpacaPaperBroker()
+
+
+@paper_app.command("status")
+def paper_status():
+    """Show the paper account, positions, market clock and the latest orders."""
+    b = _broker(False)
+    a = b.account()
+    typer.echo(f"account: equity ${a.equity:,.2f}  cash ${a.cash:,.2f}  status {a.status}")
+    for s, p in b.positions().items():
+        typer.echo(f"position: {s} {p.qty:g} @ {p.avg_entry_price:,.2f} (value ${p.market_value:,.2f})")
+    typer.echo(f"clock: {b.clock()}")
+    for o in b.orders(limit=10):
+        typer.echo(f"order: {o.client_order_id or o.id} {o.side} {o.qty:g} {o.symbol} {o.time_in_force} {o.status}"
+                   + (f" filled @ {o.filled_avg_price}" if o.filled_avg_price else ""))
+
+
+@paper_app.command("run")
+def paper_run(submit: bool = typer.Option(False, help="actually submit orders (default: plan only)"),
+              sim: bool = typer.Option(False, help="use an in-memory simulated broker")):
+    """Daily cycle: reconcile fills, plan orders for the next open, optionally submit them."""
+    from lab.paper import runner
+    b = _broker(sim)
+    if not sim:
+        for f in runner.reconcile(b):
+            typer.echo(f"fill: {f['client_order_id']} {f['qty']:g} @ {f['fill_price']} "
+                       f"({f['gap_vs_close_bps']:+.1f} bps vs prior close)")
+    import tempfile
+    jpath = runner.JOURNAL if not sim else Path(tempfile.gettempdir()) / "lab_paper_sim_journal.jsonl"
+    out = runner.run(b, submit=submit, journal=jpath)
+    if out["event"] == "kill_switch":
+        typer.echo("KILL SWITCH ON: open orders cancelled, nothing submitted" if submit else "KILL SWITCH ON")
+        return
+    for p in out["plans"]:
+        act = f"{p['order_side']} {p['order_qty']}" if p["order_side"] else "no order"
+        typer.echo(f"{p['hypothesis']} {p['symbol']} (signal date {p['signal_date']}): {p['reason']} -> {act}")
+    typer.echo(f"{'SUBMITTED' if submit else 'PLAN ONLY (use --submit)'}: {len(out['orders'])} order(s)")
+    if not sim:
+        runner.snapshot(b)
+
+
 if __name__ == "__main__":
     app()
