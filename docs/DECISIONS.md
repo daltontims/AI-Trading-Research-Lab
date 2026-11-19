@@ -139,3 +139,13 @@ scheduled task at 08:40 New York time in the `ai-trading-research-lab` cloud env
 out the paper-trading branch, runs `lab paper run --submit`, and commits the journal and registry
 back to that branch. The 3-month paper evaluation (PAPER → PAPER_PASSED) is due after 2027-02-17.
 
+## D-023 — Partly filled entries are completed at the next open (2026-11-19)
+The first paper entry (H4-17, buy 6 SPY market-on-open) filled only 3 shares at 738.41; Alpaca expired
+the rest. The runner held 3 shares because it never resizes an open position, so the trade ran at half
+the size the backtest assumes. Owner approved the fix: each submitted plan now records the size it
+meant to hold (`target_qty`); while the strategy stays in, the next run buys the shortfall at the open
+(here: buy 3 at the 2026-11-20 open, if H4-17 is still long). Fills record `ordered_qty` and `partial`
+so the partial-fill rate can be checked against the cost model in the 3-month review. The top-up's
+price differs from the original entry; the review measures returns per share, so this changes dollar
+size, not the comparison.
+

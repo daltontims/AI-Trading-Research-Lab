@@ -63,6 +63,7 @@ cancels open orders and places none), or disable the scheduled task.
 | Kill switch: `kill_switch: true` cancels open orders, places none | `configs/deployment.yaml` |
 | Orders sized off at most `capital` ($5,000) and capped at 1.05 × allocation | `runner.plan_orders` |
 | Whole shares; positions are held, not resized, while the strategy stays in | `runner.plan_orders` |
+| An entry that only partly filled is completed at the next open (D-023) | `runner.plan_orders` |
 | Strategies with intrabar stops/targets are refused (not supported yet) | `runner.replay_target` |
 
 ## Deployed strategies

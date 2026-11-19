@@ -144,14 +144,16 @@ class SimBroker:
         self.submitted.append(o)
         return o
 
-    def fill_open(self, prices: dict[str, float]) -> None:
+    def fill_open(self, prices: dict[str, float], fill_ratio: float = 1.0) -> None:
+        """Fill accepted orders at the open. fill_ratio < 1 simulates a partial fill (rest expires)."""
         for o in self.submitted:
             if o.status == "accepted" and o.symbol in prices:
                 px = prices[o.symbol]
                 sign = 1 if o.side == "buy" else -1
-                self.held[o.symbol] = self.held.get(o.symbol, 0.0) + sign * o.qty
-                self.cash -= sign * o.qty * px
-                o.status, o.filled_qty, o.filled_avg_price = "filled", o.qty, px
+                q = float(int(o.qty * fill_ratio))
+                self.held[o.symbol] = self.held.get(o.symbol, 0.0) + sign * q
+                self.cash -= sign * q * px
+                o.status, o.filled_qty, o.filled_avg_price = ("filled" if q == o.qty else "expired"), q, px
         self.last_price.update(prices)
 
     def cancel_all(self) -> None:

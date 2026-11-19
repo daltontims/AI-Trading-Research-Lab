@@ -1,5 +1,6 @@
 """Paper-trading runner: replay must match the backtest engine; safety rules must hold."""
 
+import json
 from datetime import timedelta
 
 import numpy as np
@@ -128,3 +129,54 @@ def test_deployment_config_is_paper_and_validated_only():
 def test_plan_only_run_does_not_change_status(validated, tmp_path):
     runner.run(SimBroker(cash=5000.0), submit=False, cfg=CFG, bars={"SPY": _spy()}, journal=tmp_path / "j.jsonl")
     assert Registry().hypothesis("H4-17")["status"] == "VALIDATED"
+
+
+def _long_case():
+    """Synthetic SPY history whose last bar leaves TrendFilter long (so an entry is planned)."""
+    for seed in range(3, 40):
+        df = path_bars(seed, 900, vol=0.012, step=timedelta(days=1))
+        df = df.filter(df["ts"].dt.weekday() <= 5)
+        held, target = runner.replay_target(TrendFilter(n=30), df, "SPY")
+        if target == 1 and held[-1] == 0:
+            return df
+    raise AssertionError("no suitable synthetic path")
+
+
+def test_partial_entry_fill_is_topped_up_next_run(validated, tmp_path):
+    df, j = _long_case(), tmp_path / "j.jsonl"
+    px = float(df["close"][-1])
+    b = SimBroker(cash=5000.0)
+    first = runner.run(b, submit=True, cfg=CFG, bars={"SPY": df}, journal=j)["plans"][0]
+    want = int(5000 // px)
+    assert first["order_side"] == "buy" and first["order_qty"] == want and first["target_qty"] == want
+    b.fill_open({"SPY": px}, fill_ratio=0.5)                 # only half the entry fills
+    fills = runner.reconcile(b, j)
+    assert fills[0]["partial"] and fills[0]["qty"] == want // 2 and fills[0]["ordered_qty"] == want
+
+    nxt = df.vstack(df.tail(1).with_columns(df["ts"].tail(1) + timedelta(days=1)))  # next session, still long
+    p = runner.plan_orders(b, CFG, {"SPY": nxt}, journal=j)[0]
+    assert p.order_side == "buy" and p.order_qty == want - want // 2 and "topping up" in p.reason
+    runner.run(b, submit=True, cfg=CFG, bars={"SPY": nxt}, journal=j)
+    b.fill_open({"SPY": px})
+    assert b.held["SPY"] == want
+    again = runner.plan_orders(b, CFG, {"SPY": nxt}, journal=j)[0]
+    assert again.order_side is None                          # complete: hold, do not resize
+
+
+def test_without_journal_partial_position_is_held(validated):
+    df = _long_case()
+    b = SimBroker(cash=5000.0, held={"SPY": 1.0}, last_price={"SPY": float(df["close"][-1])})
+    assert runner.plan_orders(b, CFG, {"SPY": df})[0].order_side is None
+
+
+def test_intended_size_reads_legacy_journal_and_clears_on_exit(tmp_path):
+    j = tmp_path / "j.jsonl"
+    entry = {"hypothesis": "H4-17", "symbol": "SPY", "target_side": 1, "current_qty": 0.0,
+             "order_side": "buy", "order_qty": 6}                               # pre-target_qty format
+    j.write_text(json.dumps({"event": "run", "submitted": True, "plans": [entry]}) + "\n"
+                 + json.dumps({"event": "run", "submitted": False, "plans": [{**entry, "order_qty": 99}]}) + "\n")
+    assert runner.intended_entry_sizes(j) == {("H4-17", "SPY"): 6}           # plan-only runs ignored
+    exit_ = {**entry, "target_side": 0, "current_qty": 6.0, "order_side": "sell"}
+    with open(j, "a") as f:
+        f.write(json.dumps({"event": "run", "submitted": True, "plans": [exit_]}) + "\n")
+    assert runner.intended_entry_sizes(j) == {}

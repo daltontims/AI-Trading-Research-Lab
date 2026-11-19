@@ -49,6 +49,7 @@ class Plan:
     reference_price: float      # last close (sizing reference)
     reason: str
     client_order_id: str = ""
+    target_qty: int = 0         # signed position size wanted after the next open
 
 
 def deployment(path: Path = CONFIG) -> dict:
@@ -113,8 +114,36 @@ def fetch_bars(symbol: str, days: int) -> pl.DataFrame:
     return standardize(df.tail(days))
 
 
-def plan_orders(broker, cfg: dict | None = None, bars: dict[str, pl.DataFrame] | None = None) -> list[Plan]:
-    """Compute target positions and the orders needed. `bars` overrides data fetching (tests)."""
+def intended_entry_sizes(journal: Path | None) -> dict[tuple[str, str], int]:
+    """Signed position size each (hypothesis, symbol) meant to hold, from its latest submitted entry.
+
+    An entry is a submitted plan that opened (or reversed into) a position. If that entry only partly
+    filled, the next run tops the position up to this size instead of holding the partial amount.
+    """
+    out: dict[tuple[str, str], int] = {}
+    if not journal or not journal.exists():
+        return out
+    for line in journal.read_text().splitlines():
+        e = json.loads(line)
+        if e.get("event") != "run" or not e.get("submitted"):
+            continue
+        for p in e.get("plans", []):
+            key, side, cur = (p["hypothesis"], p["symbol"]), p["target_side"], p["current_qty"]
+            if side == 0:
+                out.pop(key, None)
+            elif p.get("order_side") and np.sign(cur) != side:
+                # Older journal lines lack target_qty: an entry from flat ordered exactly the target.
+                tq = p.get("target_qty") or (side * p["order_qty"] if cur == 0 else 0)
+                if tq:
+                    out[key] = int(tq)
+    return out
+
+
+def plan_orders(broker, cfg: dict | None = None, bars: dict[str, pl.DataFrame] | None = None,
+                journal: Path | None = None) -> list[Plan]:
+    """Compute target positions and the orders needed. `bars` overrides data fetching (tests).
+
+    `journal` (when given) is used to complete entries that only partly filled."""
     from lab.strategies.examples import EXAMPLES
     from lab.strategies.phase4 import PHASE4
     from lab.registry.db import Registry
@@ -125,6 +154,7 @@ def plan_orders(broker, cfg: dict | None = None, bars: dict[str, pl.DataFrame] |
     held = broker.positions()
     plans = []
     reg = Registry()
+    intended = intended_entry_sizes(journal)
     for d in cfg["strategies"]:
         status = reg.hypothesis(d["hypothesis"])["status"]
         if status not in ("VALIDATED", "PAPER"):
@@ -136,17 +166,22 @@ def plan_orders(broker, cfg: dict | None = None, bars: dict[str, pl.DataFrame] |
             ref = float(df["close"][-1])
             date = str(df["ts"][-1].date())
             cur = held[sym].qty if sym in held else 0.0
-            want_qty = 0
+            want_qty, note = 0, ""
             if target != 0:
                 if cur != 0 and np.sign(cur) == target:
                     want_qty = int(abs(cur))  # already positioned: hold, do not resize (as in the backtest)
+                    meant = intended.get((d["hypothesis"], sym), 0)
+                    if np.sign(meant) == target and abs(meant) > want_qty:
+                        # The entry only partly filled: complete it to the size the entry intended.
+                        note = f"; entry partly filled ({want_qty} of {abs(meant)}), topping up"
+                        want_qty = abs(meant)
                 else:
                     want_qty = int(math.floor(d["allocation"] * sizing_equity / ref))
             delta = target * want_qty - cur
             side = "buy" if delta > 0 else ("sell" if delta < 0 else None)
             reason = {1: "long", -1: "short", 0: "flat"}[target]
             p = Plan(d["hypothesis"], sym, date, target, cur, side, int(abs(delta)), ref,
-                     f"strategy wants {reason}; holding {cur:g}")
+                     f"strategy wants {reason}; holding {cur:g}{note}", target_qty=int(target * want_qty))
             if side:
                 p.client_order_id = f"{d['hypothesis']}-{sym}-{date}-{side}"
                 notional = p.order_qty * ref
@@ -169,7 +204,7 @@ def run(broker, submit: bool = False, cfg: dict | None = None, bars: dict | None
         _journal(journal, entry)
         return entry
     acct = broker.account()
-    plans = plan_orders(broker, cfg, bars)
+    plans = plan_orders(broker, cfg, bars, journal)
     orders = []
     for p in plans:
         if p.order_side and submit:
@@ -214,6 +249,7 @@ def reconcile(broker, journal: Path = JOURNAL) -> list[dict]:
             p = plans[o.client_order_id]
             e = {"ts": datetime.now(timezone.utc).isoformat(timespec="seconds"), "event": "fill",
                  "client_order_id": o.client_order_id, "symbol": o.symbol, "side": o.side, "qty": o.filled_qty,
+                 "ordered_qty": p["order_qty"], "partial": o.filled_qty < p["order_qty"],
                  "fill_price": o.filled_avg_price, "filled_at": o.filled_at, "reference_close": p["reference_price"],
                  "gap_vs_close_bps": (o.filled_avg_price / p["reference_price"] - 1) * 1e4
                  if o.filled_avg_price else None}
