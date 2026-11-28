@@ -124,7 +124,10 @@ def evaluate(strategy_cls, space: dict[str, list], symbols: list[str] | str, tim
              dev_data: MarketData | None = None, val_data: MarketData | None = None,
              fixed_params: dict | None = None, cross_symbols: list[str] | None = None,
              open_validation: bool = True, record_detail: bool = True, write_report: bool = True,
-             export: bool = True, n_boot: int = 500, seed: int = 0, notes: str = "") -> Evaluation:
+             export: bool = True, n_boot: int = 500, seed: int = 0, notes: str = "",
+             family_trials_floor: int = 0) -> Evaluation:
+    """family_trials_floor: minimum trial count for the Deflated Sharpe, e.g. the planned size of a
+    whole discovery family, so results do not depend on the order in which its members run."""
     reg = registry or Registry()
     risk = risk or RiskConfig()
     execution = execution or ExecutionConfig()
@@ -194,7 +197,7 @@ def evaluate(strategy_cls, space: dict[str, list], symbols: list[str] | str, tim
         # ---------------- statistical gates (always computed, for the record)
         st_cfg = cfg["statistical"]
         r_best = Mx[:, best]
-        family_trials = max(reg.trial_count(family=hyp["family"]), len(grid))
+        family_trials = max(reg.trial_count(family=hyp["family"]), len(grid), family_trials_floor)
         col_sr = np.array([stats.sharpe_per_period(Mx[:, j]) for j in range(Mx.shape[1])])
         col_sr = col_sr[np.isfinite(col_sr)]
         var_sr = float(np.var(col_sr, ddof=1)) if len(col_sr) >= 5 else None

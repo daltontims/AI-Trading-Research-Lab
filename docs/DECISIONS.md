@@ -159,3 +159,15 @@ the first trade after 09:30. New entries and exits still use the opening auction
 assumes. The top-up's fill price is journaled like any fill, so the 3-month review can measure the
 difference. Owner also approved a backup scheduled run at 09:05 New York time that repeats the daily
 run if the 08:40 one did not happen (the Nov 25 wake-up arrived a day late). Re-runs are idempotent.
+
+## D-025 — Phase 5 discovery engine: generated ideas, event-study screen, parallel full tests (2026-11-28)
+Owner asked for much more automated, higher-throughput research ("both, factory first"). Ideas are now
+generated from entry × trend filter × exit templates on 17 daily markets (714 per batch, ≤ 2 tuned
+parameters each), pre-registered and committed before testing. Stage IDEA → EFFECT is an event study
+(next-open to h-bar return vs. normal, overlapping events thinned, one-sided t-test) with
+Benjamini–Hochberg at 5% across all tests in the batch, as protocol §5 requires. Only EFFECT ideas get the
+full Phase 3 pipeline, run in parallel. Each rule combination is a family across markets, and the Deflated
+Sharpe uses the family's full planned trial count (new `family_trials_floor`), so results do not depend on
+run order and replicating a rule on more markets raises the bar. Crypto uses US-retail costs (D-010).
+Registry: WAL mode, 300 s busy timeout, experiment-id retry for parallel writers. Calibrated on random walks
+(tests/test_discovery.py). Details: docs/DISCOVERY.md.

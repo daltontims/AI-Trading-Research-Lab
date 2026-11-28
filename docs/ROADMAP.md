@@ -55,8 +55,8 @@ Checkboxes are updated as work completes. See ARCHITECTURE.md §D for context.
 - [ ] FX hypotheses (blocked: no FX data)
 
 ## Phase 5 — Discovery engine
-- [ ] Feature library + hypothesis templates/grammar
-- [ ] Automated event-study screening
+- [x] Feature library + hypothesis templates/grammar (D-025, docs/DISCOVERY.md)
+- [x] Automated event-study screening with batch-wide FDR control; parallel full evaluation
 - [ ] Scheduled research runs, global trial accounting
 - [ ] Optional LLM hypothesis proposer (needs budget approval)
 

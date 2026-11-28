@@ -65,18 +65,19 @@ class Registry:
         self.export_dir = Path(export_dir) if export_dir else self.path.parent / "registry"
         self.path.parent.mkdir(parents=True, exist_ok=True)
         fresh = not self.path.exists()
-        self.con = sqlite3.connect(self.path)
+        self.con = sqlite3.connect(self.path, timeout=300)  # parallel discovery workers share the file
         self.con.row_factory = sqlite3.Row
+        self.con.execute("PRAGMA journal_mode=WAL")
         self.con.executescript(SCHEMA.read_text())
         if fresh and self.export_dir.exists():
             self.import_export(self.export_dir)
 
     # ------------------------------------------------------------ helpers
-    def _next_id(self, table: str, prefix: str) -> str:
+    def _next_id(self, table: str, prefix: str, skip: int = 0) -> str:
         day = datetime.now(timezone.utc).strftime("%Y%m%d")
         like = f"{prefix}-{day}-%"
         n = self.con.execute(f"SELECT COUNT(*) FROM {table} WHERE id LIKE ?", (like,)).fetchone()[0]
-        return f"{prefix}-{day}-{n + 1:04d}"
+        return f"{prefix}-{day}-{n + 1 + skip:04d}"
 
     def query(self, sql: str, params=()) -> list[dict]:
         return [dict(r) for r in self.con.execute(sql, params).fetchall()]
@@ -128,9 +129,24 @@ class Registry:
                          data_start: str | None = None, data_end: str | None = None,
                          seed: int | None = None, notes: str = "") -> str:
         h = self.hypothesis(hypothesis_id)
-        eid = self._next_id("experiments", "E")
         import hashlib
         fp = hashlib.sha256(_json(data_versions).encode()).hexdigest()[:16]
+        for attempt in range(200):  # parallel workers can race for the next id: retry with a fresh one
+            eid = self._next_id("experiments", "E", attempt)
+            try:
+                self._insert_experiment(eid, hypothesis_id, strategy_id, strategy_version, stage, market, instruments,
+                                        timeframe, data_split, data_start, data_end, fp, data_versions, config,
+                                        cost_models, seed, h, notes)
+                break
+            except sqlite3.IntegrityError:
+                self.con.rollback()
+        else:
+            raise RuntimeError("could not allocate an experiment id")
+        return eid
+
+    def _insert_experiment(self, eid, hypothesis_id, strategy_id, strategy_version, stage, market, instruments,
+                           timeframe, data_split, data_start, data_end, fp, data_versions, config, cost_models,
+                           seed, h, notes):
         self.con.execute(
             """INSERT INTO experiments (id, hypothesis_id, strategy_id, strategy_version, stage, market, instruments,
                timeframe, data_split, data_start, data_end, git_commit, data_fingerprint, data_versions, config,
@@ -140,7 +156,6 @@ class Registry:
              data_split, data_start, data_end, git_version(), fp, _json(data_versions), _json(config),
              _json(cost_models or {}), seed, h["status"], now(), notes))
         self.con.commit()
-        return eid
 
     def finish_experiment(self, eid: str, outcome: str, warnings: list[str] | None = None,
                           error: str | None = None) -> None:
