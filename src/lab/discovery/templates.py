@@ -17,7 +17,7 @@ from dataclasses import dataclass
 
 import numpy as np
 
-from lab.engine.strategy import Strategy
+from lab.engine.strategy import ContextStrategy, asof_daily
 from lab.features import indicators as ind
 
 
@@ -37,9 +37,15 @@ def _ibs(df) -> np.ndarray:
         return np.where(rng > 0, (c - lo) / rng, 0.5)
 
 
-def entry_signal(kind: str, df, x: float) -> np.ndarray:
+def entry_signal(kind: str, df, x: float, ctx: dict | None = None) -> np.ndarray:
+    """ctx: daily context series (e.g. {"IDX_VIX": bars}) for entries that need them."""
     c = df["close"].to_numpy()
     with np.errstate(invalid="ignore", divide="ignore"):
+        if kind == "vix_spike":                      # VIX jumps x times above its prior 10-day average
+            vix = asof_daily(df["ts"], ctx["IDX_VIX"])
+            return vix / ind.shift(ind.sma(vix, 10), 1) > x
+        if kind == "vix_backwardation":              # short-term fear above 3-month fear (VIX / VIX3M > x)
+            return asof_daily(df["ts"], ctx["IDX_VIX"]) / asof_daily(df["ts"], ctx["IDX_VIX3M"]) > x
         if kind == "rsi2_low":                       # short-term oversold
             return ind.rsi(c, 2) < x
         if kind == "n_day_low":                      # lowest close of the last x bars
@@ -97,6 +103,7 @@ class EntryKind:
     style: str
     exits: tuple          # exit kinds that make sense for this entry
     describe: str
+    context: tuple = ()   # daily context series the entry reads (VIX ...)
 
 
 @dataclass(frozen=True)
@@ -121,7 +128,17 @@ ENTRIES = {
                             "close is the highest of the last x bars (breakout)"),
     "ma_cross_up": EntryKind("ma_cross_up", (20, 50, 100), "trend", ("close_below_ma", "n_day_low_exit"),
                              "close crosses above its x-bar average"),
+    # Batch D5-03 onward (US equity ETFs, daily): fear-index entries.
+    "vix_spike": EntryKind("vix_spike", (1.15, 1.3, 1.5), "mean_reversion", ("hold_bars", "close_above_ma"),
+                           "the VIX jumps x times above its prior 10-day average", ("IDX_VIX",)),
+    "vix_backwardation": EntryKind("vix_backwardation", (1.0, 1.05, 1.1), "mean_reversion",
+                                   ("hold_bars", "close_above_ma"),
+                                   "the VIX is above x times the 3-month VIX (acute fear)", ("IDX_VIX", "IDX_VIX3M")),
 }
+
+# The entries of the first batches (D5-01, D5-02); later batches choose their own.
+CORE_ENTRIES = ("rsi2_low", "n_day_low", "down_streak", "drop_z", "ibs_low", "n_day_high", "ma_cross_up")
+VIX_ENTRIES = ("vix_spike", "vix_backwardation")
 
 EXITS = {
     "hold_bars": ExitKind("hold_bars", (3, 5, 10), "exit y bars after the last entry trigger"),
@@ -139,7 +156,7 @@ HORIZON = {"mean_reversion": 5, "trend": 20}
 _CLASSES: dict[tuple, type] = {}
 
 
-class RuleStrategy(Strategy):
+class RuleStrategy(ContextStrategy):
     """Base of generated rule strategies. Their code is this module, so the version hash covers it."""
 
     @property
@@ -159,14 +176,14 @@ def rule_strategy(entry: str, filt: str, exit_: str) -> type:
     e, x = ENTRIES[entry], EXITS[exit_]
 
     def signals(self, df, symbol):
-        en = entry_signal(entry, df, self.params["x"]) & trend_filter(filt, df)
+        en = entry_signal(entry, df, self.params["x"], getattr(self, "context", None)) & trend_filter(filt, df)
         en = np.nan_to_num(en.astype(float), nan=0.0).astype(bool)
         ex = exit_signal(exit_, df, self.params["y"], en)
         return {"entry_long": en, "exit_long": np.nan_to_num(ex.astype(float), nan=0.0).astype(bool)}
 
     cls = type(f"Rule_{entry}_{filt}_{exit_}", (RuleStrategy,), {
         "name": f"rule:{entry}:{filt}:{exit_}", "version": "1", "style": e.style,
-        "default_params": {"x": e.grid[1], "y": x.grid[0]}, "signals": signals,
+        "default_params": {"x": e.grid[1], "y": x.grid[0]}, "signals": signals, "context_symbols": e.context,
         "__doc__": f"Long when {e.describe} ({FILTERS[filt]}); {x.describe}.",
         "__module__": __name__})
     _CLASSES[key] = cls

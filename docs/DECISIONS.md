@@ -191,3 +191,10 @@ winners are recorded but not deployed). When allocations shrink, a strategy's pa
 topped up to what its new allocation buys. Every promotion outcome is logged in
 research/discovery/promotions.jsonl. The promotion commit must be pushed: the daily run trades whatever
 configs/deployment.yaml says on the branch.
+
+## D-028 — Discovery plans: crypto 1h/4h and fear-index (VIX) entries; batch D5-03 (2026-11-28)
+Batches now follow a named plan of (market, bar size, entry kinds). `core_daily` reproduces D5-01/D5-02 exactly
+(same ids and families). New plan `crypto_intraday_vix` (batch D5-03, 420 ideas, pooled screen): the 7 core entries
+on BTC/ETH/SOL 1-hour and 4-hour bars (families tagged with the bar size), and two new VIX entries on the 14 ETFs
+(VIX spike vs. its 10-day average; VIX/VIX3M backwardation). Rule strategies can now read daily context series;
+the template module changed, so the code hash of every rule strategy changed (logic of the core entries did not).

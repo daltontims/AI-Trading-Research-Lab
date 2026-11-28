@@ -1,0 +1,391 @@
+{
+  "batch": "D5-03",
+  "registered": "2026-11-28 05:08 UTC",
+  "plan": "crypto_intraday_vix",
+  "markets": [
+    [
+      "BTCUSDT",
+      "1h",
+      [
+        "rsi2_low",
+        "n_day_low",
+        "down_streak",
+        "drop_z",
+        "ibs_low",
+        "n_day_high",
+        "ma_cross_up"
+      ]
+    ],
+    [
+      "BTCUSDT",
+      "4h",
+      [
+        "rsi2_low",
+        "n_day_low",
+        "down_streak",
+        "drop_z",
+        "ibs_low",
+        "n_day_high",
+        "ma_cross_up"
+      ]
+    ],
+    [
+      "ETHUSDT",
+      "1h",
+      [
+        "rsi2_low",
+        "n_day_low",
+        "down_streak",
+        "drop_z",
+        "ibs_low",
+        "n_day_high",
+        "ma_cross_up"
+      ]
+    ],
+    [
+      "ETHUSDT",
+      "4h",
+      [
+        "rsi2_low",
+        "n_day_low",
+        "down_streak",
+        "drop_z",
+        "ibs_low",
+        "n_day_high",
+        "ma_cross_up"
+      ]
+    ],
+    [
+      "SOLUSDT",
+      "1h",
+      [
+        "rsi2_low",
+        "n_day_low",
+        "down_streak",
+        "drop_z",
+        "ibs_low",
+        "n_day_high",
+        "ma_cross_up"
+      ]
+    ],
+    [
+      "SOLUSDT",
+      "4h",
+      [
+        "rsi2_low",
+        "n_day_low",
+        "down_streak",
+        "drop_z",
+        "ibs_low",
+        "n_day_high",
+        "ma_cross_up"
+      ]
+    ],
+    [
+      "SPY",
+      "1d",
+      [
+        "vix_spike",
+        "vix_backwardation"
+      ]
+    ],
+    [
+      "QQQ",
+      "1d",
+      [
+        "vix_spike",
+        "vix_backwardation"
+      ]
+    ],
+    [
+      "IWM",
+      "1d",
+      [
+        "vix_spike",
+        "vix_backwardation"
+      ]
+    ],
+    [
+      "DIA",
+      "1d",
+      [
+        "vix_spike",
+        "vix_backwardation"
+      ]
+    ],
+    [
+      "TLT",
+      "1d",
+      [
+        "vix_spike",
+        "vix_backwardation"
+      ]
+    ],
+    [
+      "GLD",
+      "1d",
+      [
+        "vix_spike",
+        "vix_backwardation"
+      ]
+    ],
+    [
+      "XLK",
+      "1d",
+      [
+        "vix_spike",
+        "vix_backwardation"
+      ]
+    ],
+    [
+      "XLF",
+      "1d",
+      [
+        "vix_spike",
+        "vix_backwardation"
+      ]
+    ],
+    [
+      "XLE",
+      "1d",
+      [
+        "vix_spike",
+        "vix_backwardation"
+      ]
+    ],
+    [
+      "XLV",
+      "1d",
+      [
+        "vix_spike",
+        "vix_backwardation"
+      ]
+    ],
+    [
+      "XLY",
+      "1d",
+      [
+        "vix_spike",
+        "vix_backwardation"
+      ]
+    ],
+    [
+      "XLP",
+      "1d",
+      [
+        "vix_spike",
+        "vix_backwardation"
+      ]
+    ],
+    [
+      "XLI",
+      "1d",
+      [
+        "vix_spike",
+        "vix_backwardation"
+      ]
+    ],
+    [
+      "XLU",
+      "1d",
+      [
+        "vix_spike",
+        "vix_backwardation"
+      ]
+    ]
+  ],
+  "fdr_q": 0.05,
+  "risk": {
+    "sizing": "pct_equity",
+    "position_pct": 1.0
+  },
+  "entries": {
+    "rsi2_low": {
+      "name": "rsi2_low",
+      "grid": [
+        5.0,
+        10.0,
+        20.0
+      ],
+      "style": "mean_reversion",
+      "exits": [
+        "hold_bars",
+        "close_above_ma"
+      ],
+      "describe": "2-bar RSI below x (short-term oversold)",
+      "context": []
+    },
+    "n_day_low": {
+      "name": "n_day_low",
+      "grid": [
+        5,
+        10,
+        20
+      ],
+      "style": "mean_reversion",
+      "exits": [
+        "hold_bars",
+        "close_above_ma"
+      ],
+      "describe": "close is the lowest of the last x bars",
+      "context": []
+    },
+    "down_streak": {
+      "name": "down_streak",
+      "grid": [
+        2,
+        3,
+        4
+      ],
+      "style": "mean_reversion",
+      "exits": [
+        "hold_bars",
+        "close_above_ma"
+      ],
+      "describe": "x or more consecutive down closes",
+      "context": []
+    },
+    "drop_z": {
+      "name": "drop_z",
+      "grid": [
+        1.5,
+        2.0,
+        2.5
+      ],
+      "style": "mean_reversion",
+      "exits": [
+        "hold_bars",
+        "close_above_ma"
+      ],
+      "describe": "one-bar drop larger than x standard deviations (60-bar volatility)",
+      "context": []
+    },
+    "ibs_low": {
+      "name": "ibs_low",
+      "grid": [
+        0.1,
+        0.2,
+        0.3
+      ],
+      "style": "mean_reversion",
+      "exits": [
+        "hold_bars",
+        "close_above_ma"
+      ],
+      "describe": "close in the bottom x of the bar's high-low range",
+      "context": []
+    },
+    "n_day_high": {
+      "name": "n_day_high",
+      "grid": [
+        20,
+        55,
+        120
+      ],
+      "style": "trend",
+      "exits": [
+        "close_below_ma",
+        "n_day_low_exit"
+      ],
+      "describe": "close is the highest of the last x bars (breakout)",
+      "context": []
+    },
+    "ma_cross_up": {
+      "name": "ma_cross_up",
+      "grid": [
+        20,
+        50,
+        100
+      ],
+      "style": "trend",
+      "exits": [
+        "close_below_ma",
+        "n_day_low_exit"
+      ],
+      "describe": "close crosses above its x-bar average",
+      "context": []
+    },
+    "vix_spike": {
+      "name": "vix_spike",
+      "grid": [
+        1.15,
+        1.3,
+        1.5
+      ],
+      "style": "mean_reversion",
+      "exits": [
+        "hold_bars",
+        "close_above_ma"
+      ],
+      "describe": "the VIX jumps x times above its prior 10-day average",
+      "context": [
+        "IDX_VIX"
+      ]
+    },
+    "vix_backwardation": {
+      "name": "vix_backwardation",
+      "grid": [
+        1.0,
+        1.05,
+        1.1
+      ],
+      "style": "mean_reversion",
+      "exits": [
+        "hold_bars",
+        "close_above_ma"
+      ],
+      "describe": "the VIX is above x times the 3-month VIX (acute fear)",
+      "context": [
+        "IDX_VIX",
+        "IDX_VIX3M"
+      ]
+    }
+  },
+  "exits": {
+    "hold_bars": {
+      "name": "hold_bars",
+      "grid": [
+        3,
+        5,
+        10
+      ],
+      "describe": "exit y bars after the last entry trigger"
+    },
+    "close_above_ma": {
+      "name": "close_above_ma",
+      "grid": [
+        5,
+        10
+      ],
+      "describe": "exit when the close is back above its y-bar average"
+    },
+    "close_below_ma": {
+      "name": "close_below_ma",
+      "grid": [
+        20,
+        50
+      ],
+      "describe": "exit when the close falls below its y-bar average"
+    },
+    "n_day_low_exit": {
+      "name": "n_day_low_exit",
+      "grid": [
+        10,
+        20
+      ],
+      "describe": "exit at the lowest close of the last y bars"
+    }
+  },
+  "filters": {
+    "none": "no trend filter",
+    "up": "only above the 200-bar average",
+    "down": "only below the 200-bar average"
+  },
+  "horizons": {
+    "mean_reversion": 5,
+    "trend": 20
+  },
+  "hypotheses": 420,
+  "screen_mode": "pooled",
+  "parent_batch": null
+}

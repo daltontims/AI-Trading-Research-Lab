@@ -22,7 +22,7 @@ from dataclasses import dataclass
 import numpy as np
 from scipy import stats as sps
 
-from lab.discovery.templates import ENTRIES, HORIZON, entry_signal, trend_filter
+from lab.discovery.templates import CORE_ENTRIES, ENTRIES, HORIZON, entry_signal, trend_filter
 
 
 @dataclass
@@ -62,10 +62,10 @@ def thin(mask: np.ndarray, h: int) -> np.ndarray:
 
 
 def event_test(df, entry: str, filt: str, symbol: str, x: float, h: int | None = None,
-               min_events: int = 20) -> EventTest:
+               min_events: int = 20, ctx: dict | None = None) -> EventTest:
     h = h or HORIZON[ENTRIES[entry].style]
     fwd = forward_returns(df, h)
-    sig = entry_signal(entry, df, x) & trend_filter(filt, df)
+    sig = entry_signal(entry, df, x, ctx) & trend_filter(filt, df)
     sig = np.nan_to_num(sig.astype(float), nan=0.0).astype(bool) & np.isfinite(fwd)
     base = float(np.nanmean(fwd))
     ev = fwd[thin(sig, h)] - base
@@ -78,18 +78,17 @@ def event_test(df, entry: str, filt: str, symbol: str, x: float, h: int | None =
 
 
 def screen_symbol(args) -> list[EventTest]:
-    """All (entry, filter, x) tests for one instrument's development bars. args = (symbol, df, filters)."""
-    symbol, df, filters = args
-    out = []
-    for entry, e in ENTRIES.items():
-        for filt in filters:
-            for x in e.grid:
-                out.append(event_test(df, entry, filt, symbol, x))
-    return out
+    """All (entry, filter, x) tests for one instrument's development bars.
+    args = (symbol, df, filters[, entries[, ctx]]); entries default to the core entries."""
+    symbol, df, filters, *rest = args
+    entries = rest[0] if rest else CORE_ENTRIES
+    ctx = rest[1] if len(rest) > 1 else None
+    return [event_test(df, entry, filt, symbol, x, ctx=ctx)
+            for entry in entries for filt in filters for x in ENTRIES[entry].grid]
 
 
 def pooled_event_test(frames: dict, entry: str, filt: str, group: str, x: float, h: int | None = None,
-                      min_dates: int = 30) -> EventTest:
+                      min_dates: int = 30, ctx: dict | None = None) -> EventTest:
     """The same question asked of a whole market group at once (e.g. all 14 US ETFs).
 
     Each instrument's events are found and thinned as in event_test, and measured against that
@@ -101,7 +100,7 @@ def pooled_event_test(frames: dict, entry: str, filt: str, group: str, x: float,
     per_date: dict = {}
     for sym, df in frames.items():
         fwd = forward_returns(df, h)
-        sig = entry_signal(entry, df, x) & trend_filter(filt, df)
+        sig = entry_signal(entry, df, x, ctx) & trend_filter(filt, df)
         sig = np.nan_to_num(sig.astype(float), nan=0.0).astype(bool) & np.isfinite(fwd)
         base = float(np.nanmean(fwd))
         days = df["ts"].dt.date().to_numpy()
@@ -123,6 +122,8 @@ def pooled_event_test(frames: dict, entry: str, filt: str, group: str, x: float,
 
 def screen_group(args) -> list[EventTest]:
     """All (entry, filter, x) pooled tests for one market group. args = (group, frames, filters)."""
-    group, frames, filters = args
-    return [pooled_event_test(frames, entry, filt, group, x)
-            for entry, e in ENTRIES.items() for filt in filters for x in e.grid]
+    group, frames, filters, *rest = args
+    entries = rest[0] if rest else CORE_ENTRIES
+    ctx = rest[1] if len(rest) > 1 else None
+    return [pooled_event_test(frames, entry, filt, group, x, ctx=ctx)
+            for entry in entries for filt in filters for x in ENTRIES[entry].grid]

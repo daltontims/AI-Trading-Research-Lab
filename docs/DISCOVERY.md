@@ -38,6 +38,17 @@ Try enough ideas and some look great by luck. The engine is built so that luck i
 Calibration (`tests/test_discovery.py`): on 30 random-walk markets × all 63 entry tests, the false-discovery control
 lets through ≤ 1% (in practice none); a planted mean-reversion effect is found in 5 of 5 trials.
 
+## Plans (which markets each batch covers)
+
+| Plan | Markets | Entries | Batches |
+|---|---|---|---|
+| `core_daily` | 14 ETFs + 3 coins, daily bars | the 7 core entries | D5-01, D5-02 |
+| `crypto_intraday_vix` | BTC, ETH, SOL on 1-hour and 4-hour bars; 14 ETFs daily | core entries on crypto; on ETFs two **fear-index** entries: the VIX jumps x times above its 10-day average, or the VIX is above x times the 3-month VIX (VIX3M) | D5-03 |
+
+The fear-index entries read the VIX close of the same day (known before the next open, where orders fill). On
+hourly bars, "x bars" means x hours, and the 200-bar trend filter is about 8 days. Crypto pays US retail costs
+(about 0.4% per trade), which is hard to beat on short holding periods.
+
 ## Screen modes
 
 - `per_instrument` (batch D5-01): each entry condition is tested on each market alone. Honest but low-powered:

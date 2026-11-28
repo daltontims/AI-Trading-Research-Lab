@@ -8,6 +8,7 @@ from datetime import timedelta
 import numpy as np
 import pytest
 
+from lab.data import lake, schemas
 from lab.discovery import screen, templates as T
 from lab.engine import lookahead
 from lab.engine.backtest import ExecutionConfig, RiskConfig, run_backtest
@@ -20,6 +21,17 @@ def daily(seed, n=2500, phi=0.0):
     return path_bars(seed, n, phi=phi, vol=0.012, step=timedelta(days=1))
 
 
+@pytest.fixture
+def vix_lake():
+    """Synthetic VIX / VIX3M daily series in the (per-test, isolated) data lake."""
+    out = {}
+    for j, s in enumerate(("IDX_VIX", "IDX_VIX3M")):
+        df = path_bars(50 + j, 2600, vol=0.06, step=timedelta(days=1), p0=20.0)
+        lake.write_chunk(lake.DatasetKey("macro", "yahoo", s, "bars_1d"), "all", schemas.conform(df, "bars"))
+        out[s] = df
+    return out
+
+
 def all_rules():
     for entry, e in T.ENTRIES.items():
         for filt in T.FILTERS:
@@ -28,7 +40,7 @@ def all_rules():
 
 
 @pytest.mark.parametrize("entry,filt,ex", list(all_rules()))
-def test_rule_templates_have_no_lookahead_and_trade(entry, filt, ex):
+def test_rule_templates_have_no_lookahead_and_trade(entry, filt, ex, vix_lake):
     df = daily(1)
     data = MarketData(["SPY"], "1d", {"SPY": df}, market="equity")
     cls = T.rule_strategy(entry, filt, ex)
@@ -94,3 +106,25 @@ def test_pooled_screen_finds_effect_spread_over_markets():
     frames = {f"MR{i}": daily(400 + i, 2500, phi=-0.15) for i in range(10)}
     res = screen.screen_group(("eq", frames, ["none"]))
     assert min(t.p_value for t in res if t.entry in ("rsi2_low", "drop_z")) < 1e-4
+
+
+def test_vix_entries_screen_with_context_and_find_planted_effect(vix_lake):
+    """Plant an effect: the market rebounds over the 5 days after each VIX spike."""
+    import polars as pl
+    vix = vix_lake["IDX_VIX"]["close"].to_numpy()
+    df = daily(7, 2600)
+    spike = T.entry_signal("vix_spike", df, 1.15, vix_lake)
+    assert spike.sum() > 20
+    r = np.diff(np.log(df["close"].to_numpy()), prepend=np.nan)
+    boost = np.zeros(len(r))
+    for i in np.flatnonzero(spike):
+        boost[i + 2: i + 7] += 0.004              # from the next session after the fill, for 5 days
+    c = df["close"].to_numpy()[0] * np.exp(np.nancumsum(np.nan_to_num(r) + boost))
+    planted = df.with_columns(close=pl.Series(c), open=pl.Series(np.r_[c[0], c[:-1]]),
+                              high=pl.Series(np.maximum(c, np.r_[c[0], c[:-1]])),
+                              low=pl.Series(np.minimum(c, np.r_[c[0], c[:-1]])))
+    res = screen.screen_symbol(("SPY", planted, ["none"], T.VIX_ENTRIES, vix_lake))
+    assert min(t.p_value for t in res if t.entry == "vix_spike") < 1e-3
+    null = screen.screen_symbol(("SPY", df, list(T.FILTERS), T.VIX_ENTRIES, vix_lake))
+    assert min(t.p_value for t in null) > 1e-3
+    assert len(vix) == 2600
