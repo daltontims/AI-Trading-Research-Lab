@@ -51,8 +51,13 @@ def cost_profile(symbol: str) -> str | None:
     return "crypto_spot_us_retail" if instruments.get(symbol).asset_class == "crypto" else None
 
 
-def specs(batch: str, universe=UNIVERSE) -> list[dict]:
-    """Deterministic list of every hypothesis in the batch."""
+def group_of(symbol: str) -> str:
+    return instruments.get(symbol).asset_class
+
+
+def specs(batch: str, universe=UNIVERSE, parent: str | None = None) -> list[dict]:
+    """Deterministic list of every hypothesis in the batch (same order for every batch, so a
+    re-test of the same rules can point each idea at its parent in an earlier batch)."""
     out, n = [], 0
     for entry, e in T.ENTRIES.items():
         for filt in T.FILTERS:
@@ -61,7 +66,8 @@ def specs(batch: str, universe=UNIVERSE) -> list[dict]:
                     n += 1
                     x = T.EXITS[ex]
                     out.append({
-                        "id": f"{batch}-{n:04d}", "entry": entry, "filter": filt, "exit": ex, "symbol": sym,
+                        "id": f"{batch}-{n:04d}", "parent": f"{parent}-{n:04d}" if parent else None,
+                        "entry": entry, "filter": filt, "exit": ex, "symbol": sym,
                         "family": f"disc:{entry}:{filt}:{ex}",
                         "space": {"x": list(e.grid), "y": list(x.grid)},
                         "title": f"{sym}: {e.describe}; {T.FILTERS[filt]}; {x.describe}",
@@ -69,8 +75,9 @@ def specs(batch: str, universe=UNIVERSE) -> list[dict]:
     return out
 
 
-def register(batch: str, reg: Registry, universe=UNIVERSE) -> list[dict]:
-    hs = specs(batch, universe)
+def register(batch: str, reg: Registry, universe=UNIVERSE, mode: str = "per_instrument",
+             parent: str | None = None) -> list[dict]:
+    hs = specs(batch, universe, parent)
     for h in hs:
         e = T.ENTRIES[h["entry"]]
         cls = T.rule_strategy(h["entry"], h["filter"], h["exit"])
@@ -84,14 +91,15 @@ def register(batch: str, reg: Registry, universe=UNIVERSE) -> list[dict]:
             timeframe=TIMEFRAME, style=e.style,
             spec={"strategy": cls.name, "strategy_version": cls().strategy_version, "fixed": {},
                   "profile": cost_profile(h["symbol"]), "funding": False, "risk": RISK},
-            param_space=h["space"], trial_budget=math.prod(len(v) for v in h["space"].values()))
+            param_space=h["space"], trial_budget=math.prod(len(v) for v in h["space"].values()),
+            parent_id=h["parent"])
     d = OUT / batch
     d.mkdir(parents=True, exist_ok=True)
     (d / "manifest.json").write_text(json.dumps({
         "batch": batch, "registered": time.strftime("%Y-%m-%d %H:%M UTC", time.gmtime()), "timeframe": TIMEFRAME,
         "universe": universe, "fdr_q": FDR_Q, "risk": RISK, "entries": {k: asdict(v) for k, v in T.ENTRIES.items()},
         "exits": {k: asdict(v) for k, v in T.EXITS.items()}, "filters": T.FILTERS, "horizons": T.HORIZON,
-        "hypotheses": len(hs)}, indent=2) + "\n")
+        "hypotheses": len(hs), "screen_mode": mode, "parent_batch": parent}, indent=2) + "\n")
     reg.export()
     return hs
 
@@ -102,14 +110,28 @@ def _screen_worker(sym: str) -> list[dict]:
     return [asdict(t) for t in screen.screen_symbol((sym, df, list(T.FILTERS)))]
 
 
-def event_studies(batch: str, universe, workers: int) -> list[dict]:
+def _group_worker(args) -> list[dict]:
+    group, syms = args
+    frames = {s: load([s], TIMEFRAME, "development").frames[s] for s in syms}
+    return [asdict(t) for t in screen.screen_group((group, frames, list(T.FILTERS)))]
+
+
+def event_studies(batch: str, universe, workers: int, mode: str = "per_instrument") -> list[dict]:
     path = OUT / batch / "event_studies.json"
     if path.exists():
         return json.loads(path.read_text())
     tests = []
     with ProcessPoolExecutor(workers) as ex:
-        for res in ex.map(_screen_worker, universe):
-            tests += res
+        if mode == "pooled":
+            groups = {}
+            for s in universe:
+                groups.setdefault(group_of(s), []).append(s)
+            jobs = [(g, syms) for g, syms in groups.items()]
+            for res in ex.map(_group_worker, jobs):
+                tests += res
+        else:
+            for res in ex.map(_screen_worker, universe):
+                tests += res
     q = stats.bh_adjusted([t["p_value"] for t in tests])
     for t, qq in zip(tests, q):
         t["q_value"] = float(qq)
@@ -117,14 +139,16 @@ def event_studies(batch: str, universe, workers: int) -> list[dict]:
     return tests
 
 
-def record_effects(batch: str, reg: Registry, hs: list[dict], tests: list[dict]) -> list[dict]:
-    """Write the event-study outcome to every hypothesis; return those with an effect."""
+def record_effects(batch: str, reg: Registry, hs: list[dict], tests: list[dict],
+                   mode: str = "per_instrument") -> list[dict]:
+    """Write the event-study outcome to every hypothesis; return those with an effect.
+    In pooled mode the test of the hypothesis's market group (e.g. all US ETFs) applies."""
     by = {}
     for t in tests:
         by.setdefault((t["entry"], t["filt"], t["symbol"]), []).append(t)
     effects = []
     for h in hs:
-        ts = by[(h["entry"], h["filter"], h["symbol"])]
+        ts = by[(h["entry"], h["filter"], group_of(h["symbol"]) if mode == "pooled" else h["symbol"])]
         best = min(ts, key=lambda t: t["q_value"])
         h["event_q"], h["event_t"], h["event_n"] = best["q_value"], best["t_stat"], best["events"]
         if reg.hypothesis(h["id"])["status"] != "IDEA":
@@ -135,7 +159,8 @@ def record_effects(batch: str, reg: Registry, hs: list[dict], tests: list[dict])
         eid = reg.start_experiment(
             hypothesis_id=h["id"], strategy_id=cls.name, strategy_version=cls().strategy_version,
             stage="event_study", market=instruments.get(h["symbol"]).asset_class, instruments=[h["symbol"]],
-            timeframe=TIMEFRAME, data_split="development", data_versions={}, config={"horizon": best["horizon"]},
+            timeframe=TIMEFRAME, data_split="development", data_versions={},
+            config={"horizon": best["horizon"], "mode": mode, "tested_on": best["symbol"]},
             notes=f"discovery {batch}: BH across {len(tests)} tests")
         for t in ts:
             reg.add_stat_test(eid, "event_study", statistic=t["t_stat"], p_value=t["p_value"],
@@ -211,13 +236,14 @@ def _num(x):
     return str(x)
 
 
-def run(batch: str, universe=UNIVERSE, workers: int | None = None) -> Path:
+def run(batch: str, universe=UNIVERSE, workers: int | None = None, mode: str = "per_instrument",
+        parent: str | None = None) -> Path:
     workers = workers or max(1, (os.cpu_count() or 2))
     reg = Registry()
-    hs = register(batch, reg, universe)
+    hs = register(batch, reg, universe, mode, parent)
     t0 = time.time()
-    tests = event_studies(batch, universe, workers)
-    effects = record_effects(batch, reg, hs, tests)
+    tests = event_studies(batch, universe, workers, mode)
+    effects = record_effects(batch, reg, hs, tests, mode)
     reg.export()
     print(f"event studies: {len(tests)} tests, {len(effects)}/{len(hs)} hypotheses with an effect "
           f"({time.time() - t0:.0f}s)")

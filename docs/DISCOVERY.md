@@ -38,6 +38,18 @@ Try enough ideas and some look great by luck. The engine is built so that luck i
 Calibration (`tests/test_discovery.py`): on 30 random-walk markets × all 63 entry tests, the false-discovery control
 lets through ≤ 1% (in practice none); a planted mean-reversion effect is found in 5 of 5 trials.
 
+## Screen modes
+
+- `per_instrument` (batch D5-01): each entry condition is tested on each market alone. Honest but low-powered:
+  1,071 separate tests, so only a very strong single-market effect survives the false-discovery control.
+- `pooled` (batch D5-02 onward): each entry condition is tested on a whole market group at once (14 US ETFs, or
+  3 coins). Each market's events are measured against its own normal returns, then averaged **per date**, so ten
+  ETFs reacting to the same sell-off count as one observation, not ten. 126 tests per batch instead of 1,071. If a
+  group shows an effect, every market in that group goes to the full test for that rule, where each must pass alone.
+
+Changing the screen after seeing results is a new batch: D5-02 repeats D5-01's 714 ideas with the pooled screen,
+and every D5-02 idea is linked to its D5-01 parent (`parent_id`), so the earlier tests stay on record.
+
 ## Speed
 
 The event studies take seconds. Full tests run in parallel on every CPU core (`--workers`), each writing to the

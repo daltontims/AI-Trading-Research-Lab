@@ -77,3 +77,20 @@ def test_event_screen_finds_planted_mean_reversion():
         ps = [t.p_value for t in res if t.entry in ("rsi2_low", "drop_z", "down_streak")]
         hits += min(ps) < 1e-3
     assert hits == 5
+
+
+def test_pooled_screen_rejects_luck_and_counts_one_observation_per_date():
+    frames = {f"RW{i}": daily(300 + i) for i in range(10)}
+    res = screen.screen_group(("eq", frames, list(T.FILTERS)))
+    q = stats.bh_adjusted([t.p_value for t in res])
+    assert (q < 0.05).sum() == 0
+    # Identical copies of one market must not add evidence: same dates, same per-date mean.
+    one = screen.pooled_event_test({"A": frames["RW0"]}, "rsi2_low", "none", "eq", 10.0)
+    ten = screen.pooled_event_test({f"C{i}": frames["RW0"] for i in range(10)}, "rsi2_low", "none", "eq", 10.0)
+    assert one.events == ten.events and np.isclose(one.t_stat, ten.t_stat)
+
+
+def test_pooled_screen_finds_effect_spread_over_markets():
+    frames = {f"MR{i}": daily(400 + i, 2500, phi=-0.15) for i in range(10)}
+    res = screen.screen_group(("eq", frames, ["none"]))
+    assert min(t.p_value for t in res if t.entry in ("rsi2_low", "drop_z")) < 1e-4

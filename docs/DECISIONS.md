@@ -171,3 +171,11 @@ Sharpe uses the family's full planned trial count (new `family_trials_floor`), s
 run order and replicating a rule on more markets raises the bar. Crypto uses US-retail costs (D-010).
 Registry: WAL mode, 300 s busy timeout, experiment-id retry for parallel writers. Calibrated on random walks
 (tests/test_discovery.py). Details: docs/DISCOVERY.md.
+
+## D-026 — Batch D5-01 found nothing; D5-02 re-tests the same ideas with a pooled screen (2026-11-28)
+D5-01 (per-instrument event studies, BH across 1,071 tests): 0 of 714 ideas passed; best q = 0.09 (SPY after 4
+down days). Yet 146 tests had p < 0.05 where ~54 are expected by chance, concentrated in buy-the-dip rules on
+US equity ETFs: a collective effect too weak to show on any single market after the correction. Decision: keep
+D5-01 as final and logged, and register D5-02 with the same 714 ideas (each linked to its D5-01 parent) but a
+pooled screen per market group, averaging events per date so correlated ETFs count once (126 tests). Survivors
+still face the full per-market pipeline, with the Deflated Sharpe counting the whole family.

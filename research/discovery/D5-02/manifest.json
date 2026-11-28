@@ -1,0 +1,176 @@
+{
+  "batch": "D5-02",
+  "registered": "2026-11-28 03:05 UTC",
+  "timeframe": "1d",
+  "universe": [
+    "SPY",
+    "QQQ",
+    "IWM",
+    "DIA",
+    "TLT",
+    "GLD",
+    "XLK",
+    "XLF",
+    "XLE",
+    "XLV",
+    "XLY",
+    "XLP",
+    "XLI",
+    "XLU",
+    "BTCUSDT",
+    "ETHUSDT",
+    "SOLUSDT"
+  ],
+  "fdr_q": 0.05,
+  "risk": {
+    "sizing": "pct_equity",
+    "position_pct": 1.0
+  },
+  "entries": {
+    "rsi2_low": {
+      "name": "rsi2_low",
+      "grid": [
+        5.0,
+        10.0,
+        20.0
+      ],
+      "style": "mean_reversion",
+      "exits": [
+        "hold_bars",
+        "close_above_ma"
+      ],
+      "describe": "2-bar RSI below x (short-term oversold)"
+    },
+    "n_day_low": {
+      "name": "n_day_low",
+      "grid": [
+        5,
+        10,
+        20
+      ],
+      "style": "mean_reversion",
+      "exits": [
+        "hold_bars",
+        "close_above_ma"
+      ],
+      "describe": "close is the lowest of the last x bars"
+    },
+    "down_streak": {
+      "name": "down_streak",
+      "grid": [
+        2,
+        3,
+        4
+      ],
+      "style": "mean_reversion",
+      "exits": [
+        "hold_bars",
+        "close_above_ma"
+      ],
+      "describe": "x or more consecutive down closes"
+    },
+    "drop_z": {
+      "name": "drop_z",
+      "grid": [
+        1.5,
+        2.0,
+        2.5
+      ],
+      "style": "mean_reversion",
+      "exits": [
+        "hold_bars",
+        "close_above_ma"
+      ],
+      "describe": "one-bar drop larger than x standard deviations (60-bar volatility)"
+    },
+    "ibs_low": {
+      "name": "ibs_low",
+      "grid": [
+        0.1,
+        0.2,
+        0.3
+      ],
+      "style": "mean_reversion",
+      "exits": [
+        "hold_bars",
+        "close_above_ma"
+      ],
+      "describe": "close in the bottom x of the bar's high-low range"
+    },
+    "n_day_high": {
+      "name": "n_day_high",
+      "grid": [
+        20,
+        55,
+        120
+      ],
+      "style": "trend",
+      "exits": [
+        "close_below_ma",
+        "n_day_low_exit"
+      ],
+      "describe": "close is the highest of the last x bars (breakout)"
+    },
+    "ma_cross_up": {
+      "name": "ma_cross_up",
+      "grid": [
+        20,
+        50,
+        100
+      ],
+      "style": "trend",
+      "exits": [
+        "close_below_ma",
+        "n_day_low_exit"
+      ],
+      "describe": "close crosses above its x-bar average"
+    }
+  },
+  "exits": {
+    "hold_bars": {
+      "name": "hold_bars",
+      "grid": [
+        3,
+        5,
+        10
+      ],
+      "describe": "exit y bars after the last entry trigger"
+    },
+    "close_above_ma": {
+      "name": "close_above_ma",
+      "grid": [
+        5,
+        10
+      ],
+      "describe": "exit when the close is back above its y-bar average"
+    },
+    "close_below_ma": {
+      "name": "close_below_ma",
+      "grid": [
+        20,
+        50
+      ],
+      "describe": "exit when the close falls below its y-bar average"
+    },
+    "n_day_low_exit": {
+      "name": "n_day_low_exit",
+      "grid": [
+        10,
+        20
+      ],
+      "describe": "exit at the lowest close of the last y bars"
+    }
+  },
+  "filters": {
+    "none": "no trend filter",
+    "up": "only above the 200-bar average",
+    "down": "only below the 200-bar average"
+  },
+  "horizons": {
+    "mean_reversion": 5,
+    "trend": 20
+  },
+  "hypotheses": 714,
+  "screen_mode": "pooled",
+  "parent_batch": "D5-01"
+}
