@@ -46,7 +46,14 @@
   Don't use the task's manual "run now": it spawns a repo-less session; message the standing session.
   If that branch is merged/renamed, update the scheduled task's prompt. 3-month evaluation after
   2027-02-17. NEVER add live trading without explicit permission.
-- Next after paper setup: Phase 5 discovery engine + Phase 6 dashboard.
+- Paper fixes (D-024): partial-entry top-ups use "day" market orders; backup scheduled task "Paper trading
+  backup run" at 09:05 New York repeats the daily run only if the 08:40 one left no journal entry.
+- Phase 5 discovery engine (D-025..D-028, docs/DISCOVERY.md): generated rule ideas, pooled event-study screen with
+  batch-wide FDR, parallel full evaluation, auto-promotion (vault once → VALIDATED → configs/deployment.yaml,
+  equal split, one strategy per symbol, ETFs only). Batches D5-01 (714), D5-02 (714), D5-03 (420): 0 candidates so far.
+  Scheduled task "Weekly discovery research batch" (Saturdays 14:23 New York) designs, pre-registers, runs and
+  reports a NEW batch each week in this standing session. Never re-run a finished batch or tweak a near miss.
+- Next: Phase 6 dashboard; crypto paper trading (24/7) if a crypto strategy validates.
 
 ## Validation conventions (do not break)
 - Validation split: one look per hypothesis (enforced). Changed rules = new hypothesis.
