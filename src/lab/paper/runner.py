@@ -50,6 +50,7 @@ class Plan:
     reason: str
     client_order_id: str = ""
     target_qty: int = 0         # signed position size wanted after the next open
+    time_in_force: str = "opg"  # "opg" = opening auction; "day" = market order at the open (top-ups, D-024)
 
 
 def deployment(path: Path = CONFIG) -> dict:
@@ -166,7 +167,7 @@ def plan_orders(broker, cfg: dict | None = None, bars: dict[str, pl.DataFrame] |
             ref = float(df["close"][-1])
             date = str(df["ts"][-1].date())
             cur = held[sym].qty if sym in held else 0.0
-            want_qty, note = 0, ""
+            want_qty, note, tif = 0, "", "opg"
             if target != 0:
                 if cur != 0 and np.sign(cur) == target:
                     want_qty = int(abs(cur))  # already positioned: hold, do not resize (as in the backtest)
@@ -175,13 +176,15 @@ def plan_orders(broker, cfg: dict | None = None, bars: dict[str, pl.DataFrame] |
                         # The entry only partly filled: complete it to the size the entry intended.
                         note = f"; entry partly filled ({want_qty} of {abs(meant)}), topping up"
                         want_qty = abs(meant)
+                        tif = "day"  # D-024: opening-auction top-ups kept expiring unfilled on paper
                 else:
                     want_qty = int(math.floor(d["allocation"] * sizing_equity / ref))
             delta = target * want_qty - cur
             side = "buy" if delta > 0 else ("sell" if delta < 0 else None)
             reason = {1: "long", -1: "short", 0: "flat"}[target]
             p = Plan(d["hypothesis"], sym, date, target, cur, side, int(abs(delta)), ref,
-                     f"strategy wants {reason}; holding {cur:g}{note}", target_qty=int(target * want_qty))
+                     f"strategy wants {reason}; holding {cur:g}{note}", target_qty=int(target * want_qty),
+                     time_in_force=tif)
             if side:
                 p.client_order_id = f"{d['hypothesis']}-{sym}-{date}-{side}"
                 notional = p.order_qty * ref
@@ -208,7 +211,7 @@ def run(broker, submit: bool = False, cfg: dict | None = None, bars: dict | None
     orders = []
     for p in plans:
         if p.order_side and submit:
-            o = broker.submit(p.symbol, p.order_qty, p.order_side, p.client_order_id, "opg")
+            o = broker.submit(p.symbol, p.order_qty, p.order_side, p.client_order_id, p.time_in_force)
             orders.append(asdict(o))
     if submit and orders:
         _mark_paper({p.hypothesis for p in plans if p.order_side})

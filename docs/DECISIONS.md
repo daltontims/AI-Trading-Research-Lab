@@ -149,3 +149,13 @@ so the partial-fill rate can be checked against the cost model in the 3-month re
 price differs from the original entry; the review measures returns per share, so this changes dollar
 size, not the comparison.
 
+
+## D-024 — Top-ups use a plain market order; backup run at 09:05 New York (2026-11-28)
+After D-023, all three top-up orders for H4-17 (buy 3 SPY, market-on-open "opg") expired with nothing
+filled (Nov 20, 23, 24), and the first entry filled only 3 of 6. The broker gives no reason; Alpaca's
+paper simulation of the opening auction looks unreliable for us. Owner approved: top-ups (and only
+top-ups) are now sent as market orders with time_in_force "day", queued before the open and filled at
+the first trade after 09:30. New entries and exits still use the opening auction, as the backtest
+assumes. The top-up's fill price is journaled like any fill, so the 3-month review can measure the
+difference. Owner also approved a backup scheduled run at 09:05 New York time that repeats the daily
+run if the 08:40 one did not happen (the Nov 25 wake-up arrived a day late). Re-runs are idempotent.

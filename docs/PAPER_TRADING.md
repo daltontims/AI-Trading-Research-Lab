@@ -63,7 +63,7 @@ cancels open orders and places none), or disable the scheduled task.
 | Kill switch: `kill_switch: true` cancels open orders, places none | `configs/deployment.yaml` |
 | Orders sized off at most `capital` ($5,000) and capped at 1.05 × allocation | `runner.plan_orders` |
 | Whole shares; positions are held, not resized, while the strategy stays in | `runner.plan_orders` |
-| An entry that only partly filled is completed at the next open (D-023) | `runner.plan_orders` |
+| An entry that only partly filled is completed at the next open (D-023), with a plain market order (D-024) | `runner.plan_orders` |
 | Strategies with intrabar stops/targets are refused (not supported yet) | `runner.replay_target` |
 
 ## Deployed strategies
@@ -80,4 +80,4 @@ fill prices consistent with the cost model. Until then the strategy's status is 
 
 ## Standing session
 
-Daily runs happen in the standing cloud session 'Paper trading daily runs', woken by the scheduled task at 08:40 New York time.
+Daily runs happen in the standing cloud session 'Paper trading daily runs', woken by the scheduled task at 08:40 New York time. A backup scheduled task at 09:05 New York time repeats the run only if the 08:40 run left no journal entry for today (D-024).

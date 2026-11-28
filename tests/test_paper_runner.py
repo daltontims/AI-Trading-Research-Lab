@@ -149,6 +149,7 @@ def test_partial_entry_fill_is_topped_up_next_run(validated, tmp_path):
     first = runner.run(b, submit=True, cfg=CFG, bars={"SPY": df}, journal=j)["plans"][0]
     want = int(5000 // px)
     assert first["order_side"] == "buy" and first["order_qty"] == want and first["target_qty"] == want
+    assert first["time_in_force"] == "opg"                   # entries use the opening auction
     b.fill_open({"SPY": px}, fill_ratio=0.5)                 # only half the entry fills
     fills = runner.reconcile(b, j)
     assert fills[0]["partial"] and fills[0]["qty"] == want // 2 and fills[0]["ordered_qty"] == want
@@ -156,6 +157,7 @@ def test_partial_entry_fill_is_topped_up_next_run(validated, tmp_path):
     nxt = df.vstack(df.tail(1).with_columns(df["ts"].tail(1) + timedelta(days=1)))  # next session, still long
     p = runner.plan_orders(b, CFG, {"SPY": nxt}, journal=j)[0]
     assert p.order_side == "buy" and p.order_qty == want - want // 2 and "topping up" in p.reason
+    assert p.time_in_force == "day"                          # D-024: top-ups are plain market orders
     runner.run(b, submit=True, cfg=CFG, bars={"SPY": nxt}, journal=j)
     b.fill_open({"SPY": px})
     assert b.held["SPY"] == want
