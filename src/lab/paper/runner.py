@@ -57,7 +57,38 @@ def deployment(path: Path = CONFIG) -> dict:
     cfg = yaml.safe_load(path.read_text())
     if cfg.get("mode") != "paper":
         raise SafetyError("deployment mode must be 'paper'")
+    check_deployment(cfg)
     return cfg
+
+
+PAPER_ASSET_CLASSES = ("equity",)   # crypto paper trading is not supported yet (24/7 market, other symbols)
+
+
+def check_deployment(cfg: dict) -> None:
+    """Rules for running several strategies on one account (D-027):
+    one strategy per symbol (the broker holds one position per symbol), allocations sum to at
+    most 1 (no leverage), and only supported asset classes."""
+    from lab import instruments
+    seen, total = {}, 0.0
+    for d in cfg.get("strategies", []):
+        total += float(d["allocation"])
+        for sym in d["symbols"]:
+            if sym in seen:
+                raise SafetyError(f"{sym} is traded by both {seen[sym]} and {d['hypothesis']}: one strategy per symbol")
+            seen[sym] = d["hypothesis"]
+            if instruments.get(sym).asset_class not in PAPER_ASSET_CLASSES:
+                raise SafetyError(f"{sym}: paper trading supports {PAPER_ASSET_CLASSES} only")
+    if total > 1.0 + 1e-9:
+        raise SafetyError(f"allocations sum to {total:.2f} > 1.0 (no leverage)")
+
+
+def strategy_class(name: str):
+    from lab.discovery.templates import strategy_from_name
+    from lab.strategies.examples import EXAMPLES
+    from lab.strategies.phase4 import PHASE4
+    if name.startswith("rule:"):
+        return strategy_from_name(name)
+    return {**EXAMPLES, **PHASE4}[name]
 
 
 def replay_target(strategy: Strategy, df: pl.DataFrame, symbol: str, max_bars_held: int = 0) -> tuple[np.ndarray, int]:
@@ -145,11 +176,9 @@ def plan_orders(broker, cfg: dict | None = None, bars: dict[str, pl.DataFrame] |
     """Compute target positions and the orders needed. `bars` overrides data fetching (tests).
 
     `journal` (when given) is used to complete entries that only partly filled."""
-    from lab.strategies.examples import EXAMPLES
-    from lab.strategies.phase4 import PHASE4
     from lab.registry.db import Registry
     cfg = cfg or deployment()
-    registry = {**EXAMPLES, **PHASE4}
+    check_deployment(cfg)
     acct = broker.account()
     sizing_equity = min(acct.equity, float(cfg.get("capital", acct.equity)))
     held = broker.positions()
@@ -160,7 +189,7 @@ def plan_orders(broker, cfg: dict | None = None, bars: dict[str, pl.DataFrame] |
         status = reg.hypothesis(d["hypothesis"])["status"]
         if status not in ("VALIDATED", "PAPER"):
             raise SafetyError(f"{d['hypothesis']} is {status}: only VALIDATED strategies may be paper traded")
-        strat = registry[d["strategy"]](**d.get("params", {}))
+        strat = strategy_class(d["strategy"])(**d.get("params", {}))
         for sym in d["symbols"]:
             df = bars[sym] if bars and sym in bars else fetch_bars(sym, d.get("history_days", 600))
             _, target = replay_target(strat, df, sym, d.get("max_bars_held", 0))
@@ -172,6 +201,9 @@ def plan_orders(broker, cfg: dict | None = None, bars: dict[str, pl.DataFrame] |
                 if cur != 0 and np.sign(cur) == target:
                     want_qty = int(abs(cur))  # already positioned: hold, do not resize (as in the backtest)
                     meant = intended.get((d["hypothesis"], sym), 0)
+                    # Never top up beyond what the current allocation buys (allocations shrink when
+                    # strategies are added, D-027).
+                    meant = int(np.sign(meant)) * min(abs(meant), int(math.floor(d["allocation"] * sizing_equity / ref)))
                     if np.sign(meant) == target and abs(meant) > want_qty:
                         # The entry only partly filled: complete it to the size the entry intended.
                         note = f"; entry partly filled ({want_qty} of {abs(meant)}), topping up"

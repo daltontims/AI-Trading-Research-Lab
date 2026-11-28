@@ -182,3 +182,57 @@ def test_intended_size_reads_legacy_journal_and_clears_on_exit(tmp_path):
     with open(j, "a") as f:
         f.write(json.dumps({"event": "run", "submitted": True, "plans": [exit_]}) + "\n")
     assert runner.intended_entry_sizes(j) == {}
+
+
+# ---------------------------------------------------------------- several strategies (D-027)
+def test_deployment_rules_for_several_strategies():
+    base = {"mode": "paper", "strategies": [
+        {"hypothesis": "A", "strategy": "trend_filter", "symbols": ["SPY"], "allocation": 0.5},
+        {"hypothesis": "B", "strategy": "trend_filter", "symbols": ["QQQ"], "allocation": 0.5}]}
+    runner.check_deployment(base)
+    dup = {**base, "strategies": base["strategies"] + [
+        {"hypothesis": "C", "strategy": "trend_filter", "symbols": ["SPY"], "allocation": 0.0}]}
+    with pytest.raises(runner.SafetyError, match="one strategy per symbol"):
+        runner.check_deployment(dup)
+    lev = {**base, "strategies": [dict(d, allocation=0.6) for d in base["strategies"]]}
+    with pytest.raises(runner.SafetyError, match="no leverage"):
+        runner.check_deployment(lev)
+    coin = {"mode": "paper", "strategies": [{"hypothesis": "D", "strategy": "x", "symbols": ["BTCUSDT"],
+                                             "allocation": 0.5}]}
+    with pytest.raises(runner.SafetyError, match="supports"):
+        runner.check_deployment(coin)
+
+
+def test_discovery_rule_strategies_load_by_name():
+    from lab.discovery.templates import rule_strategy
+    cls = rule_strategy("ibs_low", "none", "hold_bars")
+    assert runner.strategy_class(cls.name) is cls
+    assert runner.strategy_class("trend_filter") is TrendFilter
+
+
+def test_add_to_deployment_splits_account_equally():
+    from lab.discovery.promote import add_to_deployment
+    cfg = {"mode": "paper", "strategies": [{"hypothesis": "H4-17", "strategy": "rsi2_reversion",
+                                            "symbols": ["SPY"], "allocation": 1.0}]}
+    new, note = add_to_deployment(cfg, "D5-02-0001", "rule:ibs_low:none:hold_bars", {"x": 0.1, "y": 3}, "QQQ")
+    assert [d["allocation"] for d in new["strategies"]] == [0.5, 0.5] and "deployed" in note
+    runner.check_deployment(new)
+    assert cfg["strategies"][0]["allocation"] == 1.0          # input not modified
+    same, note = add_to_deployment(new, "D5-02-0002", "rule:x:none:y", {}, "SPY")
+    assert same is new and "already traded" in note
+    _, note = add_to_deployment(new, "D5-02-0003", "rule:x:none:y", {}, "BTCUSDT")
+    assert "not supported" in note
+
+
+def test_top_up_never_exceeds_a_reduced_allocation(validated, tmp_path):
+    df, j = _long_case(), tmp_path / "j.jsonl"
+    px = float(df["close"][-1])
+    b = SimBroker(cash=5000.0)
+    runner.run(b, submit=True, cfg=CFG, bars={"SPY": df}, journal=j)
+    want = int(5000 // px)
+    b.fill_open({"SPY": px}, fill_ratio=0.5)
+    runner.reconcile(b, j)
+    half = {**CFG, "strategies": [dict(CFG["strategies"][0], allocation=0.5)]}
+    nxt = df.vstack(df.tail(1).with_columns(df["ts"].tail(1) + timedelta(days=1)))
+    p = runner.plan_orders(b, half, {"SPY": nxt}, journal=j)[0]
+    assert b.held["SPY"] + p.order_qty <= int(0.5 * 5000 // px) or p.order_side is None

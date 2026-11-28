@@ -237,7 +237,7 @@ def _num(x):
 
 
 def run(batch: str, universe=UNIVERSE, workers: int | None = None, mode: str = "per_instrument",
-        parent: str | None = None) -> Path:
+        parent: str | None = None, promote: bool = True) -> Path:
     workers = workers or max(1, (os.cpu_count() or 2))
     reg = Registry()
     hs = register(batch, reg, universe, mode, parent)
@@ -252,4 +252,8 @@ def run(batch: str, universe=UNIVERSE, workers: int | None = None, mode: str = "
     reg = Registry()
     reg.export()
     from lab.discovery.report import write_report
-    return write_report(batch, hs, tests, results, reg)
+    out = write_report(batch, hs, tests, results, reg)
+    if promote:
+        from lab.discovery.promote import promote as _promote
+        _promote(reg)   # candidates -> one-time vault test -> paper account (D-027)
+    return out

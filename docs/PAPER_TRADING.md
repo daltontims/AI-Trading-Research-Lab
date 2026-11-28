@@ -66,6 +66,14 @@ cancels open orders and places none), or disable the scheduled task.
 | An entry that only partly filled is completed at the next open (D-023), with a plain market order (D-024) | `runner.plan_orders` |
 | Strategies with intrabar stops/targets are refused (not supported yet) | `runner.replay_target` |
 
+## Several strategies on one account (D-027)
+
+New strategies arrive automatically: after each discovery batch (docs/DISCOVERY.md), every candidate takes the
+one-time vault test, and a VALIDATED one is added to `configs/deployment.yaml`. The $5,000 is then split equally
+between all deployed strategies. The runner refuses to run if two strategies trade the same symbol, if
+allocations add up to more than 100%, or if a strategy trades something other than US ETFs (crypto paper trading
+is not supported yet). Promotions are logged in `research/discovery/promotions.jsonl`.
+
 ## Deployed strategies
 
 | Hypothesis | Strategy | Market | Allocation | Paper since |

@@ -179,3 +179,15 @@ US equity ETFs: a collective effect too weak to show on any single market after 
 D5-01 as final and logged, and register D5-02 with the same 714 ideas (each linked to its D5-01 parent) but a
 pooled screen per market group, averaging events per date so correlated ETFs count once (126 tests). Survivors
 still face the full per-market pipeline, with the Deflated Sharpe counting the whole family.
+
+## D-027 — Discovery winners are promoted and paper traded automatically (2026-11-28)
+Owner approved multi-strategy paper trading so that new winners go onto the paper account automatically.
+After every discovery batch, `lab.discovery.promote` runs each new CANDIDATE once on the vault (final,
+never repeated). A VALIDATED strategy is added to configs/deployment.yaml and the $5,000 is split equally
+between all deployed strategies (allocations sum to 1: no leverage). Safety rules enforced by the runner on
+every run: one strategy per symbol (the broker holds one position per symbol), allocations ≤ 1 in total,
+US equity ETFs only (crypto paper trading needs 24/7 handling and different symbols: not supported yet, such
+winners are recorded but not deployed). When allocations shrink, a strategy's partly filled entry is only
+topped up to what its new allocation buys. Every promotion outcome is logged in
+research/discovery/promotions.jsonl. The promotion commit must be pushed: the daily run trades whatever
+configs/deployment.yaml says on the branch.
